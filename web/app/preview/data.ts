@@ -1,5 +1,7 @@
 import {
-  buildWindow, getEngineState, getLiveBook, getLiveWindow, getSpotPrices, getTape, getVaultState,
+  KNOWN_POSITIONS,
+  buildWindow, getEngineSet, getEngineState, getLiveBook, getLiveWindow, getPosition,
+  getSpotPrices, getTape, getVaultState,
 } from "@/lib/chain";
 
 /** Both directions render the same live state, so the comparison is about design and
@@ -8,8 +10,9 @@ export async function loadPreview() {
   const vault = await getVaultState();
   const makeWholeBps = Number(vault.policy[1]) || 250;
 
-  const [engine, prices, tape, live] = await Promise.all([
-    getEngineState(), getSpotPrices(), getTape(10), getLiveWindow(makeWholeBps),
+  const [engine, prices, tape, live, engineSet, ...positions] = await Promise.all([
+    getEngineState(), getSpotPrices(), getTape(14), getLiveWindow(makeWholeBps), getEngineSet(),
+    ...KNOWN_POSITIONS.map((p) => getPosition(p)),
   ]);
 
   // The hero must never be a blank box: fall back to the most recently seen window.
@@ -21,7 +24,16 @@ export async function loadPreview() {
   const book = await getLiveBook(shown?.marketId ?? null);
   const eth = prices.find((p) => p.asset === "ETH");
 
-  return { vault, engine, prices, tape, shown, book, makeWholeBps, eth };
+  const settled = positions.filter((p) => p.settled);
+  const premiumPaid = settled.reduce((a, p) => a + Number(p.premium) / 1e6, 0);
+  const proceeds = settled.reduce((a, p) => a + Number(p.proceeds) / 1e6, 0);
+  const paidOut = settled.filter((p) => p.outcome === "Won").length;
+  const declined = tape.items.filter((t) => t.kind === "declined" || t.kind === "gaveUp").slice(0, 6);
+
+  return {
+    vault, engine, prices, tape, shown, book, makeWholeBps, eth,
+    positions, settled, premiumPaid, proceeds, paidOut, engineSet, declined,
+  };
 }
 
 /** Chain timestamps are UTC. Render them as UTC, explicitly, always. */

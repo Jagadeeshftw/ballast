@@ -13,6 +13,19 @@
   font-size: var(--s2); line-height:1.5;
 }
 html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
+
+/* Isolation from globals.css.
+   That stylesheet styles BARE ELEMENTS -- `section { margin-top: 54px }`, `main`, `h1`, `h2`,
+   `footer` -- which apply to this page too and are invisible in the markup. The bare section
+   margin is what pushed the hero 54px below the nav and clipped the fold at every viewport,
+   after `section.band` had already done the same thing with negative margins. Neutralise the
+   lot here and set every margin explicitly below. */
+#dir-a section { margin: 0; }
+#dir-a main { padding: 0; }
+#dir-a h1, #dir-a h2, #dir-a h3, #dir-a h4, #dir-a p, #dir-a ul, #dir-a ol, #dir-a dl, #dir-a figure {
+  margin: 0;
+}
+#dir-a footer { margin: 0; padding: 0; border: 0; }
 #dir-a :focus-visible { outline:2px solid var(--beacon); outline-offset:2px; }
 #dir-a ::selection { background: color-mix(in srgb, var(--covered) 30%, transparent); }
 #dir-a a { color: var(--covered); }
@@ -24,52 +37,169 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 #dir-a h2 { font-size:var(--s5); line-height:1.08; letter-spacing:-.02em; margin:0 0 12px; font-weight:700; }
 #dir-a .aLede { color:var(--chart); font-size:var(--s3); max-width:62ch; margin:0 0 28px; }
 
+/* ------------------------------------------------------------------ nav */
+
+#dir-a { --nav: 58px; }
+#dir-a .aNav {
+  position: sticky; top: 0; z-index: 50; height: var(--nav);
+  background: color-mix(in srgb, var(--deep) 92%, transparent);
+  backdrop-filter: saturate(140%) blur(8px);
+  border-bottom: 1px solid var(--rail);
+}
+#dir-a .aNavIn {
+  max-width: 1180px; margin: 0 auto; padding: 0 26px; height: 100%;
+  display: flex; align-items: center; gap: 30px;
+}
+#dir-a .aNavBrand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--bone); }
+#dir-a .aNavBrand span { font-size: var(--s3); font-weight: 700; letter-spacing: -.01em; }
+#dir-a .aNavLinks { list-style: none; display: flex; gap: 24px; margin: 0; padding: 0; }
+#dir-a .aNavLinks a {
+  color: var(--chart); text-decoration: none; font-size: var(--s2); padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+#dir-a .aNavLinks a:hover { color: var(--bone); }
+#dir-a .aNavLinks a.on { color: var(--bone); border-bottom-color: var(--covered); }
+#dir-a .aNavCta {
+  margin-left: auto; background: var(--covered); color: #04231D; font-weight: 700;
+  padding: 9px 18px; border-radius: 7px; text-decoration: none; font-size: var(--s2); white-space: nowrap;
+}
+
 /* ------------------------------------------------------------------ 1. hero */
 
-#dir-a .aHero { padding:72px 0 64px; position:relative; overflow:hidden; }
+/* The claim and the proof on the same screen. That pairing is the whole argument of the
+   project, so it should not need a scroll to make it. It also fills the right half, which
+   was empty when the hero was a left column and an oversized headline. */
+#dir-a .aHero {
+  min-height: calc(100vh - var(--nav));
+  display: grid; grid-template-columns: minmax(0,1.16fr) minmax(0,.84fr);
+  gap: 52px; align-items: center; padding-block: 22px 28px; position: relative; overflow: hidden;
+}
 #dir-a .aHero::before {
   content:""; position:absolute; inset:0;
-  background: radial-gradient(120% 130% at 15% 0%, rgba(47,191,163,.10), transparent 62%);
+  background: radial-gradient(110% 120% at 12% 6%, rgba(47,191,163,.10), transparent 60%);
   pointer-events:none;
 }
-#dir-a .aHero > * { position:relative; }
-#dir-a .brand { display:flex; align-items:center; gap:13px; margin-bottom:34px; }
-#dir-a .brand span { font-size:var(--s4); font-weight:700; letter-spacing:-.01em; }
+#dir-a .aHero > * { position: relative; }
 #dir-a .aHero h1 {
-  font-size:var(--s7); line-height:1.0; letter-spacing:-.035em; margin:0 0 22px; max-width:15ch;
-  font-variation-settings:"wdth" 108; font-weight:700;
+  /* Sized against viewport HEIGHT as well as width, or a short window clips the fold. */
+  font-size: clamp(34px, min(5.6vw, 7.4vh), 64px);
+  line-height: .96; letter-spacing: -.04em; margin: 0 0 20px; font-weight: 700;
+  font-variation-settings: "wdth" 106; max-width: 20ch;
 }
-#dir-a .aHero h1 em { font-style:normal; color:var(--covered); }
-#dir-a .aHero p.sub { font-size:var(--s4); color:var(--chart); max-width:52ch; margin:0 0 40px; }
-#dir-a .heroRow { display:flex; align-items:flex-end; gap:44px; flex-wrap:wrap; }
+#dir-a .aHero h1 em { font-style: normal; color: var(--covered); }
+#dir-a .aHero .sub {
+  font-size: clamp(15px, 1.35vw, var(--s4)); color: var(--chart); max-width: 46ch; margin: 0 0 26px;
+}
+#dir-a .heroActions { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
 #dir-a .cta {
   display:inline-block; background:var(--covered); color:#04231D; font-weight:700;
-  padding:15px 30px; border-radius:8px; text-decoration:none; font-size:var(--s3);
+  padding:14px 28px; border-radius:8px; text-decoration:none; font-size:var(--s3);
 }
 #dir-a .statNum {
-  font-size:var(--s6); line-height:1; font-variation-settings:"wdth" 118; font-weight:700;
-  letter-spacing:-.02em; display:block;
+  font-size: clamp(30px, 3.4vw, var(--s6)); line-height:1; font-variation-settings:"wdth" 118;
+  font-weight:700; letter-spacing:-.02em; display:block;
 }
 #dir-a .statLabel { font-size:var(--s1); color:var(--chart); letter-spacing:.06em; }
 
-/* ------------------------------------------------------------- 2. how it works */
-
-#dir-a .aBand { background:var(--hull); border-top:1px solid var(--rail); border-bottom:1px solid var(--rail); padding:76px 0; }
-#dir-a .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:8px; }
-#dir-a .step { border-top:2px solid var(--covered); padding-top:20px; }
-#dir-a .step .n {
-  font-size:var(--s1); color:var(--covered); letter-spacing:.14em; font-weight:700; display:block; margin-bottom:12px;
+/* the live half */
+#dir-a .heroLive { border-left: 1px solid var(--rail); padding-left: 34px; }
+#dir-a .heroLive .gg { max-width: 430px; }
+#dir-a .heroLiveTop { display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:10px; }
+#dir-a .heroLiveTop .asset { font-size:var(--s3); font-weight:700; margin:0; }
+#dir-a .heroLiveTop .beat { font-size:var(--s1); color:var(--chart); display:flex; align-items:center; gap:7px; }
+#dir-a .heroLiveTop .beat i {
+  width:7px; height:7px; border-radius:50%; background:var(--beacon); box-shadow:0 0 8px var(--beacon); display:block;
 }
-#dir-a .step h3 { font-size:var(--s4); margin:0 0 10px; font-weight:700; }
-#dir-a .step p { color:var(--chart); margin:0 0 14px; }
-#dir-a .step .foot { font-size:var(--s1); color:var(--bone); opacity:.55; letter-spacing:.04em; }
+#dir-a .heroCount { display:flex; align-items:baseline; gap:12px; margin:0 0 4px; }
+#dir-a .heroCount b {
+  font-size: clamp(38px, 4.6vw, var(--s6)); line-height:1; font-variation-settings:"wdth" 118;
+  font-weight:700; letter-spacing:-.03em;
+}
+#dir-a .heroCount b.word { font-size: clamp(24px, 2.6vw, var(--s5)); }
+#dir-a .heroCount span { font-size:var(--s1); color:var(--chart); letter-spacing:.08em; }
+#dir-a .heroFeed { list-style:none; margin:14px 0 0; padding:12px 0 0; border-top:1px solid var(--rail); }
+#dir-a .heroFeed li {
+  display:grid; grid-template-columns:auto 10px minmax(0,1fr); gap:10px; align-items:baseline;
+  font-size:var(--s1); padding:4px 0; color:var(--chart);
+}
+#dir-a .heroFeed .b { font-variant-numeric:tabular-nums; }
+#dir-a .heroFeed .d { width:7px; height:7px; border-radius:50%; background:var(--chart); }
+#dir-a .heroFeed .d.waterline { background:var(--covered); }
+#dir-a .heroFeed .d.heel { background:var(--exposed); }
+#dir-a .heroFeed .h { color:var(--bone); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* --------------------------------------------------------------- sections */
+
+/* Rhythm: alternating grounds, so each section is its own moment rather than another block
+   in a scroll of equal blocks. */
+#dir-a section { padding: 84px 0; }
+/* The hero sizes itself against the viewport; the generic section padding would add 168px
+   to it and put the fold back over the edge. */
+#dir-a .aHeroWrap { padding: 0; }
+#dir-a .aBand { background: var(--hull); border-top: 1px solid var(--rail); border-bottom: 1px solid var(--rail); }
+#dir-a .aLede { color: var(--chart); font-size: var(--s3); max-width: 62ch; margin: 0 0 30px; }
+#dir-a .foot { color: var(--chart); font-size: var(--s2); max-width: 76ch; margin: 26px 0 0; }
+#dir-a .subhead { font-size: var(--s4); font-weight: 700; margin: 54px 0 12px; }
+#dir-a .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+#dir-a .up { color: var(--covered); } #dir-a .down { color: var(--exposed); } #dir-a .dim { color: var(--chart); }
+
+#dir-a .twoUp { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 44px; align-items: center; }
+#dir-a .figureBox { border-left: 2px solid var(--covered); padding-left: 22px; }
+
+/* how it works — the ruled form */
+#dir-a .ruled { border-top: 1px solid var(--rail); }
+#dir-a .rrow {
+  display: grid; grid-template-columns: 92px minmax(0,1fr) minmax(0,1.25fr) auto;
+  gap: 28px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--rail);
+}
+#dir-a .rrow .rn { font-size: var(--s5); font-weight: 700; letter-spacing: -.03em; line-height: 1; color: var(--covered); }
+#dir-a .rrow h3 { font-size: var(--s4); font-weight: 700; letter-spacing: -.01em; }
+#dir-a .rrow p { color: var(--chart); }
+#dir-a .rrow .rfoot {
+  font-size: var(--s1); letter-spacing: .09em; text-transform: uppercase; color: var(--bone);
+  opacity: .6; white-space: nowrap;
+}
+
+/* what it pays */
+#dir-a .pays { width: 100%; border-collapse: collapse; font-size: var(--s3); max-width: 720px; }
+#dir-a .pays th {
+  text-align: left; font-size: var(--s1); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--chart); font-weight: 700; padding: 0 18px 10px 0; border-bottom: 1px solid var(--rail);
+}
+#dir-a .pays td { padding: 14px 18px 14px 0; border-bottom: 1px solid var(--rail); font-variant-numeric: tabular-nums; }
+#dir-a .pays tr.mark td { background: color-mix(in srgb, var(--covered) 9%, transparent); }
+#dir-a .pays tr.mark td:first-child { box-shadow: inset 3px 0 0 var(--covered); }
+
+/* settled positions */
+#dir-a .posGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 20px; }
+#dir-a .pos { background: var(--deep); border: 1px solid var(--rail); border-radius: 12px; padding: 24px; }
+#dir-a .posTop { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+#dir-a .posTop h3 { font-size: var(--s4); font-weight: 700; }
+#dir-a .tag { font-size: var(--s1); border: 1px solid var(--rail); border-radius: 999px; padding: 3px 10px; }
+#dir-a .tag.up { color: var(--covered); border-color: color-mix(in srgb, var(--covered) 45%, transparent); }
+#dir-a .tag.down { color: var(--exposed); border-color: color-mix(in srgb, var(--exposed) 45%, transparent); }
+#dir-a .posPair { display: flex; gap: 30px; }
+#dir-a .posPair .k { display: block; font-size: var(--s1); color: var(--chart); letter-spacing: .05em; }
+#dir-a .posPair .v { display: block; font-size: var(--s6); line-height: 1; font-variation-settings: "wdth" 118; font-weight: 700; letter-spacing: -.02em; }
+#dir-a .posUnit { font-size: var(--s1); color: var(--chart); margin: 6px 0 18px; }
+#dir-a .posKv { display: grid; grid-template-columns: auto 1fr; gap: 7px 18px; font-size: var(--s2); margin: 0 0 18px; }
+#dir-a .posKv dt { color: var(--chart); } #dir-a .posKv dd { margin: 0; }
+#dir-a .posTx { display: flex; gap: 16px; font-size: var(--s1); }
+
+#dir-a .totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap: 24px; margin-top: 34px; }
+
+#dir-a .hoodKv { display: grid; grid-template-columns: auto 1fr; gap: 9px 26px; font-size: var(--s2); margin-top: 34px; }
+#dir-a .hoodKv dt { color: var(--chart); } #dir-a .hoodKv dd { margin: 0; }
+
+#dir-a .aFoot { padding: 40px 0 70px; border-top: 1px solid var(--rail); }
+#dir-a .footLinks { display: flex; gap: 24px; margin-top: 16px; font-size: var(--s2); }
 
 /* ---------------------------------------------------------- 3. watch it happen */
 
 #dir-a .aLive { padding:76px 0; }
 #dir-a .gaugeRow { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:34px; align-items:center; margin-bottom:34px; }
 #dir-a .gg { width:100%; height:auto; display:block; }
-#dir-a .gg.narrow { display:none; }
+#dir-a .aLive .gg.narrow { display:none; }
 #dir-a .count { text-align:right; min-width:230px; }
 #dir-a .count .asset { font-size:var(--s4); font-weight:600; margin:0 0 10px; }
 #dir-a .count .cl { font-size:var(--s1); color:var(--chart); letter-spacing:.09em; margin:0 0 2px; }
@@ -118,9 +248,9 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 #dir-a .t-det { color:var(--chart); }
 #dir-a .t-tx { color:var(--covered); text-decoration:none; justify-self:end; }
 @keyframes aArrive { 0%{background:color-mix(in srgb,var(--beacon) 20%,transparent);} 100%{background:transparent;} }
-#dir-a .aTape li.newest { animation:aArrive 2.4s ease-out 1; }
-#dir-a .aTape li.newest .t-dot { background:var(--beacon); box-shadow:0 0 9px var(--beacon); }
-@media (prefers-reduced-motion: reduce){ #dir-a .aTape li.newest{ animation:none; } }
+#dir-a .aTape li.landing { animation:aArrive 2.4s ease-out 1; }
+#dir-a .aTape li.landing .t-dot { background:var(--beacon); box-shadow:0 0 9px var(--beacon); }
+@media (prefers-reduced-motion: reduce){ #dir-a .aTape li.landing{ animation:none; } }
 
 /* ------------------------------------------------------------ 4. dashboard step */
 
@@ -149,17 +279,62 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 
 @media (max-width:900px) {
   #dir-a .wrap { padding:0 16px; }
-  #dir-a .aHero { padding:44px 0 40px; }
-  #dir-a .aHero h1 { font-size:var(--s6); }
-  #dir-a .aHero p.sub { font-size:var(--s3); }
+  #dir-a { --nav: 52px; }
+  #dir-a .aNavLinks { display: none; }
+  #dir-a .aHero {
+    grid-template-columns: 1fr; gap: 22px; padding-block: 18px 26px;
+    min-height: calc(100vh - var(--nav)); align-content: center;
+  }
+  #dir-a .aHero h1 { margin-bottom: 14px; max-width: none; }
+  #dir-a .aHero .sub { margin-bottom: 18px; }
+  #dir-a .heroActions { gap: 18px; }
+  #dir-a .heroLive { border-left: 0; border-top: 1px solid var(--rail); padding: 14px 0 0; }
+  /* The three newest rows are the first thing to go on a phone: the gauge and the countdown
+     carry the aliveness, and the full tape is a section away. */
+  #dir-a .heroFeed { display: none; }
+  #dir-a .heroLive .gg { max-width: 320px; }
+  #dir-a .heroCount { margin-bottom: 0; }
   #dir-a h2 { font-size:var(--s4); }
-  #dir-a .steps { grid-template-columns:1fr; gap:22px; }
+  #dir-a section { padding: 52px 0; }
+  #dir-a .twoUp { grid-template-columns: 1fr; gap: 24px; }
+  #dir-a .rrow { grid-template-columns: 54px minmax(0,1fr); gap: 8px 16px; padding: 20px 0; }
+  #dir-a .rrow .rn { font-size: var(--s4); }
+  #dir-a .rrow p, #dir-a .rrow .rfoot { grid-column: 2; }
+  #dir-a .pays { font-size: var(--s2); }
+  #dir-a .pays td, #dir-a .pays th { padding-right: 10px; }
+  #dir-a .posPair .v { font-size: var(--s5); }
   #dir-a .gaugeRow { grid-template-columns:1fr; gap:18px; }
   #dir-a .count { text-align:left; min-width:0; }
   #dir-a .count .big { font-size:var(--s6); }
-  #dir-a .gg.wide { display:none; } #dir-a .gg.narrow { display:block; }
+  #dir-a .aLive .gg.wide { display:none; } #dir-a .aLive .gg.narrow { display:block; }
   #dir-a .aTape li { grid-template-columns:84px 12px minmax(0,1fr) 30px; row-gap:2px; }
   #dir-a .t-det { grid-column:3 / 5; }
   #dir-a .aBand, #dir-a .aLive, #dir-a .dash { padding:48px 0; }
   #dir-a .panel { padding:20px; }
 }
+
+
+/* ------------------------------------------------------------------ spine */
+
+/* Depth markings down the outer margin. Hidden where there is no margin to spare -- a phone
+   has none, and a scale nobody can read is just noise. */
+#dir-a .spine {
+  position: fixed; left: 22px; top: var(--nav); bottom: 0; width: 96px; z-index: 20;
+  pointer-events: none; display: none;
+}
+#dir-a .spineRule { position: relative; height: calc(100% - 96px); margin-top: 48px; border-left: 1px solid var(--rail); }
+#dir-a .spineFill { position: absolute; left: -1px; top: 0; width: 1px; background: var(--covered); }
+#dir-a .spineTick { position: absolute; left: 0; width: 5px; height: 1px; background: var(--rail); }
+#dir-a .spineTick.major { width: 11px; background: color-mix(in srgb, var(--chart) 70%, transparent); }
+#dir-a .spineMark { position: absolute; left: 0; display: flex; align-items: center; gap: 7px; transform: translateY(-50%); }
+#dir-a .spineMark i { width: 15px; height: 1px; background: var(--chart); display: block; }
+#dir-a .spineMark b {
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--chart);
+  font-weight: 600; white-space: nowrap;
+}
+#dir-a .spineHead {
+  position: absolute; left: -4px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--covered); box-shadow: 0 0 8px var(--covered); transform: translateY(-50%);
+}
+/* Only where the margin is genuinely free: the content column is 1180 wide. */
+@media (min-width: 1400px) { #dir-a .spine { display: block; } }
