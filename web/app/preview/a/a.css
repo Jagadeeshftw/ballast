@@ -1,0 +1,165 @@
+/* Direction A — night bridge.
+   A ship's bridge after dark: instruments lit, everything else in shadow. Depth is a value
+   step between `deep` and `hull`, never a shadow. Rhythm comes from alternating the ground:
+   full-bleed dark panels against the page ground, so sections read as separate moments. */
+
+#dir-a {
+  --deep:#06131A; --hull:#0D2129; --rail:#17323C;
+  --chart:#8FA6AE; --bone:#EAF2F3;
+  --covered:#2FBFA3; --exposed:#FF6B4A; --beacon:#FFC24B;
+  /* AA on --deep: bone 16.6, chart 7.4, covered 8.2, exposed 6.7, beacon 11.7. */
+  --s1:13px; --s2:15px; --s3:17px; --s4:22px; --s5:34px; --s6:56px; --s7:96px;
+  background: var(--deep); color: var(--bone); min-height:100vh;
+  font-size: var(--s2); line-height:1.5;
+}
+html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
+#dir-a :focus-visible { outline:2px solid var(--beacon); outline-offset:2px; }
+#dir-a ::selection { background: color-mix(in srgb, var(--covered) 30%, transparent); }
+#dir-a a { color: var(--covered); }
+
+#dir-a .wrap { max-width:1180px; margin:0 auto; padding:0 26px; }
+#dir-a .eyebrow {
+  font-size:var(--s1); letter-spacing:.14em; text-transform:uppercase; color:var(--chart); margin:0 0 14px;
+}
+#dir-a h2 { font-size:var(--s5); line-height:1.08; letter-spacing:-.02em; margin:0 0 12px; font-weight:700; }
+#dir-a .aLede { color:var(--chart); font-size:var(--s3); max-width:62ch; margin:0 0 28px; }
+
+/* ------------------------------------------------------------------ 1. hero */
+
+#dir-a .aHero { padding:72px 0 64px; position:relative; overflow:hidden; }
+#dir-a .aHero::before {
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(120% 130% at 15% 0%, rgba(47,191,163,.10), transparent 62%);
+  pointer-events:none;
+}
+#dir-a .aHero > * { position:relative; }
+#dir-a .brand { display:flex; align-items:center; gap:13px; margin-bottom:34px; }
+#dir-a .brand span { font-size:var(--s4); font-weight:700; letter-spacing:-.01em; }
+#dir-a .aHero h1 {
+  font-size:var(--s7); line-height:1.0; letter-spacing:-.035em; margin:0 0 22px; max-width:15ch;
+  font-variation-settings:"wdth" 108; font-weight:700;
+}
+#dir-a .aHero h1 em { font-style:normal; color:var(--covered); }
+#dir-a .aHero p.sub { font-size:var(--s4); color:var(--chart); max-width:52ch; margin:0 0 40px; }
+#dir-a .heroRow { display:flex; align-items:flex-end; gap:44px; flex-wrap:wrap; }
+#dir-a .cta {
+  display:inline-block; background:var(--covered); color:#04231D; font-weight:700;
+  padding:15px 30px; border-radius:8px; text-decoration:none; font-size:var(--s3);
+}
+#dir-a .statNum {
+  font-size:var(--s6); line-height:1; font-variation-settings:"wdth" 118; font-weight:700;
+  letter-spacing:-.02em; display:block;
+}
+#dir-a .statLabel { font-size:var(--s1); color:var(--chart); letter-spacing:.06em; }
+
+/* ------------------------------------------------------------- 2. how it works */
+
+#dir-a .aBand { background:var(--hull); border-top:1px solid var(--rail); border-bottom:1px solid var(--rail); padding:76px 0; }
+#dir-a .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:8px; }
+#dir-a .step { border-top:2px solid var(--covered); padding-top:20px; }
+#dir-a .step .n {
+  font-size:var(--s1); color:var(--covered); letter-spacing:.14em; font-weight:700; display:block; margin-bottom:12px;
+}
+#dir-a .step h3 { font-size:var(--s4); margin:0 0 10px; font-weight:700; }
+#dir-a .step p { color:var(--chart); margin:0 0 14px; }
+#dir-a .step .foot { font-size:var(--s1); color:var(--bone); opacity:.55; letter-spacing:.04em; }
+
+/* ---------------------------------------------------------- 3. watch it happen */
+
+#dir-a .aLive { padding:76px 0; }
+#dir-a .gaugeRow { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:34px; align-items:center; margin-bottom:34px; }
+#dir-a .gg { width:100%; height:auto; display:block; }
+#dir-a .gg.narrow { display:none; }
+#dir-a .count { text-align:right; min-width:230px; }
+#dir-a .count .asset { font-size:var(--s4); font-weight:600; margin:0 0 10px; }
+#dir-a .count .cl { font-size:var(--s1); color:var(--chart); letter-spacing:.09em; margin:0 0 2px; }
+#dir-a .count .big {
+  font-size:var(--s7); line-height:.92; margin:0; font-variation-settings:"wdth" 118;
+  font-weight:700; letter-spacing:-.03em;
+}
+#dir-a .count .big.word { font-size:var(--s5); }
+#dir-a .count .cs { font-size:var(--s2); color:var(--chart); margin:8px 0 0; }
+
+#dir-a .g-col { fill: color-mix(in srgb, var(--bone) 4%, var(--deep)); stroke:var(--rail); stroke-width:1; }
+#dir-a .g-band { fill:url(#ggBand); }
+#dir-a .gg-band-a { stop-color:#2FBFA3; stop-opacity:.20; }
+#dir-a .gg-band-b { stop-color:#2FBFA3; stop-opacity:0; }
+#dir-a .g-water { fill: color-mix(in srgb, var(--covered) 22%, transparent); }
+#dir-a .g-water.beyond { fill: color-mix(in srgb, var(--exposed) 20%, transparent); }
+#dir-a .g-grad { stroke:var(--rail); stroke-width:1; }
+#dir-a .g-gradlabel { fill: color-mix(in srgb, var(--chart) 62%, transparent); font-size:12px; }
+#dir-a .g-strike { stroke:var(--bone); stroke-width:1.5; }
+#dir-a .g-load-halo { stroke: color-mix(in srgb, var(--covered) 26%, transparent); stroke-width:9; }
+#dir-a .g-load { stroke:var(--covered); stroke-width:2.6; }
+#dir-a .g-now { stroke:var(--bone); stroke-width:1.5; stroke-dasharray:5 4; }
+#dir-a .g-now.beyond { stroke:var(--exposed); }
+#dir-a .g-arrow { fill:var(--bone); } #dir-a .g-arrow.beyond { fill:var(--exposed); }
+#dir-a .g-leader { stroke:var(--chart); stroke-width:1; }
+#dir-a .g-label { fill:var(--chart); font-size:15px; }
+#dir-a .g-value { fill:var(--bone); font-size:25px; font-variation-settings:"wdth" 118; font-weight:700; }
+#dir-a .g-value.lit { fill:var(--covered); }
+#dir-a .g-bps { fill:var(--covered); font-size:16px; font-weight:600; }
+#dir-a .g-hint { fill:var(--chart); font-size:14px; font-style:italic; }
+#dir-a .g-label.nlab { font-size:15px; } #dir-a .g-value.nval { font-size:21px; } #dir-a .g-bps.nbps { font-size:14px; }
+
+#dir-a .aTape { list-style:none; margin:0; padding:0; border:1px solid var(--rail); border-radius:10px; overflow:hidden; }
+#dir-a .aTape li {
+  display:grid; grid-template-columns:104px 14px minmax(0,1fr) minmax(0,1.1fr) 34px;
+  align-items:baseline; gap:10px; padding:9px 14px; font-size:var(--s1);
+  border-top:1px solid color-mix(in srgb, var(--rail) 55%, transparent);
+}
+#dir-a .aTape li:first-child { border-top:0; }
+#dir-a .aTape li:nth-child(even) { background: color-mix(in srgb, var(--hull) 45%, transparent); }
+#dir-a .t-blk { color:var(--chart); font-variant-numeric:tabular-nums; }
+#dir-a .t-dot { width:8px; height:8px; border-radius:50%; background:var(--chart); justify-self:center; }
+#dir-a .t-dot.waterline { background:var(--covered); box-shadow:0 0 7px color-mix(in srgb,var(--covered) 70%,transparent); }
+#dir-a .t-dot.heel { background:var(--exposed); box-shadow:0 0 7px color-mix(in srgb,var(--exposed) 70%,transparent); }
+#dir-a .t-head { color:var(--bone); font-weight:600; }
+#dir-a .t-det { color:var(--chart); }
+#dir-a .t-tx { color:var(--covered); text-decoration:none; justify-self:end; }
+@keyframes aArrive { 0%{background:color-mix(in srgb,var(--beacon) 20%,transparent);} 100%{background:transparent;} }
+#dir-a .aTape li.newest { animation:aArrive 2.4s ease-out 1; }
+#dir-a .aTape li.newest .t-dot { background:var(--beacon); box-shadow:0 0 9px var(--beacon); }
+@media (prefers-reduced-motion: reduce){ #dir-a .aTape li.newest{ animation:none; } }
+
+/* ------------------------------------------------------------ 4. dashboard step */
+
+#dir-a .dash { padding:76px 0; background:var(--hull); border-top:1px solid var(--rail); }
+#dir-a .aRail { display:flex; gap:8px; margin-bottom:30px; flex-wrap:wrap; }
+#dir-a .pip { display:flex; align-items:center; gap:8px; font-size:var(--s1); color:var(--chart);
+  border:1px solid var(--rail); border-radius:999px; padding:6px 13px; }
+#dir-a .pip.done { color:var(--covered); border-color:color-mix(in srgb,var(--covered) 40%,transparent); }
+#dir-a .pip.now { color:var(--deep); background:var(--beacon); border-color:var(--beacon); font-weight:700; }
+#dir-a .panel { background:var(--deep); border:1px solid var(--rail); border-radius:12px; padding:28px; }
+#dir-a .panel + .panel { margin-top:18px; }
+#dir-a .panel h3 { margin:0 0 6px; font-size:var(--s4); }
+#dir-a .panel .why { color:var(--chart); margin:0 0 22px; max-width:60ch; }
+#dir-a .aKv { display:grid; grid-template-columns:auto 1fr; gap:8px 20px; margin:0 0 22px; font-size:var(--s2); }
+#dir-a .aKv dt { color:var(--chart); } #dir-a .aKv dd { margin:0; }
+#dir-a .btn { display:inline-block; background:var(--covered); color:#04231D; font-weight:700;
+  padding:13px 24px; border-radius:8px; text-decoration:none; }
+#dir-a .btn.ghost { background:transparent; color:var(--bone); border:1px solid var(--rail); }
+#dir-a .gas { font-size:var(--s1); color:var(--chart); margin:14px 0 0; }
+
+/* Unpriceable exposure is a STATE, not an error. It gets the same care as a skip reason. */
+#dir-a .state { border-left:3px solid var(--beacon); padding:18px 22px; background:color-mix(in srgb,var(--beacon) 7%,transparent); border-radius:0 8px 8px 0; }
+#dir-a .state h4 { margin:0 0 10px; font-size:var(--s3); color:var(--beacon); }
+#dir-a .state dl { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; margin:0; font-size:var(--s2); }
+#dir-a .state dt { color:var(--chart); white-space:nowrap; } #dir-a .state dd { margin:0; }
+
+@media (max-width:900px) {
+  #dir-a .wrap { padding:0 16px; }
+  #dir-a .aHero { padding:44px 0 40px; }
+  #dir-a .aHero h1 { font-size:var(--s6); }
+  #dir-a .aHero p.sub { font-size:var(--s3); }
+  #dir-a h2 { font-size:var(--s4); }
+  #dir-a .steps { grid-template-columns:1fr; gap:22px; }
+  #dir-a .gaugeRow { grid-template-columns:1fr; gap:18px; }
+  #dir-a .count { text-align:left; min-width:0; }
+  #dir-a .count .big { font-size:var(--s6); }
+  #dir-a .gg.wide { display:none; } #dir-a .gg.narrow { display:block; }
+  #dir-a .aTape li { grid-template-columns:84px 12px minmax(0,1fr) 30px; row-gap:2px; }
+  #dir-a .t-det { grid-column:3 / 5; }
+  #dir-a .aBand, #dir-a .aLive, #dir-a .dash { padding:48px 0; }
+  #dir-a .panel { padding:20px; }
+}
