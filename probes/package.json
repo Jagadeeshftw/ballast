@@ -1,0 +1,8 @@
+{
+  "name": "ballast-phase0-probes",
+  "private": true,
+  "description": "Phase 0 investigation probes — see docs/phase0-findings.md",
+  "dependencies": {
+    "@somnia-chain/reactivity-contracts": "0.2.1"
+  }
+}

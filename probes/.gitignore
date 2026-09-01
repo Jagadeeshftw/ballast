@@ -1,0 +1,27 @@
+# --- secrets. The deployer key lives in .env and this repo is public. ---
+.env
+.env.*
+!.env.example
+*.key
+*keystore*
+
+# --- Foundry ---
+out/
+cache/
+broadcast/
+# Foundry writes "Sensitive values" into cache/; never commit it.
+
+# --- Node ---
+node_modules/
+.pnp
+.pnp.js
+
+# --- Next ---
+.next/
+next-env.d.ts
+.vercel
+*.tsbuildinfo
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
