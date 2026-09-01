@@ -1,0 +1,287 @@
+/* Ballast — night bridge.
+   A ship's bridge after dark: instruments lit, everything else in shadow. The page ground is
+   the sea at night; only the gauges carry light. Depth is a value step between `deep` and
+   `hull`, never a drop shadow — on a dark ground shadows do nothing.
+
+   Scoped entirely under #night-root so the live page is untouched while this is reviewed. The
+   inherited tokens from globals.css are remapped rather than duplicated, so every component
+   already written re-skins without forking its markup. */
+
+#night-root {
+  --deep:    #06131A;
+  --hullc:   #0D2129;
+  --railc:   #17323C;
+  --chartc:  #8FA6AE;
+  --bone:    #EAF2F3;
+  --covered: #2FBFA3;
+  --exposed: #FF6B4A;
+  --beacon:  #FFC24B;
+
+  /* Every one of these clears AA body text on --deep as specified: bone 16.6, chart 7.4,
+     covered 8.2, exposed 6.7, beacon 11.7. Unlike the light direction, nothing needed
+     darkening — on a dark ground the contrast floor stops fighting the palette. */
+
+  /* Remap of globals.css tokens. --hull was the ink and --draft the paper; on the bridge
+     those invert. Doing it here means .card/.kv/.tag/.figure/Dial re-skin for free. */
+  --draft: var(--deep);
+  --chalk: var(--hullc);
+  --hull:  var(--bone);
+  --silt:  var(--chartc);
+  --waterline: var(--covered);
+  --heel:  var(--exposed);
+  --stale: var(--chartc);
+  --rule:  var(--railc);
+  --rule-soft: color-mix(in srgb, var(--railc) 55%, transparent);
+
+  /* 13 / 15 / 17 / 22 / 34 / 56 / 96. Nothing important sits at 18. */
+  --s1:13px; --s2:15px; --s3:17px; --s4:22px; --s5:34px; --s6:56px; --s7:96px;
+
+  background: var(--deep);
+  color: var(--bone);
+  min-height: 100vh;
+  font-size: var(--s2);
+}
+
+/* The ground has to reach the overscroll area too, or the light page shows through. */
+html:has(#night-root), html:has(#night-root) body { background: #06131A; }
+
+#night-root ::selection { background: color-mix(in srgb, var(--covered) 30%, transparent); }
+#night-root :focus-visible { outline: 2px solid var(--beacon); outline-offset: 2px; border-radius: 2px; }
+
+#night-root h1, #night-root h2, #night-root h3 { color: var(--bone); }
+#night-root h2 { font-size: var(--s5); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+#night-root a { color: var(--covered); }
+#night-root .silt-text, #night-root .lede { color: var(--chartc); }
+
+/* ------------------------------------------------------------------ masthead */
+
+#night-root .night-top {
+  display: flex; align-items: center; gap: 14px;
+  padding: 26px 0 0;
+}
+#night-root .night-top h1 {
+  font-size: var(--s5); margin: 0; font-weight: 700; letter-spacing: -0.02em;
+  font-variation-settings: "wdth" 112;
+}
+#night-root .night-standfirst {
+  color: var(--chartc); font-size: var(--s3); max-width: 60ch; margin: 14px 0 0; line-height: 1.5;
+}
+
+/* ------------------------------------------------------------------ hero */
+
+/* Full-bleed: the gauge is the first and largest thing on the page, not a pale rectangle
+   floating in white space. */
+#night-root .hero-bleed {
+  margin: 30px 0 0;
+  padding: 30px 0 34px;
+  background:
+    radial-gradient(120% 150% at 18% 0%, rgba(47,191,163,0.07), transparent 60%),
+    var(--hullc);
+  border-top: 1px solid var(--railc);
+  border-bottom: 1px solid var(--railc);
+}
+#night-root .hero-inner { max-width: 1180px; margin: 0 auto; padding: 0 26px; }
+#night-root .hero-grid {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 34px; align-items: center;
+}
+#night-root .hero-svg { width: 100%; height: auto; display: block; }
+#night-root .hero-svg.narrow { display: none; }
+#night-root .g-label.nlab { font-size: 15px; }
+#night-root .g-value.nval { font-size: 21px; }
+#night-root .g-bps.nbps { font-size: 14px; }
+
+#night-root .hero-count { text-align: right; min-width: 250px; }
+#night-root .hero-count .hc-label {
+  font-size: var(--s1); color: var(--chartc); text-transform: lowercase;
+  letter-spacing: 0.09em; margin: 0 0 2px;
+}
+#night-root .hero-count .hc-big {
+  font-size: var(--s7); line-height: 0.92; margin: 0; color: var(--bone);
+  font-variation-settings: "wdth" 118; font-weight: 700; letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+#night-root .hero-count .hc-big.hc-word { font-size: var(--s5); letter-spacing: -0.01em; }
+#night-root .hero-count .hc-sub { font-size: var(--s2); color: var(--chartc); margin: 8px 0 0; }
+#night-root .hero-count .hc-asset {
+  font-size: var(--s4); color: var(--bone); margin: 0 0 12px; font-weight: 600;
+}
+#night-root .hc-moved { font-size: var(--s3); margin: 14px 0 0; }
+
+#night-root .hero-note { color: var(--chartc); font-size: var(--s2); margin: 18px 0 0; max-width: 74ch; }
+#night-root .hero-empty { padding: 40px 0; }
+#night-root .hero-empty p { margin: 0 0 6px; }
+#night-root .hero-empty .big { font-size: var(--s5); color: var(--bone); }
+
+/* gauge internals */
+#night-root .g-col     { fill: color-mix(in srgb, var(--bone) 4%, var(--deep)); stroke: var(--railc); stroke-width: 1; }
+#night-root .g-band    { fill: url(#coveredFade); }
+#night-root .g-water   { fill: color-mix(in srgb, var(--covered) 22%, transparent); }
+#night-root .g-water.beyond { fill: color-mix(in srgb, var(--exposed) 18%, transparent); }
+#night-root .g-strike  { stroke: var(--bone); stroke-width: 1.5; }
+#night-root .g-load-halo { stroke: color-mix(in srgb, var(--covered) 26%, transparent); stroke-width: 9; }
+#night-root .g-load    { stroke: var(--covered); stroke-width: 2.6; }
+#night-root .g-now     { stroke: var(--bone); stroke-width: 1.5; stroke-dasharray: 5 4; }
+#night-root .g-now.beyond { stroke: var(--exposed); }
+#night-root .g-arrow   { fill: var(--bone); }
+#night-root .g-arrow.beyond { fill: var(--exposed); }
+#night-root .g-leader  { stroke: var(--chartc); stroke-width: 1; }
+#night-root .g-label   { fill: var(--chartc); font-size: 15px; letter-spacing: 0.02em; }
+#night-root .g-value   { fill: var(--bone); font-size: 25px; font-variation-settings:"wdth" 118; font-weight: 700; }
+#night-root .g-value.lit { fill: var(--covered); }
+#night-root .g-bps     { fill: var(--covered); font-size: 16px; font-weight: 600; }
+#night-root .g-grad      { stroke: var(--railc); stroke-width: 1; }
+#night-root .g-gradlabel { fill: color-mix(in srgb, var(--chartc) 62%, transparent); font-size: 12px; }
+#night-root .g-hint    { fill: var(--chartc); font-size: 14px; font-style: italic; }
+
+/* ------------------------------------------------------------------ tape */
+
+#night-root .ntape { list-style: none; margin: 0; padding: 0; border: 1px solid var(--railc); border-radius: 10px; overflow: hidden; }
+#night-root .ntape li {
+  display: grid;
+  grid-template-columns: 104px 14px minmax(0,1fr) minmax(0,1.15fr) 34px;
+  align-items: baseline; gap: 10px;
+  padding: 9px 14px; font-size: var(--s1); border-top: 1px solid var(--rule-soft);
+}
+#night-root .ntape li:first-child { border-top: 0; }
+#night-root .ntape li:nth-child(even) { background: color-mix(in srgb, var(--hullc) 45%, transparent); }
+#night-root .nt-block { color: var(--chartc); font-variant-numeric: tabular-nums; }
+#night-root .nt-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--chartc); justify-self: center; }
+#night-root .nt-dot.waterline { background: var(--covered); box-shadow: 0 0 7px color-mix(in srgb, var(--covered) 70%, transparent); }
+#night-root .nt-dot.heel { background: var(--exposed); box-shadow: 0 0 7px color-mix(in srgb, var(--exposed) 70%, transparent); }
+#night-root .nt-head { color: var(--bone); font-weight: 600; }
+#night-root .nt-detail { color: var(--chartc); }
+#night-root .nt-tx { color: var(--covered); text-decoration: none; font-size: var(--s1); justify-self: end; }
+#night-root .nt-tx:hover { text-decoration: underline; }
+
+/* The only motion on the page that the reader did not ask for: one soft arrival pulse on the
+   newest row. Everything else is still. */
+@keyframes arrive {
+  0%   { background: color-mix(in srgb, var(--beacon) 20%, transparent); }
+  100% { background: transparent; }
+}
+#night-root .ntape li.newest { animation: arrive 2.4s ease-out 1; }
+#night-root .ntape li.newest .nt-dot { box-shadow: 0 0 9px var(--beacon); background: var(--beacon); }
+@media (prefers-reduced-motion: reduce) {
+  #night-root .ntape li.newest { animation: none; }
+}
+
+/* ------------------------------------------------------------------ surfaces */
+
+/* Lit glass, not a box: a value step plus a one-pixel top highlight. No shadows. */
+#night-root .card, #night-root .band, #night-root .npanel {
+  position: relative; background: var(--hullc); border: 1px solid var(--railc);
+  border-radius: 10px;
+}
+#night-root .card::before, #night-root .band::before, #night-root .npanel::before {
+  content: ""; position: absolute; inset: 0; border-radius: 10px; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(234,242,243,0.055), transparent 38%);
+}
+#night-root .card > *, #night-root .band > *, #night-root .npanel > * { position: relative; }
+#night-root .npanel { padding: 20px 22px; }
+#night-root .npanel .ngrid + .lede { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--rule-soft); }
+
+#night-root .figure-value { font-size: var(--s6); line-height: 1; }
+#night-root .waterline-num { color: var(--covered); }
+#night-root .heel-num { color: var(--exposed); }
+#night-root .silt-num { color: var(--chartc); }
+
+#night-root .tag {
+  border: 1px solid var(--railc); border-radius: 999px; padding: 2px 9px; font-size: var(--s1);
+  color: var(--chartc); background: color-mix(in srgb, var(--deep) 55%, transparent);
+}
+#night-root .tag.waterline { color: var(--covered); border-color: color-mix(in srgb, var(--covered) 45%, transparent); }
+#night-root .tag.heel { color: var(--exposed); border-color: color-mix(in srgb, var(--exposed) 45%, transparent); }
+
+#night-root .dot.live { background: var(--beacon); box-shadow: 0 0 8px var(--beacon); }
+#night-root .dot.stale { background: var(--chartc); }
+
+/* ------------------------------------------------------------------ charts */
+
+#night-root .plotbg { fill: color-mix(in srgb, var(--deep) 70%, #000); }
+#night-root .grid   { stroke: var(--railc); stroke-width: 1; }
+#night-root .datum  { stroke: var(--chartc); stroke-width: 1; }
+#night-root .strike { stroke: var(--bone); stroke-width: 1.2; stroke-dasharray: 4 4; }
+#night-root .axis   { fill: var(--chartc); font-size: 14px; }
+#night-root .axistitle { fill: var(--chartc); font-size: 14px; }
+#night-root .region-fell { fill: color-mix(in srgb, var(--exposed) 3%, transparent); }
+
+/* ------------------------------------------------------------------ rail */
+
+#night-root .rail-inner { border-left: 1px solid var(--railc); }
+#night-root .rail-big { font-size: var(--s6); line-height: 1; color: var(--bone); }
+#night-root .rail-h { color: var(--chartc); }
+
+/* ------------------------------------------------------------------ narrow */
+
+@media (max-width: 900px) {
+  #night-root .hero-inner { padding: 0 16px; }
+  /* Swap to the narrow-geometry gauge: the wide one puts 15px type inside a 1180-unit
+     viewBox, which lands at about 5px once scaled to a phone. */
+  #night-root .hero-svg.wide { display: none; }
+  #night-root .hero-svg.narrow { display: block; }
+  #night-root .hero-grid { grid-template-columns: 1fr; gap: 20px; }
+  #night-root .hero-count { text-align: left; min-width: 0; }
+  #night-root .hero-count .hc-big { font-size: var(--s6); }
+  #night-root h2 { font-size: var(--s4); }
+  /* Five columns cannot fit 375px. Drop to block+headline and let detail wrap under. */
+  #night-root .ntape li {
+    grid-template-columns: 84px 12px minmax(0,1fr) 30px;
+    row-gap: 2px;
+  }
+  #night-root .nt-detail { grid-column: 3 / 5; color: var(--chartc); }
+}
+
+/* ------------------------------------------------------------------ payoff curves */
+
+#night-root .nc-fig { margin: 0; }
+#night-root .nc-row { display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; }
+#night-root .nc-svg { display: block; }
+#night-root .nc-svg.main  { flex: 1 1 660px; min-width: 0; width: 100%; height: auto; }
+#night-root .nc-svg.inset { flex: 0 1 320px; min-width: 0; width: 100%; height: auto; }
+#night-root .nc-cap { color: var(--chartc); font-size: var(--s2); margin: 16px 0 0; max-width: 78ch; }
+
+#night-root .nc-fill.won  { fill: color-mix(in srgb, var(--covered) 14%, transparent); }
+#night-root .nc-fill.lost { fill: color-mix(in srgb, var(--exposed) 14%, transparent); }
+#night-root .nc-line { fill: none; stroke-width: 2.6; }
+#night-root .nc-line.won  { stroke: var(--covered); }
+#night-root .nc-line.lost { stroke: var(--exposed); }
+#night-root .nc-riser { stroke-width: 2.6; }
+#night-root .nc-riser.won  { stroke: var(--covered); }
+#night-root .nc-riser.lost { stroke: var(--exposed); }
+#night-root .nc-head.won  { fill: var(--covered); }
+#night-root .nc-head.lost { fill: var(--exposed); }
+#night-root .nc-be { fill: var(--deep); stroke-width: 2; }
+#night-root .nc-be.won  { stroke: var(--covered); }
+#night-root .nc-be.lost { stroke: var(--exposed); }
+#night-root .nc-pt.won  { fill: var(--covered); }
+#night-root .nc-pt.lost { fill: var(--exposed); }
+#night-root .nc-ptlabel, #night-root .nc-note, #night-root .nc-series { font-size: 15px; font-weight: 600; }
+#night-root .nc-ptlabel.won, #night-root .nc-note.won, #night-root .nc-series.won { fill: var(--covered); }
+#night-root .nc-ptlabel.lost, #night-root .nc-note.lost, #night-root .nc-series.lost { fill: var(--exposed); }
+#night-root .nc-strikelabel { fill: var(--bone); font-size: 15px; }
+#night-root .nc-region { fill: var(--chartc); font-size: 14px; letter-spacing: 0.05em; }
+#night-root .nc-riserlabel { fill: var(--chartc); font-size: 14px; }
+#night-root .nc-insettitle { fill: var(--chartc); font-size: 14px; letter-spacing: 0.04em; }
+
+/* ------------------------------------------------------------------ layout */
+
+#night-root .night-main { max-width: 1180px; margin: 0 auto; padding: 0 26px 80px; }
+#night-root section { margin: 54px 0 0; }
+#night-root .npanel + .npanel { margin-top: 14px; }
+#night-root .nfoot { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--railc); color: var(--chartc); font-size: var(--s1); }
+#night-root .nbanner {
+  display: flex; align-items: center; gap: 10px; font-size: var(--s1); color: var(--chartc);
+  padding: 10px 0 0;
+}
+#night-root .nbanner .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+#night-root .ngrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
+#night-root .nfig-label { display: block; font-size: var(--s1); color: var(--chartc); letter-spacing: 0.05em; }
+#night-root .nfig-value { display: block; font-size: var(--s6); line-height: 1.02; font-variation-settings:"wdth" 118; font-weight: 700; letter-spacing: -0.02em; }
+#night-root .nfig-unit  { display: block; font-size: var(--s1); color: var(--chartc); margin-top: 4px; }
+#night-root .ncards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+
+@media (max-width: 900px) {
+  #night-root .night-main { padding: 0 16px 60px; }
+  #night-root .nc-row { gap: 14px; }
+  #night-root .nfig-value { font-size: var(--s5); }
+}
