@@ -1,0 +1,10 @@
+{
+  "name": "ballast",
+  "private": true,
+  "description": "Auto-hedging vault for dreamDEX Event Contracts on Somnia",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "5.5.0",
+    "@somnia-chain/reactivity-contracts": "0.2.1"
+  }
+}
