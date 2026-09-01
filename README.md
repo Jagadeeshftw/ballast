@@ -42,6 +42,20 @@ the **break-even**, not the kink. Full arithmetic in
 
 Somnia Shannon testnet, chain 50312. Collateral is tUSDC (6 decimals).
 
+## Deployment
+
+The Vercel project is git-connected to this repository: a push to `main` builds and ships
+on its own. `web/` is the app root; the repository root is the Foundry project.
+
+Verify what is actually live, rather than what was pushed:
+
+```bash
+scripts/check-deploy.sh https://ballast.0xo.in
+```
+
+It compares the commit the live build reports at `/api/version` against local `HEAD` and
+exits non-zero on drift. Pushed and deployed are different things.
+
 ## Thirty-second quickstart
 
 ```bash
