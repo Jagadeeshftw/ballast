@@ -1,0 +1,21 @@
+{
+  "name": "ballast-web",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.4",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "viem": "2.56.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.7.0",
+    "@types/react": "19.1.12",
+    "typescript": "5.9.2"
+  }
+}
