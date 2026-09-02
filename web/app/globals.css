@@ -10,15 +10,14 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { background: #06131A; }
+html { background: #16150F; }
 
 body {
   margin: 0;
-  background: #06131A;
-  color: #EAF2F3;
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  font-size: 15px;
+  background: #16150F;
+  color: #F2EEE4;
+  font-family: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
   line-height: 1.5;
-  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }

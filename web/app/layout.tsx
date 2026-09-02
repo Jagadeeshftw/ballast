@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Schibsted_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import "./theme.css";
 
-/** One family, two widths. Normal for everything readable; the width axis is pushed to
- *  expanded for gauge numerals only, so the large figures read as engraved instrument marks
- *  rather than as dashboard stats. Not six weights of Inter. */
-const archivo = Archivo({
-  subsets: ["latin"],
-  axes: ["wdth"],
-  display: "swap",
-  variable: "--font-archivo",
-});
+/* Schibsted Grotesk carries the page; IBM Plex Mono carries the evidence — hashes, blocks,
+   timestamps, figures. The mono is identity here, not debug output. */
+const sans = Schibsted_Grotesk({ subsets: ["latin"], display: "swap", variable: "--font-schibsted" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], display: "swap", variable: "--font-plex-mono" });
 
 const title = "Ballast — parametric cover on dreamDEX Event Contracts";
 const description =
@@ -25,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={archivo.variable}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

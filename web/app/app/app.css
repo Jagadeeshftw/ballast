@@ -3,6 +3,8 @@
    look like a different one. Denser: 15px body, 13px tables, tabular figures everywhere a
    number can change, hairline rules and no zebra striping. */
 
+html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
+
 #dir-a.app {
   --rail-w: 240px;
   --tbar-h: 56px;
@@ -232,7 +234,9 @@
 /* --------------------------------------------------------------------- narrow */
 
 @media (max-width: 1000px) {
-  #dir-a.app { grid-template-columns: minmax(0, 1fr); }
+  html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
+
+#dir-a.app { grid-template-columns: minmax(0, 1fr); }
   #dir-a .sbar { display: none; }
   #dir-a .bbar {
     display: grid; grid-template-columns: repeat(4, 1fr);

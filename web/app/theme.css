@@ -1,0 +1,46 @@
+/* Utilities and theme WITHOUT preflight. The dashboard at /app is 800 lines of
+   hand-written CSS that assumes browser defaults; a global reset would silently
+   restyle it. Tailwind is additive here, never a reset. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* ── Ballast palette ───────────────────────────────────────────────────────
+   Warm olive-black rather than the blue-black every product in this category
+   uses. One identity accent, burnt gold. Jade and clay carry semantics only
+   and are never used decoratively. Every text pair clears AA on both grounds. */
+@theme {
+  --color-ground:  #16150F;
+  --color-raised:  #1F1D16;
+  --color-raise2:  #262319;
+  --color-rule:    #322E24;
+  --color-rulehi:  #45402F;
+  --color-ink:     #F2EEE4;   /* 15.78:1 on ground */
+  --color-muted:   #9A9384;   /*  5.99:1 — AA      */
+  --color-signal:  #E0A130;   /*  8.11:1 — accent  */
+  --color-paid:    #6FB98F;   /*  7.85:1 — semantic */
+  --color-lost:    #D1674F;   /*  5.02:1 — semantic */
+
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  /* Preflight is deliberately not loaded, so the browser's default link underline survives.
+     Reset it for the site surface only -- the dashboard's own CSS already handles its links. */
+  .font-sans a { text-decoration: none; }
+  /* The navbar is sticky, so a jump link would otherwise land with its heading underneath it. */
+  section[id], div[id] { scroll-margin-top: 96px; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  /* Numbers line up in columns; running text does not want tabular punctuation. */
+  .font-mono, table, .tabular { font-variant-numeric: tabular-nums; }
+  html { background: var(--color-ground); }
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--color-signal); outline-offset: 3px; border-radius: 2px; }
+}
