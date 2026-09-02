@@ -80,7 +80,18 @@ const contiguous = lastCoverIdx >= 0
 
 const lastOf = (name, n) => all.filter((e) => e.name === name).slice(-n);
 
+// Every market that has a cover must bring its WindowEnqueued with it: that event carries
+// the assetKey and the opening price, which is how the portfolio names the window and
+// computes the move. Without it a position row would say "unknown asset".
+const coveredMarkets = new Set(
+  all.filter((e) => e.name === "CoverOpened" || e.name === "CoverSettled").map((e) => e.marketId),
+);
+const windowsForCovers = all.filter(
+  (e) => e.name === "WindowEnqueued" && coveredMarkets.has(e.marketId),
+);
+
 const picked = new Set([
+  ...windowsForCovers,
   ...all.filter((e) => e.name === "CoverOpened" || e.name === "CoverSettled"),
   ...contiguous,
   ...lastOf("CoverSkipped", 80),

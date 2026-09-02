@@ -227,6 +227,10 @@ export default function Dashboard() {
     { n: "06", label: "Enrol", done: s.enrolled },
   ];
   const current = steps.find((x) => !x.done)?.n ?? "06";
+  // Someone returning is not setting up. When every step is behind them the six panels are
+  // noise in front of the thing they came for, so they collapse into one line they can
+  // reopen. <details> rather than state, so it still works with scripting off.
+  const settled = steps.every((x) => x.done);
 
   return (
     <>
@@ -250,6 +254,14 @@ export default function Dashboard() {
         </p>
       )}
 
+      {settled && (
+        <p className="dSetUp">
+          <span className="dLive"><i aria-hidden="true" />Set up and enrolled.</span>
+          Your policy is live and Ballast is watching your windows. Your history is below.
+        </p>
+      )}
+
+      <StepGroup collapsed={settled}>
       {/* 02 */}
       <Step n="02" title="Get test dollars" done={steps[1].done}
         why="tUSDC is the collateral Ballast spends on premium. The faucet caps each call at 10,000, but the cap is per call, not per day.">
@@ -368,6 +380,8 @@ export default function Dashboard() {
         )}
       </Step>
 
+      </StepGroup>
+
       {/* Always reachable, from anywhere, in one action. */}
       <div className="dExit">
         <h3>Leaving</h3>
@@ -392,6 +406,17 @@ export default function Dashboard() {
         </div>
       </div>
     </>
+  );
+}
+
+/** Collapsed for a returning account, open for one still setting up. */
+function StepGroup({ collapsed, children }: { collapsed: boolean; children: React.ReactNode }) {
+  if (!collapsed) return <>{children}</>;
+  return (
+    <details className="dSteps">
+      <summary>Show the six setup steps</summary>
+      {children}
+    </details>
   );
 }
 

@@ -3,7 +3,6 @@ import { ADDR, EXPLORER } from "@/lib/chain";
 import { loadPreview, STEPS, utc } from "../data";
 import { WideGauge, NarrowGauge, fmtLeft } from "../Gauge";
 import Nav from "./Nav";
-import Spine from "./Spine";
 import Reveal from "./Reveal";
 import PayoffA from "./PayoffA";
 import RunState, { RecordedBanner } from "./RunState";
@@ -31,7 +30,6 @@ export default async function DirectionA() {
   return (
     <div id="dir-a">
       <Nav />
-      <Spine />
 
       {/* ---------------------------------------------------------- 1. hero */}
       <section className="aHeroWrap" id="top">

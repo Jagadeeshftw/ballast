@@ -3,12 +3,20 @@ import "./app.css";
 import Dashboard from "./Dashboard";
 import Wordmark from "../Wordmark";
 import { loadPreview, utc } from "../data";
-import { ADDR, EXPLORER } from "@/lib/chain";
+import Portfolio from "./Portfolio";
+import RunState from "../a/RunState";
+import { positionsFor } from "@/lib/portfolio";
+import { ADDR, EXPLORER, KNOWN_POSITIONS, getPosition } from "@/lib/chain";
 
 export const dynamic = "force-dynamic";
 
 export default async function AppPage() {
   const { vault, engine, tape, shown, eth, makeWholeBps } = await loadPreview();
+  const settledPositions = await Promise.all(KNOWN_POSITIONS.map((p) => getPosition(p)));
+  const rows = positionsFor(ADDR.demoUser);
+  const openCover = rows.filter((r) => r.outcome === "Open").length;
+  const policyActive = vault.policy[0] && Number(vault.policy[3]) * 1000 > Date.now();
+  const ethExposure = eth?.ok && eth.price ? eth.price * 2 : null; // the demo account holds 2 WETH
   const nowSec = Math.floor(Date.now() / 1000);
   const usd = (v: bigint) => (Number(v) / 1e6).toFixed(2);
 
@@ -38,10 +46,45 @@ export default async function AppPage() {
 
         <Dashboard />
 
-        {/* Server-rendered, so the page is never an empty shell: with no wallet, with no
-            JavaScript, or with a connection that fails, this is still a working page. */}
+        {/* Where you land on returning: state first, then history. Server-rendered, so it is
+            complete with no wallet, no JavaScript, or a connection that fails. */}
         <section className="dLiveState">
-          <h2 className="dH2">Live protocol state</h2>
+          <h2 className="dH2">Current state</h2>
+          <dl className="dState2">
+            <div>
+              <dt>Measured exposure</dt>
+              <dd>{ethExposure ? `${ethExposure.toFixed(2)} tUSDC of ETH` : "unpriceable — the book is one-sided"}</dd>
+            </div>
+            <div>
+              <dt>Policy</dt>
+              <dd>{policyActive
+                ? `Active. Make whole a fall of ${(Number(vault.policy[1]) / 100).toFixed(2)}%, paying at most ${(Number(vault.policy[2]) / 100).toFixed(2)}% of the position per window, until ${utc(vault.policy[3])}.`
+                : "No active policy — the engine can do nothing on this account."}</dd>
+            </div>
+            <div>
+              <dt>Open cover</dt>
+              <dd>{openCover} window{openCover === 1 ? "" : "s"} still to settle</dd>
+            </div>
+            <div>
+              <dt>Next window</dt>
+              <dd>{shown
+                ? `${shown.asset} · ${shown.intervalLabel} · ${shown.secondsLeft > 0 ? `closes in ${shown.secondsLeft}s` : "settling"}`
+                : "none queued"}</dd>
+            </div>
+            <div>
+              <dt>Engine</dt>
+              <dd>{engine.subscribed ? "Subscribed and watching every window." : "Stopped — out of gas. See below."}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <RunState subscribed={engine.subscribed} lastCallbackAt={engine.lastCallbackAt}
+          balance={engine.balance} nowSec={nowSec} />
+
+        <Portfolio user={ADDR.demoUser} settledPositions={settledPositions} />
+
+        <section className="dLiveState">
+          <h2 className="dH2">Protocol</h2>
           <div className="dGrid">
             <Fig k="Vault balance" v={`${usd(vault.collateral)}`} u="tUSDC" />
             <Fig k="Reserved" v={`${usd(vault.reserved)}`} u="against open cover" />

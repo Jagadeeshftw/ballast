@@ -147,8 +147,8 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 }
 
 /* Graduation field, not a dot grid.
-   Horizontal rules at the same 37px interval the spine graduates at, so the page reads as
-   chart paper ruled to the instrument's own scale. Masked away from the middle, where the
+   Horizontal rules at the gauge face's own interval, so the page reads as chart paper
+   ruled to the instrument's scale. Masked away from the middle, where the
    text lives, so it is texture at the margins and never pattern behind a paragraph.
    rgba(bone, .03) over hull is about a 3% step -- below the 4% ceiling. */
 #dir-a .aBand::before,
@@ -336,34 +336,6 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
   #dir-a .aBand, #dir-a .aLive, #dir-a .dash { padding:48px 0; }
   #dir-a .panel { padding:20px; }
 }
-
-
-/* ------------------------------------------------------------------ spine */
-
-/* Depth markings down the outer margin. Hidden where there is no margin to spare -- a phone
-   has none, and a scale nobody can read is just noise. */
-#dir-a .spine {
-  position: fixed; left: 22px; top: var(--nav); bottom: 0; width: 96px; z-index: 20;
-  pointer-events: none; display: none;
-}
-#dir-a .spineRule { position: relative; height: calc(100% - 96px); margin-top: 48px; border-left: 1px solid var(--rail); }
-#dir-a .spineFill { position: absolute; left: -1px; top: 0; width: 1px; background: var(--covered); }
-#dir-a .spineTick { position: absolute; left: 0; width: 5px; height: 1px; background: var(--rail); }
-#dir-a .spineTick.major { width: 11px; background: color-mix(in srgb, var(--chart) 70%, transparent); }
-#dir-a .spineMark { position: absolute; left: 0; display: flex; align-items: center; gap: 7px; transform: translateY(-50%); }
-#dir-a .spineMark i { width: 15px; height: 1px; background: var(--chart); display: block; }
-#dir-a .spineMark b {
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--bone);
-  font-weight: 600; white-space: nowrap;
-}
-#dir-a .spineMark i { background: var(--rail); width: 11px; }
-#dir-a .spineMark.on i { background: var(--covered); width: 19px; }
-#dir-a .spineHead {
-  position: absolute; left: -4px; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--covered); box-shadow: 0 0 8px var(--covered); transform: translateY(-50%);
-}
-/* Only where the margin is genuinely free: the content column is 1180 wide. */
-@media (min-width: 1400px) { #dir-a .spine { display: block; } }
 
 
 /* ------------------------------------------------------- payoff curve + motion */
