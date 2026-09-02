@@ -424,3 +424,42 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 @media (prefers-reduced-motion: reduce) {
   #dir-a .payoffWrap.go *, #dir-a .ruled.go *, #dir-a .ruled.go .rrow { animation: none !important; }
 }
+
+
+/* ------------------------------------------------------ not-running state */
+
+/* Not an error panel. Beacon rather than exposed: this is a condition to read, not a fault. */
+#dir-a .runState {
+  border: 1px solid color-mix(in srgb, var(--beacon) 45%, transparent);
+  border-left: 3px solid var(--beacon);
+  background: color-mix(in srgb, var(--beacon) 6%, transparent);
+  border-radius: 0 12px 12px 0; padding: 26px 28px; margin: 0 0 30px;
+}
+#dir-a .runTag {
+  font-size: var(--s1); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--beacon); font-weight: 700; margin: 0 0 10px;
+}
+#dir-a .runState h3 { font-size: var(--s4); font-weight: 700; margin: 0 0 12px; }
+#dir-a .runLede { color: var(--chart); margin: 0 0 22px; max-width: 72ch; }
+#dir-a .runKv { display: grid; grid-template-columns: auto 1fr; gap: 14px 26px; margin: 0 0 20px; font-size: var(--s2); }
+#dir-a .runKv dt { color: var(--beacon); white-space: nowrap; font-weight: 600; }
+#dir-a .runKv dd { margin: 0; color: var(--chart); max-width: 76ch; }
+#dir-a .runKv dd strong { color: var(--bone); }
+#dir-a .runKv code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+  background: color-mix(in srgb, var(--bone) 8%, transparent); padding: 1px 6px; border-radius: 4px; color: var(--bone);
+}
+#dir-a .runFoot { display: flex; gap: 24px; flex-wrap: wrap; font-size: var(--s2); margin: 0; }
+
+#dir-a .recBanner {
+  display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+  font-size: var(--s1); color: var(--chart); margin: 0 0 14px;
+  border-left: 2px solid color-mix(in srgb, var(--chart) 45%, transparent); padding-left: 12px;
+}
+#dir-a .recDot { width: 7px; height: 7px; border-radius: 50%; background: var(--chart); flex: none; }
+
+@media (max-width: 900px) {
+  #dir-a .runState { padding: 18px 20px; }
+  #dir-a .runKv { grid-template-columns: 1fr; gap: 4px 0; }
+  #dir-a .runKv dt { margin-top: 12px; }
+}

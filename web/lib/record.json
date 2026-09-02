@@ -1,0 +1,4238 @@
+{
+ "engine": "0x9026b93dc240244A34B3568aF704a60f4703a115",
+ "chainId": 50312,
+ "fromBlock": 477068803,
+ "toBlock": 477535788,
+ "capturedAt": "2026-09-02T05:28:33.262Z",
+ "firstEventAt": "2026-09-01T13:50:16.000Z",
+ "lastEventAt": "2026-09-02T05:11:13.000Z",
+ "counts": {
+  "CoverOpened": 45,
+  "CoverSettled": 2,
+  "ToppedUp": 1,
+  "SubscriptionOpened": 1,
+  "Enrolled": 1,
+  "WindowEnqueued": 2281,
+  "TickScheduled": 435,
+  "CoverSkipped": 1154,
+  "CallbackRan": 1196,
+  "WindowAttempted": 1202,
+  "WindowGaveUp": 386,
+  "TickExpired": 1,
+  "SubscriptionClosed": 1
+ },
+ "totalEvents": 6706,
+ "events": [
+  {
+   "name": "CoverOpened",
+   "block": 476975638,
+   "ts": 1788270616,
+   "tx": "0xdf3cef7e35293f516973eea140e76565162ba85dc5608b5d9112eac1c1ebc5b7",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000102ff",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "engine": "0x9cf2fbc0c2d6db45799e52f54347ad7b97801581",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000102ff",
+    "quantity": "200000000",
+    "premium": "98800000",
+    "coverPrice": "494000",
+    "requestedBps": 250,
+    "achievedBps": 207,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 476975638,
+   "ts": 1788270616,
+   "tx": "0xdf3cef7e35293f516973eea140e76565162ba85dc5608b5d9112eac1c1ebc5b7",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000102fb",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "engine": "0x9cf2fbc0c2d6db45799e52f54347ad7b97801581",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000102fb",
+    "quantity": "200000000",
+    "premium": "98800000",
+    "coverPrice": "494000",
+    "requestedBps": 250,
+    "achievedBps": 207,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 476978853,
+   "ts": 1788270937,
+   "tx": "0x5bbe1e6005513a4d88ad993d4042f55bba86e9e0547fc3033a667f53c19c305a",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000102ff",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "engine": "0x9cf2fbc0c2d6db45799e52f54347ad7b97801581",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000102ff",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "98800000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477005631,
+   "ts": 1788273616,
+   "tx": "0xa7398198a56e982b0a026a613cecfc269dd16a798a7e8522948901b10cf120cf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010393",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "engine": "0x8ff058704823a6711a456beafbed6509f4845f13",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010393",
+    "quantity": "200000000",
+    "premium": "125400000",
+    "coverPrice": "627000",
+    "requestedBps": 250,
+    "achievedBps": 152,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477008897,
+   "ts": 1788273942,
+   "tx": "0xac81f1fe91f1eb8d9e21f88140bce12abe23bef698f73760f5f6796f9960c2fb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010393",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "engine": "0x8ff058704823a6711a456beafbed6509f4845f13",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010393",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "125400000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "ToppedUp",
+   "block": 477069073,
+   "ts": 1788279961,
+   "tx": "0x878e09196a755fb42ece6d93f1e9b882f34dafaf466b92419cb9ee859256981b",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "from": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "amount": "40000000000000000000",
+    "balance": "40000000000000000000"
+   }
+  },
+  {
+   "name": "SubscriptionOpened",
+   "block": 477069103,
+   "ts": 1788279964,
+   "tx": "0xd9fe22a0f5416ec41214fc5b1691ed8466f86fd6e656c09b94bdd73b1b63f0aa",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "subscriptionId": "15304480",
+    "emitter": "0x3ecC694Cef705358864a646142ac17A90E29e388",
+    "topic0": "0xb5ec75cdb7dbcd28a5f50d152d8833334525a902ef5332ebc19bcf5c0011f8cd"
+   }
+  },
+  {
+   "name": "Enrolled",
+   "block": 477069130,
+   "ts": 1788279967,
+   "tx": "0x467ca62be3392037a83042fbca7189a52d211fb1f0b3b1ce6dc95d3179239a1e",
+   "marketId": null,
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96"
+   }
+  },
+  {
+   "name": "TickExpired",
+   "block": 477072057,
+   "ts": 1788280260,
+   "tx": "0x674b37ecb24b24f46920538c7ba584688a1ab83e56b2f987b7f28af0c2211641",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "wasScheduledFor": "1788280216000",
+    "pendingWindows": "9"
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477072217,
+   "ts": 1788280276,
+   "tx": "0x9ed34502c7abbdeb29441bd6b4d7d692942edddba36ab585e31b639d5d5923a4",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104db",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104db",
+    "quantity": "190567000",
+    "premium": "145974322",
+    "coverPrice": "766000",
+    "requestedBps": 250,
+    "achievedBps": 92,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477074617,
+   "ts": 1788280516,
+   "tx": "0x6013b24085064ca0201d976fb6dd90d35448f7f80b786d1d71be7ae9d04629d9",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104eb",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104eb",
+    "quantity": "200000000",
+    "premium": "81200000",
+    "coverPrice": "406000",
+    "requestedBps": 250,
+    "achievedBps": 245,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477074617,
+   "ts": 1788280516,
+   "tx": "0x6013b24085064ca0201d976fb6dd90d35448f7f80b786d1d71be7ae9d04629d9",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104e7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104e7",
+    "quantity": "200000000",
+    "premium": "86200000",
+    "coverPrice": "431000",
+    "requestedBps": 250,
+    "achievedBps": 234,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477077616,
+   "ts": 1788280816,
+   "tx": "0x723820932357cb17d3579e2ce99d109bdcf7c2288fba0bc7c45ddbe67bf28fb3",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f9",
+    "quantity": "200000000",
+    "premium": "109000000",
+    "coverPrice": "545000",
+    "requestedBps": 250,
+    "achievedBps": 187,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477077616,
+   "ts": 1788280816,
+   "tx": "0x723820932357cb17d3579e2ce99d109bdcf7c2288fba0bc7c45ddbe67bf28fb3",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f5",
+    "quantity": "200000000",
+    "premium": "109000000",
+    "coverPrice": "545000",
+    "requestedBps": 250,
+    "achievedBps": 187,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477080616,
+   "ts": 1788281116,
+   "tx": "0xafa80e82fc5f752eef9d0bc0004531c06910ff901f2cb48866b116d2a955998a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010507",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010507",
+    "quantity": "200000000",
+    "premium": "106000000",
+    "coverPrice": "530000",
+    "requestedBps": 250,
+    "achievedBps": 194,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477080616,
+   "ts": 1788281116,
+   "tx": "0xafa80e82fc5f752eef9d0bc0004531c06910ff901f2cb48866b116d2a955998a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010503",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010503",
+    "quantity": "200000000",
+    "premium": "105600000",
+    "coverPrice": "528000",
+    "requestedBps": 250,
+    "achievedBps": 194,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477083615,
+   "ts": 1788281416,
+   "tx": "0xac6240fbc3f009607d4f2da5478f8884eafe9640e1486945f6513d606119fccf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010517",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010517",
+    "quantity": "200000000",
+    "premium": "94400000",
+    "coverPrice": "472000",
+    "requestedBps": 250,
+    "achievedBps": 217,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477083615,
+   "ts": 1788281416,
+   "tx": "0xac6240fbc3f009607d4f2da5478f8884eafe9640e1486945f6513d606119fccf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010513",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010513",
+    "quantity": "200000000",
+    "premium": "94600000",
+    "coverPrice": "473000",
+    "requestedBps": 250,
+    "achievedBps": 217,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477086615,
+   "ts": 1788281716,
+   "tx": "0xf4b12f4d9956950b0bdf0da078e87d48f1b4b3507813d79a2c238fdf35137234",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010525",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010525",
+    "quantity": "200000000",
+    "premium": "92400000",
+    "coverPrice": "462000",
+    "requestedBps": 250,
+    "achievedBps": 221,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477086615,
+   "ts": 1788281716,
+   "tx": "0xf4b12f4d9956950b0bdf0da078e87d48f1b4b3507813d79a2c238fdf35137234",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010521",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010521",
+    "quantity": "200000000",
+    "premium": "88200000",
+    "coverPrice": "441000",
+    "requestedBps": 250,
+    "achievedBps": 230,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477089614,
+   "ts": 1788282016,
+   "tx": "0xe27fe394d35799999215447c05c02f77cdf19fa43ab071fb07697397c99bb9cf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010533",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010533",
+    "quantity": "200000000",
+    "premium": "113000000",
+    "coverPrice": "565000",
+    "requestedBps": 250,
+    "achievedBps": 179,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477089614,
+   "ts": 1788282016,
+   "tx": "0xe27fe394d35799999215447c05c02f77cdf19fa43ab071fb07697397c99bb9cf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010535",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010535",
+    "quantity": "200000000",
+    "premium": "121800000",
+    "coverPrice": "609000",
+    "requestedBps": 250,
+    "achievedBps": 161,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477089614,
+   "ts": 1788282016,
+   "tx": "0xe27fe394d35799999215447c05c02f77cdf19fa43ab071fb07697397c99bb9cf",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001052f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001052f",
+    "quantity": "200000000",
+    "premium": "138400000",
+    "coverPrice": "692000",
+    "requestedBps": 250,
+    "achievedBps": 127,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477089634,
+   "ts": 1788282018,
+   "tx": "0x1a9541d279469d3465132965d3f35d5e8d73efb29e3ee58b86abfa764b965561",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010537",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010537",
+    "quantity": "200000000",
+    "premium": "120600000",
+    "coverPrice": "603000",
+    "requestedBps": 250,
+    "achievedBps": 163,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477092614,
+   "ts": 1788282316,
+   "tx": "0xe410404d27d6ffaa6b1dc6da289217ae59cca3eca2df2dd88284b0107bb0eec3",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010545",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010545",
+    "quantity": "200000000",
+    "premium": "79000000",
+    "coverPrice": "395000",
+    "requestedBps": 250,
+    "achievedBps": 249,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477092614,
+   "ts": 1788282316,
+   "tx": "0xe410404d27d6ffaa6b1dc6da289217ae59cca3eca2df2dd88284b0107bb0eec3",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010541",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010541",
+    "quantity": "198627000",
+    "premium": "77067276",
+    "coverPrice": "388000",
+    "requestedBps": 250,
+    "achievedBps": 250,
+    "degraded": false
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477095613,
+   "ts": 1788282616,
+   "tx": "0xcddfc5c6886b9cf6fdda44f887037f7e6281820b7ae0788d4367416bbb2c74f9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010553",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010553",
+    "quantity": "200000000",
+    "premium": "128600000",
+    "coverPrice": "643000",
+    "requestedBps": 250,
+    "achievedBps": 147,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477095613,
+   "ts": 1788282616,
+   "tx": "0xcddfc5c6886b9cf6fdda44f887037f7e6281820b7ae0788d4367416bbb2c74f9",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001054f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001054f",
+    "quantity": "6000000",
+    "premium": "3774000",
+    "coverPrice": "629000",
+    "requestedBps": 250,
+    "achievedBps": 5,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477098612,
+   "ts": 1788282916,
+   "tx": "0x3958d2c8b971723d07238290707556b66ed3ce8b480e4ce5b152679fb58ac80d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010561",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010561",
+    "quantity": "200000000",
+    "premium": "109000000",
+    "coverPrice": "545000",
+    "requestedBps": 250,
+    "achievedBps": 187,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477098612,
+   "ts": 1788282916,
+   "tx": "0x3958d2c8b971723d07238290707556b66ed3ce8b480e4ce5b152679fb58ac80d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010563",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010563",
+    "quantity": "200000000",
+    "premium": "113600000",
+    "coverPrice": "568000",
+    "requestedBps": 250,
+    "achievedBps": 178,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477098612,
+   "ts": 1788282916,
+   "tx": "0x3958d2c8b971723d07238290707556b66ed3ce8b480e4ce5b152679fb58ac80d",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001055d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001055d",
+    "quantity": "200000000",
+    "premium": "113200000",
+    "coverPrice": "566000",
+    "requestedBps": 250,
+    "achievedBps": 178,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477101611,
+   "ts": 1788283216,
+   "tx": "0xec0a09f705235bac75a641bb7d28cb8357f1ab76d9b9183d4cdb19bceb768f12",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010571",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010571",
+    "quantity": "172288000",
+    "premium": "50652672",
+    "coverPrice": "294000",
+    "requestedBps": 250,
+    "achievedBps": 250,
+    "degraded": false
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477101611,
+   "ts": 1788283216,
+   "tx": "0xec0a09f705235bac75a641bb7d28cb8357f1ab76d9b9183d4cdb19bceb768f12",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001056d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001056d",
+    "quantity": "172288000",
+    "premium": "50652672",
+    "coverPrice": "294000",
+    "requestedBps": 250,
+    "achievedBps": 250,
+    "degraded": false
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477104611,
+   "ts": 1788283516,
+   "tx": "0x4af892d0e64d31be75ddcc53905b0184479bdc494dac152a67d12e0569d68293",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001057f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001057f",
+    "quantity": "200000000",
+    "premium": "115800000",
+    "coverPrice": "579000",
+    "requestedBps": 250,
+    "achievedBps": 173,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477104611,
+   "ts": 1788283516,
+   "tx": "0x4af892d0e64d31be75ddcc53905b0184479bdc494dac152a67d12e0569d68293",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001057b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001057b",
+    "quantity": "200000000",
+    "premium": "115800000",
+    "coverPrice": "579000",
+    "requestedBps": 250,
+    "achievedBps": 173,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477107610,
+   "ts": 1788283816,
+   "tx": "0x42ba3a2bc78eb6c784c2368318a4c41170fe7a5ab75d8cc41e951f28a12d6c52",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001058d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001058d",
+    "quantity": "200000000",
+    "premium": "107800000",
+    "coverPrice": "539000",
+    "requestedBps": 250,
+    "achievedBps": 190,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477107610,
+   "ts": 1788283816,
+   "tx": "0x42ba3a2bc78eb6c784c2368318a4c41170fe7a5ab75d8cc41e951f28a12d6c52",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001058f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001058f",
+    "quantity": "200000000",
+    "premium": "111600000",
+    "coverPrice": "558000",
+    "requestedBps": 250,
+    "achievedBps": 182,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477107610,
+   "ts": 1788283816,
+   "tx": "0x42ba3a2bc78eb6c784c2368318a4c41170fe7a5ab75d8cc41e951f28a12d6c52",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010589",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010589",
+    "quantity": "200000000",
+    "premium": "111600000",
+    "coverPrice": "558000",
+    "requestedBps": 250,
+    "achievedBps": 182,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477110610,
+   "ts": 1788284116,
+   "tx": "0xfc3792b079ff58da044a250491612dcbb9f238c6972e17c06ac06ed9b5734db2",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001059d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001059d",
+    "quantity": "200000000",
+    "premium": "101400000",
+    "coverPrice": "507000",
+    "requestedBps": 250,
+    "achievedBps": 202,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477110610,
+   "ts": 1788284116,
+   "tx": "0xfc3792b079ff58da044a250491612dcbb9f238c6972e17c06ac06ed9b5734db2",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010599",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010599",
+    "quantity": "200000000",
+    "premium": "101400000",
+    "coverPrice": "507000",
+    "requestedBps": 250,
+    "achievedBps": 202,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477113609,
+   "ts": 1788284416,
+   "tx": "0xc5c6b8633e8c490e73b574984f1b25742240d04f525826229cabd60ed8358fe2",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105ab",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105ab",
+    "quantity": "198555000",
+    "premium": "76840785",
+    "coverPrice": "387000",
+    "requestedBps": 250,
+    "achievedBps": 250,
+    "degraded": false
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477116609,
+   "ts": 1788284716,
+   "tx": "0x62bb48ada5c7039b74c07431ba6578ba2aca1e94c6a58abf8ab6b46f50d203de",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b9",
+    "quantity": "200000000",
+    "premium": "115800000",
+    "coverPrice": "579000",
+    "requestedBps": 250,
+    "achievedBps": 173,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477116609,
+   "ts": 1788284716,
+   "tx": "0x62bb48ada5c7039b74c07431ba6578ba2aca1e94c6a58abf8ab6b46f50d203de",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105bb",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105bb",
+    "quantity": "200000000",
+    "premium": "125200000",
+    "coverPrice": "626000",
+    "requestedBps": 250,
+    "achievedBps": 154,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477116609,
+   "ts": 1788284716,
+   "tx": "0x62bb48ada5c7039b74c07431ba6578ba2aca1e94c6a58abf8ab6b46f50d203de",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b5",
+    "quantity": "200000000",
+    "premium": "125200000",
+    "coverPrice": "626000",
+    "requestedBps": 250,
+    "achievedBps": 154,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477119608,
+   "ts": 1788285016,
+   "tx": "0xcfae6ab3fc9cef8507ac4c887f5fa7ead8e99d4b64a54f2384a9b57beeecc27d",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c9",
+    "quantity": "200000000",
+    "premium": "94000000",
+    "coverPrice": "470000",
+    "requestedBps": 250,
+    "achievedBps": 218,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477119608,
+   "ts": 1788285016,
+   "tx": "0xcfae6ab3fc9cef8507ac4c887f5fa7ead8e99d4b64a54f2384a9b57beeecc27d",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c5",
+    "quantity": "200000000",
+    "premium": "94000000",
+    "coverPrice": "470000",
+    "requestedBps": 250,
+    "achievedBps": 218,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477122608,
+   "ts": 1788285316,
+   "tx": "0x014b9f944bd31afd16982138c515d2cbabae996b5b60c5cb49047d486f7e9d1e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d7",
+    "quantity": "200000000",
+    "premium": "103400000",
+    "coverPrice": "517000",
+    "requestedBps": 250,
+    "achievedBps": 199,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477122608,
+   "ts": 1788285316,
+   "tx": "0x014b9f944bd31afd16982138c515d2cbabae996b5b60c5cb49047d486f7e9d1e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d3",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d3",
+    "quantity": "200000000",
+    "premium": "103400000",
+    "coverPrice": "517000",
+    "requestedBps": 250,
+    "achievedBps": 199,
+    "degraded": true
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477125447,
+   "ts": 1788285600,
+   "tx": "0x250281d4eb80c4c3464ffc616c9389bc51006dc8fb4a25b605d25c01ed01e3cd",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77251050000000000000000",
+    "firstAttemptAt": "1788285615"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477125467,
+   "ts": 1788285602,
+   "tx": "0x91edd00b7a1f4c81fe52e5cc00fa6361aa5e3bf187f6d35dd46f76e2a059c711",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2418750000000000000000",
+    "firstAttemptAt": "1788285617"
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+    "quantity": "200000000",
+    "premium": "88600000",
+    "coverPrice": "443000",
+    "requestedBps": 250,
+    "achievedBps": 230,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+    "quantity": "194979000",
+    "premium": "74092020",
+    "coverPrice": "380000",
+    "requestedBps": 250,
+    "achievedBps": 250,
+    "degraded": false
+   }
+  },
+  {
+   "name": "CoverOpened",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+    "quantity": "143635000",
+    "premium": "41366880",
+    "coverPrice": "288000",
+    "requestedBps": 250,
+    "achievedBps": 211,
+    "degraded": true
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+    "scanned": "1",
+    "covered": "1",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+    "attempt": 1,
+    "covered": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+    "scanned": "1",
+    "covered": "1",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+    "attempt": 1,
+    "covered": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e8",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "PlacementFailed",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+    "reason": 9
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e3",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+    "scanned": "1",
+    "covered": "1",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+    "attempt": 1,
+    "covered": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e0",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e2",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477125607,
+   "ts": 1788285616,
+   "tx": "0x2abcc61f20cf1596014919010493668b47007a2c1cf2c4e583394d24c504895e",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788285618000",
+    "pendingWindows": "7"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125627,
+   "ts": 1788285618,
+   "tx": "0x60b8bddbc8993405353dea9e21d9e508861e7c11c880cf8b1ce99a29e3379901",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125627,
+   "ts": 1788285618,
+   "tx": "0x60b8bddbc8993405353dea9e21d9e508861e7c11c880cf8b1ce99a29e3379901",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125627,
+   "ts": 1788285618,
+   "tx": "0x60b8bddbc8993405353dea9e21d9e508861e7c11c880cf8b1ce99a29e3379901",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e9",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477125627,
+   "ts": 1788285618,
+   "tx": "0x60b8bddbc8993405353dea9e21d9e508861e7c11c880cf8b1ce99a29e3379901",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788285632000",
+    "pendingWindows": "7"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e6",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CallbackRan",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "scanned": "1",
+    "covered": "0",
+    "cursorAfter": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477125767,
+   "ts": 1788285632,
+   "tx": "0x39914c3c9c181eb61bc05ccd080ccde50cba6b99c38e3d9a95a8d3a7ff15f804",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+   "user": null,
+   "args": {
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e4",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477148723,
+   "ts": 1788287928,
+   "tx": "0x69ad334a1b6c05b320892741eda78f0268713e130d73a6efe4a6e73bdb30855d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010654",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010654",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477148723,
+   "ts": 1788287928,
+   "tx": "0x69ad334a1b6c05b320892741eda78f0268713e130d73a6efe4a6e73bdb30855d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010655",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010655",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149323,
+   "ts": 1788287988,
+   "tx": "0x58f4a420f5d70f10d50f294ab0b6127d5d6b2a94bab02e8e021edeef3141e6e9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010656",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010656",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149323,
+   "ts": 1788287988,
+   "tx": "0x58f4a420f5d70f10d50f294ab0b6127d5d6b2a94bab02e8e021edeef3141e6e9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010657",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010657",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065c",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065c",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065d",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065d",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065b",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065a",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010658",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010658",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477149923,
+   "ts": 1788288048,
+   "tx": "0x97cdf0792eca86394d9bbd8c2e43f0480faa91cd4308d6e5a3c6d2d1f8aaadf1",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010659",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010659",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477150522,
+   "ts": 1788288108,
+   "tx": "0x13bb292d864d75252d6124cc73d3ea3625dac7b5d4f9f7219a7a57c3397684d4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065e",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065e",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477150522,
+   "ts": 1788288108,
+   "tx": "0x13bb292d864d75252d6124cc73d3ea3625dac7b5d4f9f7219a7a57c3397684d4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001065f",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001065f",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477151122,
+   "ts": 1788288168,
+   "tx": "0x0de8a940d0c353d6c1e7ec61304e613266535470600a4f3c17a40ea82f1984ed",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010660",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010660",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477151122,
+   "ts": 1788288168,
+   "tx": "0x0de8a940d0c353d6c1e7ec61304e613266535470600a4f3c17a40ea82f1984ed",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010661",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010661",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151402,
+   "ts": 1788288196,
+   "tx": "0x5395e486176c23917be694b87c785b43a7ef50a9f5fe677d645084b197594446",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151402,
+   "ts": 1788288196,
+   "tx": "0x5395e486176c23917be694b87c785b43a7ef50a9f5fe677d645084b197594446",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151562,
+   "ts": 1788288212,
+   "tx": "0xb28d9ca7501fd9f985241892e8829b7a4280b6572a97750ab58b75a5f141be46",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151562,
+   "ts": 1788288212,
+   "tx": "0xb28d9ca7501fd9f985241892e8829b7a4280b6572a97750ab58b75a5f141be46",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "CoverTooExpensive",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+    "reason": 5
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151722,
+   "ts": 1788288228,
+   "tx": "0x2b0b6ec1a6295e2da79082afd673745f9ea3d214ab22ad5e5da1eaf69305150a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477151722,
+   "ts": 1788288228,
+   "tx": "0x2b0b6ec1a6295e2da79082afd673745f9ea3d214ab22ad5e5da1eaf69305150a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "CoverTooExpensive",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+    "reason": 5
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477151722,
+   "ts": 1788288228,
+   "tx": "0x2b0b6ec1a6295e2da79082afd673745f9ea3d214ab22ad5e5da1eaf69305150a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010662",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477151722,
+   "ts": 1788288228,
+   "tx": "0x2b0b6ec1a6295e2da79082afd673745f9ea3d214ab22ad5e5da1eaf69305150a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010663",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152002,
+   "ts": 1788288256,
+   "tx": "0x2b2022d021fb4e42a0252776f0d2ff54359fb7ef92e70963ca1525f63b62f199",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152002,
+   "ts": 1788288256,
+   "tx": "0x2b2022d021fb4e42a0252776f0d2ff54359fb7ef92e70963ca1525f63b62f199",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152162,
+   "ts": 1788288272,
+   "tx": "0x39c0b3c3224959882b8a737227f0e6d1cc96b6d9e9a3b6ad2d2efaa6df4d2efe",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152162,
+   "ts": 1788288272,
+   "tx": "0x39c0b3c3224959882b8a737227f0e6d1cc96b6d9e9a3b6ad2d2efaa6df4d2efe",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152322,
+   "ts": 1788288288,
+   "tx": "0x8f502c75041f3e928a21d279d32ab28474424d74eaf179bc6cd92bbbda94a0ba",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152322,
+   "ts": 1788288288,
+   "tx": "0x8f502c75041f3e928a21d279d32ab28474424d74eaf179bc6cd92bbbda94a0ba",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152322,
+   "ts": 1788288288,
+   "tx": "0x8f502c75041f3e928a21d279d32ab28474424d74eaf179bc6cd92bbbda94a0ba",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010664",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152322,
+   "ts": 1788288288,
+   "tx": "0x8f502c75041f3e928a21d279d32ab28474424d74eaf179bc6cd92bbbda94a0ba",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010665",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+    "reason": 4
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152602,
+   "ts": 1788288316,
+   "tx": "0x30643eb0139018ef1a9a4af2a753748ba9256976d174c72324e0bac18d3a91ea",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+    "reason": 4
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152762,
+   "ts": 1788288332,
+   "tx": "0x11bae34f31a9800176e75aee63ea867fc2495176e72306357efdfb1e6fff30c4",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+    "reason": 4
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+    "reason": 4
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066a",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066b",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066c",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066d",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010666",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010667",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010668",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477152922,
+   "ts": 1788288348,
+   "tx": "0x980fd3cf55f3c67888e11e9e7560600f5f5217cb5d49773620135e14d079003e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010669",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153202,
+   "ts": 1788288376,
+   "tx": "0x4600332661ad0d9d81d52d1ea21a976e655df3442c91ce8de0f090fc4da85aaf",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153202,
+   "ts": 1788288376,
+   "tx": "0x4600332661ad0d9d81d52d1ea21a976e655df3442c91ce8de0f090fc4da85aaf",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153362,
+   "ts": 1788288392,
+   "tx": "0x71accae179d9ca64aad4ebb7e50bad824e04234d8440c294c74ba96313438855",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153362,
+   "ts": 1788288392,
+   "tx": "0x71accae179d9ca64aad4ebb7e50bad824e04234d8440c294c74ba96313438855",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066e",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153522,
+   "ts": 1788288408,
+   "tx": "0x238fdfbfd208737a1f32967fc54b1f9593538a4f7a6c273af2fb76149be533ab",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001066f",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153802,
+   "ts": 1788288436,
+   "tx": "0x1d93838a68391efa85ab25b62c6687f7a7d27f20c92a4db5077899e9a6b65a95",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153802,
+   "ts": 1788288436,
+   "tx": "0x1d93838a68391efa85ab25b62c6687f7a7d27f20c92a4db5077899e9a6b65a95",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "reason": 4
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153802,
+   "ts": 1788288436,
+   "tx": "0x1d93838a68391efa85ab25b62c6687f7a7d27f20c92a4db5077899e9a6b65a95",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153802,
+   "ts": 1788288436,
+   "tx": "0x1d93838a68391efa85ab25b62c6687f7a7d27f20c92a4db5077899e9a6b65a95",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153962,
+   "ts": 1788288452,
+   "tx": "0x33a18fd5a4c798ea22fb1a06ccb09ec3d282f695538122e0d16767176117e88b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477153962,
+   "ts": 1788288452,
+   "tx": "0x33a18fd5a4c798ea22fb1a06ccb09ec3d282f695538122e0d16767176117e88b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "reason": 4
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153962,
+   "ts": 1788288452,
+   "tx": "0x33a18fd5a4c798ea22fb1a06ccb09ec3d282f695538122e0d16767176117e88b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477153962,
+   "ts": 1788288452,
+   "tx": "0x33a18fd5a4c798ea22fb1a06ccb09ec3d282f695538122e0d16767176117e88b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoLiquidity",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "reason": 4
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010670",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154122,
+   "ts": 1788288468,
+   "tx": "0xe3473868dce35caa5bb87c294fbf569f774ab62c529e9ad2fae71ff07886bb58",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010671",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477154242,
+   "ts": 1788288480,
+   "tx": "0x9693e16a1b851f2d8529b8b0abc98a36a3775c4bd0321e6bcf257345a0b08562",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288496000",
+    "pendingWindows": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154402,
+   "ts": 1788288496,
+   "tx": "0x3f350d97a74f068bc8a9e29ea8eb5bb25038712a7377e547211eb75aec7403d7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154402,
+   "ts": 1788288496,
+   "tx": "0x3f350d97a74f068bc8a9e29ea8eb5bb25038712a7377e547211eb75aec7403d7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154402,
+   "ts": 1788288496,
+   "tx": "0x3f350d97a74f068bc8a9e29ea8eb5bb25038712a7377e547211eb75aec7403d7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154402,
+   "ts": 1788288496,
+   "tx": "0x3f350d97a74f068bc8a9e29ea8eb5bb25038712a7377e547211eb75aec7403d7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477154402,
+   "ts": 1788288496,
+   "tx": "0x3f350d97a74f068bc8a9e29ea8eb5bb25038712a7377e547211eb75aec7403d7",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288512000",
+    "pendingWindows": "2"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154562,
+   "ts": 1788288512,
+   "tx": "0x8ac104290eb7486346ffeb4591ee45d567c181c672b7e7e0430fda8fcf43aa19",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154562,
+   "ts": 1788288512,
+   "tx": "0x8ac104290eb7486346ffeb4591ee45d567c181c672b7e7e0430fda8fcf43aa19",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154562,
+   "ts": 1788288512,
+   "tx": "0x8ac104290eb7486346ffeb4591ee45d567c181c672b7e7e0430fda8fcf43aa19",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154562,
+   "ts": 1788288512,
+   "tx": "0x8ac104290eb7486346ffeb4591ee45d567c181c672b7e7e0430fda8fcf43aa19",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477154562,
+   "ts": 1788288512,
+   "tx": "0x8ac104290eb7486346ffeb4591ee45d567c181c672b7e7e0430fda8fcf43aa19",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288528000",
+    "pendingWindows": "2"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010672",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477154722,
+   "ts": 1788288528,
+   "tx": "0x9d85cf09b3cb182928e3711021a84f4fafdda9802d5f7bf08a731afd532948cb",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010673",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477154842,
+   "ts": 1788288540,
+   "tx": "0xac3ae9b44366e84f2447e817c549bd4b6a603151a3d6171af84483f1f03845a4",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288556000",
+    "pendingWindows": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155002,
+   "ts": 1788288556,
+   "tx": "0xbe9aa16174d7850b827de70774ff350efea5f77fa0f1b2a64348b08f8befea88",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155002,
+   "ts": 1788288556,
+   "tx": "0xbe9aa16174d7850b827de70774ff350efea5f77fa0f1b2a64348b08f8befea88",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "reason": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155002,
+   "ts": 1788288556,
+   "tx": "0xbe9aa16174d7850b827de70774ff350efea5f77fa0f1b2a64348b08f8befea88",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155002,
+   "ts": 1788288556,
+   "tx": "0xbe9aa16174d7850b827de70774ff350efea5f77fa0f1b2a64348b08f8befea88",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477155002,
+   "ts": 1788288556,
+   "tx": "0xbe9aa16174d7850b827de70774ff350efea5f77fa0f1b2a64348b08f8befea88",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288572000",
+    "pendingWindows": "2"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155162,
+   "ts": 1788288572,
+   "tx": "0xfc7dd56c7c6fb8b6fd6943cc1c860ea8174dc22322d8e9d0d8740cec9dbe2f1a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155162,
+   "ts": 1788288572,
+   "tx": "0xfc7dd56c7c6fb8b6fd6943cc1c860ea8174dc22322d8e9d0d8740cec9dbe2f1a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "reason": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155162,
+   "ts": 1788288572,
+   "tx": "0xfc7dd56c7c6fb8b6fd6943cc1c860ea8174dc22322d8e9d0d8740cec9dbe2f1a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155162,
+   "ts": 1788288572,
+   "tx": "0xfc7dd56c7c6fb8b6fd6943cc1c860ea8174dc22322d8e9d0d8740cec9dbe2f1a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477155162,
+   "ts": 1788288572,
+   "tx": "0xfc7dd56c7c6fb8b6fd6943cc1c860ea8174dc22322d8e9d0d8740cec9dbe2f1a",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288588000",
+    "pendingWindows": "2"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "reason": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010675",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155322,
+   "ts": 1788288588,
+   "tx": "0x6e84ad562c4a1017bc8c98000dbb5aaa779a229366c1eac7a16d8f0963632b30",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010674",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477155442,
+   "ts": 1788288600,
+   "tx": "0x22dd7ae80e26e65867a623d9f80f919822e432bcddaeddd61dcba034359f52a1",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288616000",
+    "pendingWindows": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477155602,
+   "ts": 1788288616,
+   "tx": "0x39a79b8e062ac1536292a6386e8b8f5fe1eaac80ece7a154ccff164486fe6521",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288632000",
+    "pendingWindows": "6"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "attempt": 2,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477155762,
+   "ts": 1788288632,
+   "tx": "0x5d71466020c016bfafb0ca8a32317ba51b99ebb59f8fd555d07e8c83d340bdf7",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288648000",
+    "pendingWindows": "6"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "reason": 7
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "WouldMisrepresent",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "reason": 11
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowGaveUp",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "attempts": 3
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067a",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067b",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010679",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010676",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010678",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477155922,
+   "ts": 1788288648,
+   "tx": "0xd3e488b8598c64359b164c6a12b7708498a297c75a38ab2ee9ae7b4d8cb10e26",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010677",
+    "attempt": 3,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "TickScheduled",
+   "block": 477156042,
+   "ts": 1788288660,
+   "tx": "0x230aa76da832923e33cd4c59b7ca3585b26f545c6986567959f707350e5dc683",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "timestampMillis": "1788288676000",
+    "pendingWindows": "1"
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477156202,
+   "ts": 1788288676,
+   "tx": "0x1c9545c6e0053ca5723a12fce8d0f7b71626d01ae90912da46b8f70b7d9cdd26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067c",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "NoExposure",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067c",
+    "reason": 3
+   }
+  },
+  {
+   "name": "CoverSkipped",
+   "block": 477156202,
+   "ts": 1788288676,
+   "tx": "0x1c9545c6e0053ca5723a12fce8d0f7b71626d01ae90912da46b8f70b7d9cdd26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "reason": "BelowMinimumLot",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067d",
+    "reason": 7
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477156202,
+   "ts": 1788288676,
+   "tx": "0x1c9545c6e0053ca5723a12fce8d0f7b71626d01ae90912da46b8f70b7d9cdd26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067c",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067c",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowAttempted",
+   "block": 477156202,
+   "ts": 1788288676,
+   "tx": "0x1c9545c6e0053ca5723a12fce8d0f7b71626d01ae90912da46b8f70b7d9cdd26",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001067d",
+   "user": null,
+   "args": {
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001067d",
+    "attempt": 1,
+    "covered": "0"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0x7c9c90eb4e2d54b6d3dc3b95adef3bf26e54b3dd890d3aaadf105a90224a926e",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d91",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d91",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77531400000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0xb58851a1eca68f1d9d3e8cc35b387cfa6dbb72789c3a2e2a276fc051507de091",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d92",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d92",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414315000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0xd92169b73b9a85a4521df3124fe78a5a501089acdb9767e21ae648468ce5300c",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d94",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d94",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414315000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0xb035056f15d02f84e1f867559c0d4c4dd7ca744cfea0c7ee4cca9c60f1bfa803",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d93",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d93",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77531400000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0x313f3a9fe51e6725591d0de1bec78b3ca11fabf7615ddbafa9f32a7668b350f8",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d99",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d99",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77531400000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0x81984a87b1a7940019c6806754a3ef820664840d1ac6e9aae94f39cf597771c9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d98",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d98",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414315000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0xb9869ae11c437db3d9ad15b32fddaf93a4114857f23e70abff09ec80fff1e1c6",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d97",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d97",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77531400000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0x2699783339e61d113dad365edc730c9de5951dcf65ef069ad2173a10e967bcb5",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d96",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d96",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414315000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521339,
+   "ts": 1788325200,
+   "tx": "0xeeb520a5012cdce803cc68a5318fb745b0ab39b8dedfdd620cedbf722ceaea63",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d95",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d95",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77531400000000000000000",
+    "firstAttemptAt": "1788325215"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521359,
+   "ts": 1788325202,
+   "tx": "0x8d7ed028c891353c8a90eabe3547040dc21bfb6d6c52abf1526b6fae7f33aa6a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9a",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9a",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414315000000000000000",
+    "firstAttemptAt": "1788325217"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521939,
+   "ts": 1788325260,
+   "tx": "0x3fe018732e9f4b3bfbe44c6ff331a13c276a539d4429141b08ad2e79bd85685d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9b",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9b",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77523350000000000000000",
+    "firstAttemptAt": "1788325275"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477521939,
+   "ts": 1788325260,
+   "tx": "0xf6659b374a114eacb8bca075c673510a38d14d8a3f929713a7e044a5859e28f9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9c",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9c",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2414855000000000000000",
+    "firstAttemptAt": "1788325275"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477522538,
+   "ts": 1788325320,
+   "tx": "0x7c79a1af7a0a26cdba603536d5d78f9321ed87e15dbe5d3d80a971ea81094a6f",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9d",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9d",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77480800000000000000000",
+    "firstAttemptAt": "1788325335"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477522538,
+   "ts": 1788325320,
+   "tx": "0x6e810666860713a2b5cd448649464e88c03b665e5e6bf33c3a35e839376a4327",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9e",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9e",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2413105000000000000000",
+    "firstAttemptAt": "1788325335"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477523138,
+   "ts": 1788325380,
+   "tx": "0x1b5a865e0be1afdd57fa750fd9749cc5d21d67a4bf7561131f27cecf89fe7377",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da0",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da0",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2411235000000000000000",
+    "firstAttemptAt": "1788325395"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477523138,
+   "ts": 1788325380,
+   "tx": "0x32ec7ed21b3365ea3d3b67b3c0879e17ed8580cca73ac4d550ef4fb762b3a03b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9f",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010d9f",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77448700000000000000000",
+    "firstAttemptAt": "1788325395"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477523738,
+   "ts": 1788325440,
+   "tx": "0xc3993504681b712829a883e00a9ed8fe6df5580d56aab549184f34af3587db0c",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da2",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da2",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2412025000000000000000",
+    "firstAttemptAt": "1788325455"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477523738,
+   "ts": 1788325440,
+   "tx": "0xf790963a3e2f648fa3ca868a45ce143dbe0b0c8bd2bd28d30ee507bf1385f141",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da1",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da1",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77484200000000000000000",
+    "firstAttemptAt": "1788325455"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0xbc2bcca176db413e8e2d55d8dec416d05b1c461b311ebe0a5b3d6afdc7390b10",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da3",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da3",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77464400000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0x3acfacaa987f5724c76c024a66f9484e27edfae8f1d7bc6d367d29deb99f1eac",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da5",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da5",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77464400000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0xcaca7f46b6bede01ec97cefec6248e2c7b73f463961b7c7b332136d001f516c8",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da6",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da6",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410945000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0x09107a2b730db2117d5d0f1fac01bd07d3d3f20f31241315823bf73880fe1761",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da4",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da4",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410945000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0xbd38f4aa432730a45ef68a290c8a75a69a0c3e6bda04783c559c95063853445a",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da8",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da8",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410945000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524338,
+   "ts": 1788325500,
+   "tx": "0x23d5ca478ed094f4097e6f4bea2909fe27754b5cd5ba9947b14494fa27ffcfff",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da7",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da7",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77464400000000000000000",
+    "firstAttemptAt": "1788325515"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524938,
+   "ts": 1788325560,
+   "tx": "0xd58a9d65712f9b0ae9253bc0cac724e9b9959c98e1fa0568248057faf366b03b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010daa",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010daa",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2409885000000000000000",
+    "firstAttemptAt": "1788325575"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477524938,
+   "ts": 1788325560,
+   "tx": "0xf52cc4788d9d17aaba8c1ca104390cd912e729d884da2e18e9a2a948fe08c52d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da9",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010da9",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77442300000000000000000",
+    "firstAttemptAt": "1788325575"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477525536,
+   "ts": 1788325620,
+   "tx": "0xc312373b1e2b9fe1dcfb5787786c3a3da08df76aeb914bf0247ee44874db3db9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dab",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dab",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77415800000000000000000",
+    "firstAttemptAt": "1788325635"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477525536,
+   "ts": 1788325620,
+   "tx": "0x83edc558fbe08a38c4dfc030e2e5ac9db8fb7107c793100613941b11d1b3ad3f",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dac",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dac",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2408875000000000000000",
+    "firstAttemptAt": "1788325635"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477526136,
+   "ts": 1788325680,
+   "tx": "0x1c3825c670d7f170f57fe7bd5ffd9bc3ec5c70b964b0b5a11d5fd2cc3cf55c6f",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dae",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dae",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2409765000000000000000",
+    "firstAttemptAt": "1788325695"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477526136,
+   "ts": 1788325680,
+   "tx": "0x49a9d1978b5283ced61b24fcedd14aa475349a0046acde2bb3f2589dca38cc46",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dad",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010dad",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77417600000000000000000",
+    "firstAttemptAt": "1788325695"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477526736,
+   "ts": 1788325740,
+   "tx": "0x70f81bf361c34588b54491040d2600f6dc271f4ad7912a98ca570f0befae45a7",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010daf",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010daf",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77448800000000000000000",
+    "firstAttemptAt": "1788325755"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477526736,
+   "ts": 1788325740,
+   "tx": "0xeaf0e08e696c9ed520113290954d3a8cc40ae098d0c4cfea07d141f350b5efab",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db0",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db0",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410605000000000000000",
+    "firstAttemptAt": "1788325755"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0x1de78014c06ece309f3b590da3ac1879b4fa05183150c8f93355b3d312325fa3",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db1",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db1",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77454900000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0x167c6184a20dff6f84fea69df1b2f3255221276362bbf8847453e878d65b7022",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db2",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db2",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410085000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0xd6418969f6bb505546d9b3ceb3d27e8143857d07c3d09d44d58ba2ed68b229b9",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db3",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db3",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77454900000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0xb2991eab5ef5874cedd55d16ae02d0ac39d1c64db77e769dd2bb8756d74f9527",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db4",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db4",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410085000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0x3fd42443478f632936aaaf550f878266641eebfb276142144722437f280a8ae5",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db6",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db6",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410085000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527336,
+   "ts": 1788325800,
+   "tx": "0x51f3be3329eb79827c1404543c240277525604a5ce35aa9116f520ea2a244565",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db5",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db5",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77454900000000000000000",
+    "firstAttemptAt": "1788325815"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527936,
+   "ts": 1788325860,
+   "tx": "0xd257743e5545346d3a6c952a2079349fbd1becd22e1bba21c9d3a6000c969a9b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db7",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db7",
+    "assetKey": "0xe98e2830be1a7e4156d656a7505e65d08c67660dc618072422e9c78053c261e9",
+    "openPrice": "77474000000000000000000",
+    "firstAttemptAt": "1788325875"
+   }
+  },
+  {
+   "name": "WindowEnqueued",
+   "block": 477527936,
+   "ts": 1788325860,
+   "tx": "0x8e4cdba324bd3fd9f5c67a9a49922d509ef129a41a735cebde53a621d53ab015",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db8",
+   "user": null,
+   "args": {
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010db8",
+    "assetKey": "0xaaaebeba3810b1e6b70781f14b2d72c1cb89c0b2b320c43bb67ff79f562f5ff4",
+    "openPrice": "2410585000000000000000",
+    "firstAttemptAt": "1788325875"
+   }
+  },
+  {
+   "name": "SubscriptionClosed",
+   "block": 477528071,
+   "ts": 1788325873,
+   "tx": "0xe637b244ab26c7a056842c370a1d830770778dd3eed303c1d95a36be6e40a28e",
+   "marketId": null,
+   "user": null,
+   "args": {
+    "subscriptionId": "15304480"
+   }
+  }
+ ]
+}

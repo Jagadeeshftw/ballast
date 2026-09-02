@@ -6,6 +6,8 @@ import Nav from "./Nav";
 import Spine from "./Spine";
 import Reveal from "./Reveal";
 import PayoffA from "./PayoffA";
+import RunState, { RecordedBanner } from "./RunState";
+import { RECORD } from "@/lib/record";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +18,14 @@ export default async function DirectionA() {
   } = await loadPreview();
   const nowSec = Math.floor(Date.now() / 1000);
   const usd = (raw: bigint, dp = 2) => (Number(raw) / 1e6).toFixed(dp);
+
+  // Live always wins. The frozen record only stands in when the rolling tail is empty --
+  // which, with the engine stopped, it always is.
+  const liveTape = tape.items.slice(0, 10);
+  const tapeRows = liveTape.length > 0 ? liveTape : RECORD.excerpt;
+  const tapeIsRecord = liveTape.length === 0;
+  const declinedRows = declined.length > 0 ? declined : RECORD.declined.slice(0, 8);
+  const declinedIsRecord = declined.length === 0;
   const ethPx = eth?.ok && eth.price ? eth.price : null;
 
   return (
@@ -155,6 +165,9 @@ export default async function DirectionA() {
             lands in the same block, then cover opens or is declined with a reason.
           </p>
 
+          <RunState subscribed={engine.subscribed} lastCallbackAt={engine.lastCallbackAt}
+            balance={engine.balance} nowSec={nowSec} />
+
           {shown ? (
             <>
               <div className="gaugeRow">
@@ -174,8 +187,9 @@ export default async function DirectionA() {
                   </p>
                 </div>
               </div>
+              {tapeIsRecord && <RecordedBanner what={`${RECORD.counts.WindowEnqueued?.toLocaleString()} windows and ${RECORD.counts.CoverOpened} covers in all; this is a contiguous excerpt around one purchase`} />}
               <ol className="aTape">
-                {tape.items.slice(0, 10).map((t, i) => (
+                {tapeRows.map((t, i) => (
                   <li key={`${t.tx}-${i}`}
                     className={t.kind === "callback" && i === tape.items.findIndex((x) => x.kind === "callback")
                       ? "landing" : undefined}>
@@ -262,13 +276,15 @@ export default async function DirectionA() {
           <p className="aLede">
             Each of these could have been traded and was not. The reason is on chain beside it.
           </p>
-          {declined.length === 0 ? (
+          {declinedRows.length === 0 ? (
             <p className="aLede">
               Nothing declined in the last {tape.spanBlocks.toLocaleString()} blocks.
             </p>
           ) : (
+            <>
+            {declinedIsRecord && <RecordedBanner what={`${RECORD.declined.length} refusals, each with its reason`} />}
             <ol className="aTape">
-              {declined.map((d, i) => (
+              {declinedRows.map((d, i) => (
                 <li key={`${d.tx}-${i}`}>
                   <span className="t-blk">{String(d.block)}</span>
                   <span className="t-dot heel" aria-hidden="true" />
@@ -278,6 +294,7 @@ export default async function DirectionA() {
                 </li>
               ))}
             </ol>
+            </>
           )}
         </div>
       </section>
