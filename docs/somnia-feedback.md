@@ -110,6 +110,57 @@ as a much smaller ask once it is clear.
 
 ---
 
+## 5. Reactive callbacks are billed at the subscription's gas LIMIT, not at usage
+
+**This is the single most expensive thing we found, and nothing in the docs says it.**
+
+A subscription carries a `gasLimit`. The reactive transaction it fires is charged against
+that limit whatever it actually uses. Ours ran the library default of 10,000,000.
+
+Twenty consecutive callback receipts from our handler:
+
+| | gas |
+| --- | --- |
+| `gasLimit` provisioned | **10,000,000** |
+| `gasUsed`, measured across 20 receipts | **1,479,630 – 1,497,350** |
+| Effective price | 7 gwei (6 base + 1 priority) |
+| Charged per callback | **0.07 STT** — exactly `10,000,000 × 7 gwei` |
+
+A **6.7× overpay on every single wake.** At dreamDEX's roll rate of ~147 windows an hour
+across all series, that is **12.8 STT/hour, 308/day**, against a faucet that pays 0.5 a day.
+It is the reason our engine is not currently running.
+
+The fix is a one-line `setSubscriptionFees` — but applying it means closing and reopening the
+subscription, and `openSubscription` requires the owner to hold **32 STT**
+(`SUBSCRIPTION_OWNER_MINIMUM_BALANCE`, checked at creation, never escrowed or consumed). An
+engine that has burned down below that cannot cheapen itself back out of the hole it is in.
+
+**Two suggestions.** Bill at usage, or at least document that the limit is what is charged so
+nobody ships the default. And let `gasLimit` be amended on a live subscription, so a project
+that discovers this can fix it without needing 32 STT it no longer has.
+
+### 5a. `eth_estimateGas` runs ~4× over actual, which compounds the above
+
+Settling 42 positions, estimated then executed:
+
+| | gas |
+| --- | --- |
+| `eth_estimateGas` per call | 2,053,708 – 2,796,559 |
+| Actually used | **597,706 – 797,706** |
+| Ratio | **~3.5–4.2× over** |
+
+We assume this is headroom for the 1,000,000-gas-remaining rule at new-account and new-SSTORE
+points. It is safe — a limit set from the estimate always succeeds — but it means the estimate
+is a **ceiling, not a forecast**, and anyone sizing a budget from it will over-provision
+fourfold. Worth a line in the gas documentation, because the natural reading of an estimate is
+that it approximates the cost.
+
+Both numbers matter together: usage is over-estimated ~4× *and* billing is at the limit, so a
+subscription whose limit was set from an estimate pays roughly **twenty-five times** what the
+work costs.
+
+---
+
 ## Smaller notes
 
 - `eth_getLogs` is capped at **1000 blocks** per query. At 100 ms blocks that is ~100
