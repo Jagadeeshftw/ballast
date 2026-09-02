@@ -20,9 +20,7 @@ import { NoGasBanner } from "./TopBar";
 export default function Checklist() {
   const { ready, hasProvider, account, chainOk, connecting, s, busy, err, tx, connect, switchChain, send } = useWallet();
 
-  if (!ready) return <div className="panel"><p className="why">Looking for a wallet…</p></div>;
-
-  if (!hasProvider) {
+  if (!ready || !hasProvider) {
     return (
       <div className="panel">
         <h3>No wallet in this browser</h3>

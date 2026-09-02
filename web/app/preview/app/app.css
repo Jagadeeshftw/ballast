@@ -314,3 +314,48 @@
 #dir-a .cumDot.won { fill: var(--covered); } #dir-a .cumDot.lost { fill: var(--exposed); }
 #dir-a .cumEnd { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
 #dir-a .cumEnd.up { fill: var(--covered); } #dir-a .cumEnd.down { fill: var(--exposed); }
+
+/* ------------------------------------------------------------------- policy */
+
+#dir-a .polGrid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 14px; }
+#dir-a .dial { display: block; margin: 4px 0 18px; }
+#dir-a .dialTop { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--chart); margin-bottom: 10px; }
+#dir-a .dialTop b { font-size: 26px; color: var(--bone); font-variation-settings: "wdth" 118; letter-spacing: -.02em; }
+#dir-a .dial input[type="range"] { width: 100%; accent-color: var(--covered); }
+#dir-a .dialFoot { display: block; font-size: 12px; color: var(--chart); margin-top: 7px; }
+
+#dir-a .kv { display: grid; grid-template-columns: auto 1fr; gap: 9px 20px; font-size: 14px; margin: 0; }
+#dir-a .kv dt { color: var(--chart); }
+#dir-a .kv dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+#dir-a .kv dd.up { color: var(--covered); } #dir-a .kv dd.down { color: var(--exposed); }
+#dir-a .bindWhy { display: block; font-size: 11px; color: var(--chart); margin-top: 3px; }
+
+#dir-a .field { display: block; margin-bottom: 16px; }
+#dir-a .field > span { display: block; font-size: 13px; color: var(--chart); margin-bottom: 5px; }
+#dir-a .field input {
+  width: 100%; background: var(--deep); border: 1px solid var(--rail); border-radius: 7px;
+  color: var(--bone); font-family: inherit; font-size: 15px; padding: 9px 11px;
+  font-variant-numeric: tabular-nums;
+}
+#dir-a .field small { display: block; font-size: 12px; color: var(--chart); margin-top: 5px; }
+
+#dir-a .stateBox {
+  border-left: 3px solid var(--beacon); background: color-mix(in srgb, var(--beacon) 7%, transparent);
+  padding: 14px 16px; border-radius: 0 8px 8px 0;
+}
+#dir-a .stateBox h4 { font-size: 14px; color: var(--beacon); margin-bottom: 6px; font-weight: 700; }
+#dir-a .stateBox p { font-size: 13px; color: var(--chart); }
+
+#dir-a .diffPanel { margin-top: 14px; }
+#dir-a .diff { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 18px; }
+#dir-a .diff th { text-align: left; font-weight: 400; color: var(--chart); padding: 9px 14px 9px 0; font-size: 12px; letter-spacing: .07em; text-transform: uppercase; }
+#dir-a .diff tbody th { text-transform: none; letter-spacing: 0; font-size: 14px; color: var(--chart); }
+#dir-a .diff td { padding: 9px 14px 9px 0; border-bottom: 1px solid color-mix(in srgb, var(--rail) 55%, transparent); font-variant-numeric: tabular-nums; }
+#dir-a .diff tr.changed td:last-child { color: var(--covered); font-weight: 700; }
+#dir-a .diff .arrow { color: var(--covered); }
+#dir-a .hint { font-size: 13px; color: var(--chart); margin-left: 12px; }
+#dir-a .exit { margin-top: 14px; border-color: color-mix(in srgb, var(--bone) 22%, transparent); }
+
+@media (max-width: 1000px) {
+  #dir-a .polGrid { grid-template-columns: 1fr; }
+}
