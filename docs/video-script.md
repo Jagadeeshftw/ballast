@@ -15,9 +15,9 @@ over three minutes is worse than cutting shot 6.
 
 ## Before recording
 
-- [ ] Decide the front door. `/` still serves the **old light design**; the approved page is
-      at `/preview/a`. Record whichever is live, but do not show a URL that lands on the old
-      one.
+- [ ] Confirm the front door. The landing page is at `/` and the dashboard at `/app`; no
+      `/preview/` path should appear on camera. The old preview URLs redirect, but a redirect
+      in the address bar looks unfinished on video.
 - [ ] `scripts/check-deploy.sh` — confirm the deployed commit matches local HEAD.
 - [ ] Browser at 1440×900, no bookmarks bar, no extensions visible, system dark.
 - [ ] Explorer tabs pre-loaded so nothing is waiting on a network round trip on camera:

@@ -5,39 +5,63 @@ export const alt = "Ballast — parametric cover on dreamDEX Event Contracts";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-/** A blank share card reads as abandoned, and the DoraHacks entry renders one. */
+/**
+ * A blank share card reads as abandoned, and the DoraHacks entry renders one.
+ *
+ * Night-bridge palette, matching the page it links to — a share card in the old light theme
+ * would have been the first thing anyone saw and the last thing that looked like the product.
+ * The mark is the Plimsoll line: a circle with a bar through it.
+ */
 export default async function Image() {
+  const deep = "#06131A", hull = "#0D2129", rail = "#17323C";
+  const bone = "#EAF2F3", chart = "#8FA6AE", covered = "#2FBFA3";
+
   return new ImageResponse(
     (
       <div
         style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
-          justifyContent: "space-between", background: "#e9edec", color: "#0e1a1f",
-          padding: "72px 80px", fontFamily: "sans-serif",
+          justifyContent: "space-between", background: deep, color: bone,
+          padding: "56px 64px", fontFamily: "sans-serif",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-          <div style={{ fontSize: 76, fontWeight: 700, letterSpacing: "-0.03em" }}>Ballast</div>
-          <div style={{ fontSize: 34, color: "#626d6e", lineHeight: 1.35, maxWidth: 900 }}>
-            Parametric cover on dreamDEX Event Contracts, bought by the chain itself in the
-            same block a window opens.
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 20, border: `3px solid ${bone}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <div style={{ width: 52, height: 4, background: covered }} />
+            </div>
+            <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>Ballast</div>
+          </div>
+
+          <div style={{
+            display: "flex", flexWrap: "wrap", gap: "0 16px",
+            fontSize: 54, fontWeight: 700, lineHeight: 1.12, letterSpacing: -1.6, maxWidth: 1040,
+          }}>
+            <div>Automatic downside cover, bought by</div>
+            <div style={{ color: covered }}>the chain itself.</div>
+          </div>
+
+          <div style={{ fontSize: 26, color: chart, lineHeight: 1.4, maxWidth: 880 }}>
+            Parametric cover on dreamDEX Event Contracts, bought in the same block a window
+            opens. No keeper, no cron.
           </div>
         </div>
 
-        {/* The load line, drawn as the mark it is. */}
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 48 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
-            <div style={{ height: 3, background: "#0e1a1f", width: "100%" }} />
-            <div style={{ fontSize: 22, color: "#626d6e" }}>strike · the window&rsquo;s open</div>
-            <div style={{ height: 34 }} />
-            <div style={{ height: 5, background: "#1f6f6b", width: "100%" }} />
-            <div style={{ fontSize: 22, color: "#1f6f6b", fontWeight: 700 }}>
-              load line · covered down to here
-            </div>
+        {/* The load line, engraved. */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 20, color: chart }}>
+            <div style={{ display: "flex" }}>strike &middot; the window&rsquo;s open</div>
+            <div style={{ display: "flex" }}>covered down to &minus;2.50%</div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-            <div style={{ fontSize: 22, color: "#626d6e" }}>no keeper, no cron</div>
-            <div style={{ fontSize: 22, color: "#626d6e" }}>Somnia testnet · live</div>
+          <div style={{ height: 2, background: bone, width: "100%" }} />
+          <div style={{ height: 52, background: hull, borderLeft: `1px solid ${rail}`, borderRight: `1px solid ${rail}`, display: "flex" }} />
+          <div style={{ height: 5, background: covered, width: "100%" }} />
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 22, color: chart, marginTop: 8 }}>
+            <div style={{ display: "flex" }}>Somnia Shannon testnet · live</div>
+            <div style={{ display: "flex", color: covered, fontWeight: 700 }}>0 blocks of latency</div>
           </div>
         </div>
       </div>

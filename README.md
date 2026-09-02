@@ -5,8 +5,8 @@ lands if the price falls, bought fresh every trading window.** You deposit colla
 and say how deep a fall you want covered; the chain does the rest, with no keeper, no cron
 and nothing of ours running.
 
-Live on Somnia Shannon testnet: **<https://ballast.0xo.in/preview/a>** ·
-dashboard **<https://ballast.0xo.in/preview/app>**
+Live on Somnia Shannon testnet: **<https://ballast.0xo.in>** ·
+dashboard **<https://ballast.0xo.in/app>**
 
 | Contract | Address |
 | --- | --- |

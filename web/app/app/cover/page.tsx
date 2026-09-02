@@ -2,7 +2,7 @@ import { ADDR, EXPLORER, KNOWN_POSITIONS, getPosition } from "@/lib/chain";
 import { positionsFor, totalsFor, cumulativeFor, type PositionRow } from "@/lib/portfolio";
 import CumChart from "../CumChart";
 import { recordRange } from "@/lib/record";
-import PayoffA from "../../a/PayoffA";
+import PayoffA from "../../PayoffA";
 import { SettleButton, SettleRun } from "../cover-actions";
 
 export const dynamic = "force-dynamic";

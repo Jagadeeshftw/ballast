@@ -1,4 +1,4 @@
-import "../a/a.css";
+import "../landing.css";
 import "./app.css";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";

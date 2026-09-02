@@ -12,7 +12,6 @@
   background: var(--deep); color: var(--bone); min-height:100vh;
   font-size: var(--s2); line-height:1.5;
 }
-html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 
 /* Margins are set explicitly below rather than inherited from anywhere. */
 #dir-a :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
@@ -151,7 +150,12 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 #dir-a .aLede { color: var(--chart); font-size: var(--s3); max-width: 62ch; margin: 0 0 30px; }
 #dir-a .foot { color: var(--chart); font-size: var(--s2); max-width: 76ch; margin: 26px 0 0; }
 #dir-a .subhead { font-size: var(--s4); font-weight: 700; margin: 54px 0 12px; }
-#dir-a .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+/* A 42-character address at 12px monospace is ~300px and has no natural break opportunity,
+   which overflows a 390px viewport. Was previously masked by a globals.css rule. */
+#dir-a .mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+  overflow-wrap: anywhere; word-break: break-all;
+}
 #dir-a .up { color: var(--covered); } #dir-a .down { color: var(--exposed); } #dir-a .dim { color: var(--chart); }
 
 #dir-a .twoUp { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 44px; align-items: center; }

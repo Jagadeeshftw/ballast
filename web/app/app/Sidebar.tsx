@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Wordmark from "../Wordmark";
 
-const BASE = "/preview/app";
+const BASE = "/app";
 
 const NAV = [
   { href: BASE, label: "Overview", icon: "◐", primary: true },
@@ -18,7 +18,7 @@ const NAV = [
 const EXTERNAL = [
   { href: "https://github.com/Jagadeeshftw/ballast/tree/main/docs", label: "Docs" },
   { href: "https://github.com/Jagadeeshftw/ballast", label: "Repo" },
-  { href: "/preview/a", label: "ballast.0xo.in" },
+  { href: "/", label: "ballast.0xo.in" },
 ] as const;
 
 /**

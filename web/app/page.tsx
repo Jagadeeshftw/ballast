@@ -1,334 +1,362 @@
-import PayoffCurve from "./PayoffCurve";
-import LoadLine from "./LoadLine";
-import EventTape from "./EventTape";
-import Dial from "./Dial";
-import {
-  ADDR, EXPLORER, KNOWN_POSITIONS, SKIP_MEANING,
-  buildWindow, getEngineSet, getEngineState, getLiveBook, getLiveWindow, getPosition, getSpotPrices, getTape, getVaultState,
-  type Position,
-} from "@/lib/chain";
+import "./landing.css";
+import { ADDR, EXPLORER } from "@/lib/chain";
+import { loadPreview, STEPS, utc } from "./data";
+import { WideGauge, NarrowGauge, fmtLeft } from "./Gauge";
+import Nav from "./Nav";
+import Reveal from "./Reveal";
+import PayoffA from "./PayoffA";
+import RunState, { RecordedBanner } from "./RunState";
+import { RECORD } from "@/lib/record";
 
 export const dynamic = "force-dynamic";
 
-const usd = (raw: bigint, dp = 2) => (Number(raw) / 1e6).toFixed(dp);
-const stt = (raw: bigint, dp = 2) => (Number(raw) / 1e18).toFixed(dp);
-
-/** Chain timestamps are UTC. Render them as UTC, explicitly, always. */
-function utc(ts: number | bigint): string {
-  const d = new Date(Number(ts) * 1000);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())} UTC`;
-}
-
-export default async function Home() {
-  const vault = await getVaultState();
-  const makeWholeBps = Number(vault.policy[1]) || 250;
-
-  const [engine, prices, tape, engineSet, live, ...positions] = await Promise.all([
-    getEngineState(), getSpotPrices(), getTape(14), getEngineSet(), getLiveWindow(makeWholeBps),
-    ...KNOWN_POSITIONS.map((p) => getPosition(p)),
-  ]);
-
-  // The hero must never be a blank box: if the queue is momentarily empty, fall back to the
-  // most recently seen window so there is always something real on screen.
-  let shown = live;
-  if (!shown) {
-    const lastSeen = tape.items.find((t) => t.kind === "enqueued" && t.marketId)?.marketId;
-    if (lastSeen) shown = await buildWindow(lastSeen, makeWholeBps);
-  }
-
-  const book = await getLiveBook(shown?.marketId ?? null);
-
-  const settled = positions.filter((p) => p.settled);
-  const premiumPaid = settled.reduce((a, p) => a + Number(p.premium) / 1e6, 0);
-  const proceeds = settled.reduce((a, p) => a + Number(p.proceeds) / 1e6, 0);
-  const paidOut = settled.filter((p) => p.outcome === "Won").length;
-
-  const ratio = Number(engine.ratioX100) / 100;
+export default async function DirectionA() {
+  const {
+    vault, engine, tape, shown, book, makeWholeBps, eth,
+    positions, settled, premiumPaid, proceeds, paidOut, engineSet, declined,
+  } = await loadPreview();
   const nowSec = Math.floor(Date.now() / 1000);
-  const sinceCb = engine.lastCallbackAt > 0n ? nowSec - Number(engine.lastCallbackAt) : null;
-  const declined = tape.items.filter((t) => t.kind === "declined" || t.kind === "gaveUp").slice(0, 12);
-  const ethPrice = prices.find((p) => p.asset === "ETH");
+  const usd = (raw: bigint, dp = 2) => (Number(raw) / 1e6).toFixed(dp);
+
+  // Live always wins. The frozen record only stands in when the rolling tail is empty --
+  // which, with the engine stopped, it always is.
+  const liveTape = tape.items.slice(0, 10);
+  const tapeRows = liveTape.length > 0 ? liveTape : RECORD.excerpt;
+  const tapeIsRecord = liveTape.length === 0;
+  const declinedRows = declined.length > 0 ? declined : RECORD.declined.slice(0, 8);
+  const declinedIsRecord = declined.length === 0;
+  const ethPx = eth?.ok && eth.price ? eth.price : null;
 
   return (
-    <div className="shell">
-      <main>
-        <header className="masthead">
-          <h1>Ballast</h1>
-          <p className="standfirst">
-            Parametric cover on dreamDEX Event Contracts, bought by the chain itself in the
-            same block a window opens. No keeper, no cron, nothing of ours running.
-          </p>
-        </header>
+    <div id="dir-a">
+      <Nav />
 
-        <section aria-labelledby="live-h">
-          <h2 id="live-h">The current window</h2>
-          <LoadLine w={shown} />
-        </section>
-
-        <section aria-labelledby="tape-h">
-          <h2 id="tape-h">Watch it happen</h2>
-          <p className="lede">
-            Every line is a transaction. A window opens, Ballast&rsquo;s callback lands in the
-            same block, the ladder waits for a book, then cover opens or is declined with a
-            reason.
-          </p>
-          <EventTape items={tape.items.slice(0, 16)} spanBlocks={tape.spanBlocks} />
-        </section>
-
-        <section aria-labelledby="curve-h">
-          <h2 id="curve-h">What that buys</h2>
-          <PayoffCurve positions={positions} />
-        </section>
-
-        <section aria-labelledby="dial-h">
-          <h2 id="dial-h">Move the load line yourself</h2>
-          <p className="lede">
-            Read-only, priced against the live book — Down at{" "}
-            {book.priceable ? book.coverPrice.toFixed(3) : "—"} with{" "}
-            {book.priceable ? book.bookQty.toFixed(0) : "0"} contracts on offer. No wallet, no
-            transaction. Drag or use the arrow keys.
-          </p>
-          {book.priceable ? (
-            <Dial
-              exposure={positions[0]?.exposureAtOpen || 4890}
-              coverPrice={book.coverPrice}
-              lotSize={book.lotSize}
-              bookQty={book.bookQty}
-              premiumCeilingBps={Number(vault.policy[2]) || 300}
-              notionalCapUsd={Number(vault.policy[4]) / 1e6 || 2000}
-              initialBps={makeWholeBps}
-            />
-          ) : (
-            <p className="empty">
-              The current window&rsquo;s Down book is one-sided, so there is no price to quote
-              against. Rather than show a made-up number, the dial waits — which is exactly
-              what the engine does with a book it cannot price.
+      {/* ---------------------------------------------------------- 1. hero */}
+      <section className="aHeroWrap" id="top">
+        <div className="wrap aHero">
+          <div>
+            <h1>Automatic downside cover, bought by <em>the chain itself</em>.</h1>
+            <p className="sub">
+              You hold ETH. It can fall while you sleep. Ballast buys cover in the same block
+              each window opens — no keeper, no cron, nothing of ours running.
             </p>
+            <div className="heroActions">
+              <a className="cta" href="/app">Open the dashboard</a>
+              <div>
+                <span className="statNum">{String(engine.coversOpened)}</span>
+                <span className="statLabel">WINDOWS COVERED, ON CHAIN</span>
+              </div>
+            </div>
+          </div>
+
+          {/* The proof, beside the claim. */}
+          <div className="heroLive">
+            {shown ? (
+              <>
+                <div className="heroLiveTop">
+                  <p className="asset">{shown.asset} &middot; {shown.intervalLabel}</p>
+                  <span className="beat"><i aria-hidden="true" />live</span>
+                </div>
+                <p className="heroCount">
+                  <b className={shown.secondsLeft > 0 ? "" : "word"}>
+                    {shown.secondsLeft > 0 ? fmtLeft(shown.secondsLeft) : "settling"}
+                  </b>
+                  <span>{shown.secondsLeft > 0 ? "UNTIL IT SETTLES" : "AWAITING SETTLEMENT"}</span>
+                </p>
+                <NarrowGauge w={shown} />
+                <ul className="heroFeed">
+                  {tape.items.slice(0, 3).map((t, i) => (
+                    <li key={`${t.tx}-${i}`}>
+                      <span className="b">{String(t.block)}</span>
+                      <span className={`d ${t.tone}`} aria-hidden="true" />
+                      <span className="h">{t.headline}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p className="sub">No window is queued right now — the next rolls within a minute.</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ 2. the problem */}
+      <section className="sec aBand">
+        <div className="wrap">
+          <p className="eyebrow">The problem</p>
+          <h2>Cover exists. Buying it every hour by hand does not.</h2>
+          <div className="twoUp">
+            <p className="aLede">
+              You hold ETH. It can fall while you sleep, and the instruments that would cover
+              that fall expire every sixty seconds. Nobody sits up rolling them by hand, so in
+              practice the position is simply uncovered — not by decision, but by fatigue.
+            </p>
+            <div className="figureBox">
+              <span className="statNum">{String(engine.callbackCount)}</span>
+              <span className="statLabel">CALLBACKS DELIVERED WITHOUT A KEEPER</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------- 3. how it works */}
+      <section className="sec" id="how">
+        <div className="wrap">
+          <p className="eyebrow">How it works</p>
+          <h2>Three steps, then nothing to do.</h2>
+          <p className="aLede">
+            Ballast covers what it can <strong>measure</strong> you holding. Never a number you
+            type in.
+          </p>
+          {/* Ruled form rather than three cards: the numerals carry it and the rules make it
+              read as a specification. Taken from direction B, which did this better. */}
+          <Reveal className="ruled">
+            {STEPS.map((s) => (
+              <div className="rrow" key={s.n}>
+                <span className="rn">{s.n}</span>
+                <h3>{s.head}</h3>
+                <p>{s.body}</p>
+                <span className="rfoot">{s.foot}</span>
+              </div>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
+      {/* --------------------------------------------- 4. what it actually pays */}
+      <section className="sec aBand">
+        <div className="wrap">
+          <p className="eyebrow">What it actually pays</p>
+          <h2>Exact at one depth. Imperfect either side. On purpose.</h2>
+          <p className="aLede">
+            The payout is fixed, so cover is exact where you set the load line and imperfect
+            above and below it. That gap is called <strong>basis risk</strong>, and it is the
+            price of <strong>parametric cover</strong> — the same trade flight-delay insurance
+            makes, paying the same whether you missed a meeting or a wedding.
+          </p>
+          <Reveal className="payoffWrap"><PayoffA positions={positions} /></Reveal>
+          <table className="pays">
+            <thead>
+              <tr><th>ETH falls</th><th>Spot loss</th><th>Cover nets</th><th>Net</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1%</td><td>−$50</td><td className="up">+$125</td><td className="up"><strong>+$75</strong></td></tr>
+              <tr className="mark"><td>2.5%</td><td>−$125</td><td className="up">+$125</td><td><strong>$0</strong></td></tr>
+              <tr><td>5%</td><td>−$250</td><td className="up">+$125</td><td className="down"><strong>−$125</strong></td></tr>
+            </tbody>
+          </table>
+          <p className="foot">
+            The middle row is the load line. Ballast shows you the make-whole point it{" "}
+            <em>achieved</em>, never the one you asked for, whenever liquidity bound the size.
+          </p>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------- 5. watch it happen */}
+      <section className="sec aLive" id="live" >
+        <div className="wrap">
+          <p className="eyebrow">Live · Somnia testnet</p>
+          <h2>Watch it happen.</h2>
+          <p className="aLede">
+            Every line is a transaction you can open. A window opens, Ballast&rsquo;s callback
+            lands in the same block, then cover opens or is declined with a reason.
+          </p>
+
+          <RunState subscribed={engine.subscribed} lastCallbackAt={engine.lastCallbackAt}
+            balance={engine.balance} nowSec={nowSec} />
+
+          {shown ? (
+            <>
+              <div className="gaugeRow">
+                <div>
+                  <WideGauge w={shown} />
+                  <NarrowGauge w={shown} />
+                </div>
+                <div className="count">
+                  <p className="asset">{shown.asset} &middot; {shown.intervalLabel}</p>
+                  <p className="cl">{shown.secondsLeft > 0 ? "closes in" : "closed"}</p>
+                  <p className={`big ${shown.secondsLeft > 0 ? "" : "word"}`}>
+                    {shown.secondsLeft > 0 ? fmtLeft(shown.secondsLeft) : "settling"}
+                  </p>
+                  <p className="cs">
+                    {shown.moveDown === null ? "move unknown"
+                      : `${Math.abs(shown.moveDown * 100).toFixed(3)}% ${shown.moveDown > 0 ? "down" : "up"}`}
+                  </p>
+                </div>
+              </div>
+              {tapeIsRecord && <RecordedBanner what={`${RECORD.counts.WindowEnqueued?.toLocaleString()} windows and ${RECORD.counts.CoverOpened} covers in all; this is a contiguous excerpt around one purchase`} />}
+              <ol className="aTape">
+                {tapeRows.map((t, i) => (
+                  <li key={`${t.tx}-${i}`}
+                    className={t.kind === "callback" && i === tape.items.findIndex((x) => x.kind === "callback")
+                      ? "landing" : undefined}>
+                    <span className="t-blk">{String(t.block)}</span>
+                    <span className={`t-dot ${t.tone}`} aria-hidden="true" />
+                    <span className="t-head">{t.headline}</span>
+                    <span className="t-det">{t.detail}</span>
+                    <a className="t-tx" href={`${EXPLORER}/tx/${t.tx}`}>tx</a>
+                  </li>
+                ))}
+              </ol>
+            </>
+          ) : (
+            <p className="aLede">No window is queued right now — the next rolls within a minute.</p>
           )}
-        </section>
+        </div>
+      </section>
 
-        <section aria-labelledby="positions-h">
-          <h2 id="positions-h">The two settled positions</h2>
-          <p className="lede">
-            Both asked for {settled[0]?.requestedBps ?? 250} bps and both got less, for the
-            same reason: the book offered only 200 contracts, so size was capped by
-            liquidity rather than by policy. Each card shows what was actually bought.
+      {/* ------------------------------------------ 6. it has already done this */}
+      <section className="sec aBand" id="numbers" >
+        <div className="wrap">
+          <p className="eyebrow">It has already done this</p>
+          <h2>Two settled positions. One paid, one did not.</h2>
+          <p className="aLede">
+            Both asked for {settled[0]?.requestedBps ?? 250} bps and both got less, for the same
+            reason: the book offered only 200 contracts, so size was capped by liquidity rather
+            than by policy.
           </p>
-          <div className="cards">
-            {positions.map((p) => <PositionCard key={p.label} p={p} />)}
-          </div>
-        </section>
 
-        <section aria-labelledby="cost-h" className="band">
-          <h2 id="cost-h">Cost against delivered</h2>
-          <div className="figures">
-            <Figure label="Premium paid" value={premiumPaid.toFixed(2)} unit="tUSDC" tone="heel" />
-            <Figure label="Paid out" value={proceeds.toFixed(2)} unit="tUSDC" tone="waterline" />
-            <Figure label="Net" value={(proceeds - premiumPaid).toFixed(2)} unit="tUSDC"
-              tone={proceeds - premiumPaid >= 0 ? "waterline" : "heel"} />
-            <Figure label="Windows that paid" value={`${paidOut} of ${settled.length}`} unit="settled" />
+          <div className="posGrid">
+            {positions.map((p) => {
+              const won = p.outcome === "Won";
+              return (
+                <article className="pos" key={p.label}>
+                  <div className="posTop">
+                    <h3>Position {p.label}</h3>
+                    <span className={`tag ${won ? "up" : "down"}`}>{p.settled ? p.outcome : "pending"}</span>
+                  </div>
+                  <div className="posPair">
+                    <div><span className="k">asked for</span><span className="v dim">{p.requestedBps}</span></div>
+                    <div><span className="k">actually got</span>
+                      <span className={`v ${won ? "up" : "down"}`}>{p.achievedBps}</span></div>
+                  </div>
+                  <p className="posUnit">basis points{p.requestedBps - p.achievedBps > 0 ? ` · ${p.requestedBps - p.achievedBps} short` : ""}</p>
+                  <dl className="posKv">
+                    <dt>Premium</dt><dd>{usd(p.premium)} tUSDC</dd>
+                    <dt>Window move</dt>
+                    <dd>{p.moveDown === null ? "unknown"
+                      : `${Math.abs(p.moveDown * 100).toFixed(4)}% ${p.moveDown > 0 ? "down — cover paid" : "up — cover paid nothing"}`}</dd>
+                    <dt>Net with spot</dt>
+                    <dd>{p.netTotal === null ? "unknown"
+                      : `${p.netTotal >= 0 ? "+" : "−"}${Math.abs(p.netTotal).toFixed(2)} tUSDC`}</dd>
+                  </dl>
+                  <p className="posTx">
+                    <a href={`${EXPLORER}/tx/${p.openedTx}`}>opened</a>
+                    <a href={`${EXPLORER}/tx/${p.settledTx}`}>settled</a>
+                  </p>
+                </article>
+              );
+            })}
           </div>
-          <p className="note">
-            An at-the-money binary is the most expensive cover this instrument offers. The
-            strike is the window&rsquo;s open, so there is no cheaper out-of-the-money strike
-            to buy instead and you pay for the very likely small moves too. Rolling every
-            window compounds that, which is why the product defaults to the four-hour and
-            twenty-four-hour windows rather than the sixty-second ones.
+
+          <div className="totals">
+            <div><span className="statNum down">{premiumPaid.toFixed(2)}</span><span className="statLabel">PREMIUM PAID, tUSDC</span></div>
+            <div><span className="statNum up">{proceeds.toFixed(2)}</span><span className="statLabel">PAID OUT, tUSDC</span></div>
+            <div><span className={`statNum ${proceeds - premiumPaid >= 0 ? "up" : "down"}`}>{(proceeds - premiumPaid).toFixed(2)}</span><span className="statLabel">NET, tUSDC</span></div>
+            <div><span className="statNum">{paidOut} of {settled.length}</span><span className="statLabel">WINDOWS THAT PAID</span></div>
+          </div>
+          <p className="foot">
+            An at-the-money binary is the most expensive cover this instrument offers. The strike
+            is the window&rsquo;s open, so there is no cheaper out-of-the-money strike to buy
+            instead and you pay for the very likely small moves too. Rolling every window
+            compounds that, which is why the product defaults to the four-hour and twenty-four-hour
+            windows rather than the sixty-second ones.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section aria-labelledby="skips-h">
-          <h2 id="skips-h">Windows it declined</h2>
-          <p className="lede">A refusal is a decision. Each of these could have been traded and was not.</p>
-          {declined.length === 0 ? (
-            <p className="empty">
-              Nothing declined in the last {tape.spanBlocks.toLocaleString()} blocks. When a
-              book is one-sided, priced above 0.90, or a ceiling is already committed, the
-              window appears here with the reason.
+      {/* -------------------------------------------------- 7. and it refuses */}
+      <section className="sec">
+        <div className="wrap">
+          <p className="eyebrow">And it refuses</p>
+          <h2>A refusal is a decision.</h2>
+          <p className="aLede">
+            Each of these could have been traded and was not. The reason is on chain beside it.
+          </p>
+          {declinedRows.length === 0 ? (
+            <p className="aLede">
+              Nothing declined in the last {tape.spanBlocks.toLocaleString()} blocks.
             </p>
           ) : (
-            <ul className="feed">
-              {declined.map((d, i) => (
-                <li key={i}>
-                  <span className="feed-block">{String(d.block)}</span>
-                  <span className="tag heel">declined</span>
-                  <span className="feed-body"><strong>{d.headline}</strong>{d.detail ? ` — ${d.detail}` : ""}</span>
-                  <a className="feed-tx" href={`${EXPLORER}/tx/${d.tx}`}>tx</a>
+            <>
+            {declinedIsRecord && <RecordedBanner what={`${RECORD.declined.length} refusals, each with its reason`} />}
+            <ol className="aTape">
+              {declinedRows.map((d, i) => (
+                <li key={`${d.tx}-${i}`}>
+                  <span className="t-blk">{String(d.block)}</span>
+                  <span className="t-dot heel" aria-hidden="true" />
+                  <span className="t-head">{d.headline}</span>
+                  <span className="t-det">{d.detail}</span>
+                  <a className="t-tx" href={`${EXPLORER}/tx/${d.tx}`}>tx</a>
                 </li>
               ))}
-            </ul>
+            </ol>
+            </>
           )}
-        </section>
+        </div>
+      </section>
 
-        <section aria-labelledby="acct-h" className="band">
-          <h2 id="acct-h">Custody</h2>
-          <div className="figures">
-            <Figure label="Vault balance" value={usd(vault.collateral)} unit="tUSDC" />
-            <Figure label="Reserved" value={usd(vault.reserved)} unit="against open cover" />
-            <Figure label="Withdrawable now" value={usd(vault.free)} unit="tUSDC" tone="waterline" />
-            <Figure label="Unaccounted" value={usd(vault.surplus)} unit="tUSDC (expect 0)" />
+      {/* ------------------------------------------------- 8. under the hood */}
+      <section className="sec aBand" id="hood" >
+        <div className="wrap">
+          <p className="eyebrow">Under the hood</p>
+          <h2>Custody you can leave at any moment.</h2>
+          <div className="totals">
+            <div><span className="statNum">{usd(vault.collateral)}</span><span className="statLabel">VAULT BALANCE, tUSDC</span></div>
+            <div><span className="statNum">{usd(vault.reserved)}</span><span className="statLabel">RESERVED AGAINST OPEN COVER</span></div>
+            <div><span className="statNum up">{usd(vault.free)}</span><span className="statLabel">WITHDRAWABLE NOW</span></div>
+            <div><span className="statNum">{usd(vault.surplus)}</span><span className="statLabel">UNACCOUNTED (EXPECT 0)</span></div>
           </div>
-          <p className="note">
+          <p className="foot">
             Withdrawal of unreserved collateral is unconditional and <strong>revoke() takes
             effect immediately</strong>, with no operator able to block or delay it. Ballast is
-            the trader of record: it holds positions in its own name and never touches a
-            user&rsquo;s dreamDEX account.
+            the trader of record: it holds positions in its own name and never touches your
+            dreamDEX account.
           </p>
-          <dl className="kv">
-            <Row k="Consent" v={vault.policy[0]
-              ? `active · make whole at ${vault.policy[1]} bps · premium ceiling ${vault.policy[2]} bps · expires ${utc(vault.policy[3])}`
-              : "no active policy — the engine can do nothing"} />
-            {prices.map((p) => (
-              <Row key={p.asset} k={`${p.asset} spot`}
-                v={p.ok && p.price ? `$${p.price.toFixed(2)}` : "unpriceable — book one-sided or too wide"} />
-            ))}
-          </dl>
-        </section>
 
-        <section aria-labelledby="engines-h">
-          <h2 id="engines-h">Engines</h2>
-          <p className="lede">
-            The vault approves a <strong>set</strong> of engines, so a redeploy strands
-            nothing. A retired engine keeps settling the cover it opened while the live one
-            takes new enrolments — that has happened here, not just in a test.
+          <h3 className="subhead">The engine set</h3>
+          <p className="aLede">
+            The vault approves a <strong>set</strong> of engines, so a redeploy strands nothing.
+            A retired engine keeps settling the cover it opened while the live one takes new
+            enrolments — that has happened here, not just in a test.
           </p>
-          <ul className="engines">
+          <ol className="aTape">
             {engineSet.map((e) => (
               <li key={e.address}>
-                <span className={e.live ? "tag waterline" : "tag silt"}>{e.live ? "live" : "retired"}</span>
-                <a href={`${EXPLORER}/address/${e.address}`} className="mono">{e.address}</a>
-                <span className="silt-text">{stt(e.balance)} STT · {e.approved ? "vault-approved" : "NOT approved"}</span>
+                <span className="t-blk">{e.live ? "live" : "retired"}</span>
+                <span className={`t-dot ${e.live ? "waterline" : ""}`} aria-hidden="true" />
+                <span className="t-head mono">{e.address}</span>
+                <span className="t-det">{e.approved ? "vault-approved" : "NOT approved"}</span>
+                <a className="t-tx" href={`${EXPLORER}/address/${e.address}`}>see</a>
               </li>
             ))}
-          </ul>
-        </section>
+          </ol>
 
-        <footer>
-          <dl className="kv">
-            <Row k="Vault" v={<Addr a={ADDR.vault} />} />
-            <Row k="Engine" v={<Addr a={ADDR.engine} />} />
-            <Row k="Exposure source" v={<Addr a={ADDR.source} />} />
-            <Row k="Collateral" v={<Addr a={ADDR.tusdc} />} label="tUSDC · 6dp" />
-            <Row k="Chain" v="Somnia Shannon testnet · 50312" />
-            <Row k="Read at" v={`${utc(nowSec)} · block ${String(tape.head)}`} />
+          <dl className="hoodKv">
+            <dt>Vault</dt><dd><a className="mono" href={`${EXPLORER}/address/${ADDR.vault}`}>{ADDR.vault}</a></dd>
+            <dt>Engine</dt><dd><a className="mono" href={`${EXPLORER}/address/${ADDR.engine}`}>{ADDR.engine}</a></dd>
+            <dt>Exposure source</dt><dd><a className="mono" href={`${EXPLORER}/address/${ADDR.source}`}>{ADDR.source}</a></dd>
+            <dt>Collateral</dt><dd><a className="mono" href={`${EXPLORER}/address/${ADDR.tusdc}`}>{ADDR.tusdc}</a> · tUSDC, 6dp</dd>
+            <dt>Chain</dt><dd>Somnia Shannon testnet · 50312</dd>
+            <dt>Read at</dt><dd>{utc(nowSec)} · block {String(tape.head)}</dd>
           </dl>
-          <p className="colophon">
-            Every number on this page is read from the chain at request time. Nothing is
-            cached, mocked, or hardcoded. No wallet required.
-          </p>
-        </footer>
-      </main>
-
-      {/* Sticky instrument rail — always visible, always live. */}
-      <aside className="rail">
-        <div className="rail-inner">
-          <p className="rail-live">
-            <span className={engine.stale ? "dot stale" : "dot live"} aria-hidden="true" />
-            {engine.stale ? "stale" : "live"} · Somnia testnet
-            {sinceCb !== null && <span className="rail-age"> · callback {sinceCb}s ago</span>}
-          </p>
-
-          {shown && (
-            <div className="rail-block">
-              <p className="rail-h">{shown.asset} · {shown.intervalLabel} window</p>
-              <p className="rail-big">{shown.secondsLeft > 0 ? fmtLeft(shown.secondsLeft) : "settling"}</p>
-              <p className="rail-sub">{shown.secondsLeft > 0 ? "until it closes" : "awaiting settlement"}</p>
-              <dl className="rail-kv">
-                <div><dt>strike</dt><dd>{shown.strike.toFixed(2)}</dd></div>
-                <div><dt>load line</dt><dd>{shown.loadPrice.toFixed(2)}</dd></div>
-                <div><dt>now</dt><dd>{shown.now ? shown.now.toFixed(2) : "—"}</dd></div>
-              </dl>
-            </div>
-          )}
-
-          <div className="rail-block rail-engine">
-            <p className="rail-h">engine</p>
-            <p className="rail-big">{String(engine.windowsRemaining)}</p>
-            <p className="rail-sub">windows of runway · {ratio.toFixed(2)} callbacks each</p>
-            <dl className="rail-kv">
-              <div><dt>delivered</dt><dd>{String(engine.callbackCount)}</dd></div>
-              <div><dt>remaining</dt><dd>{String(engine.callbacksLeft)}</dd></div>
-              <div><dt>last callback</dt><dd>{sinceCb === null ? "—" : `${sinceCb}s ago`}</dd></div>
-            </dl>
-          </div>
-
-          <div className="rail-block rail-secondary">
-            <p className="rail-h">covered</p>
-            <p className="rail-big">{String(engine.coversOpened)}</p>
-            <p className="rail-sub">
-              {String(engine.coversSettled)} settled · {ethPrice?.ok ? `ETH $${ethPrice.price?.toFixed(2)}` : "ETH unpriceable"}
-            </p>
-          </div>
         </div>
-      </aside>
+      </section>
+
+      <footer className="aFoot">
+        <div className="wrap">
+          <p className="foot">
+            Every number on this page is read from the chain at request time. Nothing is cached,
+            mocked, or hardcoded. No wallet required to read it.
+          </p>
+          <p className="footLinks">
+            <a href="https://github.com/Jagadeeshftw/ballast">Repository</a>
+            <a href="https://github.com/Jagadeeshftw/ballast/tree/main/docs">Docs</a>
+            <a href="https://github.com/Jagadeeshftw/ballast/blob/main/LICENSE">MIT licence</a>
+          </p>
+        </div>
+      </footer>
     </div>
   );
-}
-
-function fmtLeft(s: number) {
-  const m = Math.floor(s / 60);
-  if (m >= 60) return `${Math.floor(m / 60)}h ${m % 60}m`;
-  return `${m}:${String(s % 60).padStart(2, "0")}`;
-}
-
-function PositionCard({ p }: { p: Position }) {
-  const tone = p.outcome === "Won" ? "waterline" : p.outcome === "Lost" ? "heel" : "silt";
-  const gap = p.requestedBps - p.achievedBps;
-  return (
-    <article className={`card ${tone}`}>
-      <div className="card-head">
-        <h3>Position {p.label}<span className="silt-text"> · {p.engineLabel} engine</span></h3>
-        <span className={`tag ${tone}`}>{p.settled ? p.outcome : "pending"}</span>
-      </div>
-
-      <div className="dialpair">
-        <div className="dialpair-half">
-          <span className="dialpair-label">asked for</span>
-          <span className="dialpair-value silt-num">{p.requestedBps}</span>
-        </div>
-        <div className="dialpair-sep" aria-hidden="true" />
-        <div className="dialpair-half">
-          <span className="dialpair-label">actually got</span>
-          <span className={`dialpair-value ${tone}-num`}>{p.achievedBps}</span>
-        </div>
-      </div>
-      <p className="dialpair-unit">basis points{gap > 0 ? ` · ${gap} short` : ""}</p>
-
-      <dl className="kv tight">
-        <Row k="Premium" v={`${usd(p.premium)} tUSDC at q ${(Number(p.coverPrice) / 1e6).toFixed(3)}`} />
-        <Row k="Cover leg" v={`${p.coverLegNet >= 0 ? "+" : "−"}${Math.abs(p.coverLegNet).toFixed(2)} tUSDC`} />
-        <Row k="Net with spot" v={p.netTotal === null ? "unknown"
-          : `${p.netTotal >= 0 ? "+" : "−"}${Math.abs(p.netTotal).toFixed(2)} tUSDC`} />
-        <Row k="Window move" v={p.moveDown === null ? "unknown"
-          : `${Math.abs(p.moveDown * 100).toFixed(4)}% ${p.moveDown > 0 ? "down — cover paid" : "up — cover paid nothing"}`} />
-        <Row k="Open → close" v={p.openPrice && p.closePrice ? `$${p.openPrice.toFixed(2)} → $${p.closePrice.toFixed(2)}` : "unknown"} />
-        <Row k="Bought" v={`${p.purchaseDelaySeconds}s after the open · drift ${p.driftBps} bps`} />
-      </dl>
-
-      <p className="txrow">
-        <a href={`${EXPLORER}/tx/${p.openedTx}`}>opened</a>
-        <a href={`${EXPLORER}/tx/${p.settledTx}`}>settled</a>
-        <a href={`${EXPLORER}/address/${p.engine}`}>engine</a>
-      </p>
-    </article>
-  );
-}
-
-function Figure({ label, value, unit, tone }: { label: string; value: string; unit: string; tone?: "waterline" | "heel" }) {
-  return (
-    <div className="figure">
-      <span className="figure-label">{label}</span>
-      <span className={`figure-value ${tone ? `${tone}-num` : ""}`}>{value}</span>
-      <span className="figure-unit">{unit}</span>
-    </div>
-  );
-}
-
-function Row({ k, v, label }: { k: string; v: React.ReactNode; label?: string }) {
-  return (<><dt>{k}</dt><dd>{v}{label ? <span className="silt-text"> · {label}</span> : null}</dd></>);
-}
-
-function Addr({ a }: { a: string }) {
-  return <a className="mono" href={`${EXPLORER}/address/${a}`}>{a}</a>;
 }

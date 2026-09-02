@@ -106,7 +106,7 @@ export default function Checklist() {
       k: "policy", label: "Set the load line",
       done: policyLive,
       why: "How deep a fall you want made whole, and the most you will pay for it per window. That is the whole of the policy.",
-      href: "/preview/app/policy", hrefText: policyLive ? "Change it" : "Set it on Policy",
+      href: "/app/policy", hrefText: policyLive ? "Change it" : "Set it on Policy",
     },
     {
       k: "enrol", label: "Enrol",

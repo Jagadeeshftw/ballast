@@ -48,7 +48,7 @@ export default function TopBar({
 
       <span className="tbarGap" />
 
-      <a className="chip bell" href={`/preview/app/activity`} aria-label={`${unread} notifications`}>
+      <a className="chip bell" href={`/app/activity`} aria-label={`${unread} notifications`}>
         <i aria-hidden="true">◔</i>{unread > 0 && <b>{unread}</b>}
       </a>
 
@@ -61,7 +61,7 @@ export default function TopBar({
           {connecting ? "Connecting…" : "Connect wallet"}
         </button>
       ) : !chainOk ? (
-        <a className="chip alert" href="/preview/app">wrong network</a>
+        <a className="chip alert" href="/app">wrong network</a>
       ) : (
         <div className="walletBox" ref={box}>
           <button type="button" className="chip wallet" onClick={() => setMenu((v) => !v)}

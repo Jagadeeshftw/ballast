@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Wordmark from "../Wordmark";
+import Wordmark from "./Wordmark";
 
 const SECTIONS = [
   { id: "how", label: "How it works" },
@@ -76,7 +76,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <a className={`aNavCta ${heroOut ? "in" : "out"} ${ready ? "anim" : ""}`} href="/preview/app">
+        <a className={`aNavCta ${heroOut ? "in" : "out"} ${ready ? "anim" : ""}`} href="/app">
           Open the dashboard
         </a>
       </div>

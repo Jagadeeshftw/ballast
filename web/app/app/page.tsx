@@ -3,7 +3,7 @@ import { loadPreview, utc } from "../data";
 import { positionsFor, totalsFor } from "@/lib/portfolio";
 import { notificationsFor } from "./notifications";
 import Checklist from "./Checklist";
-import RunState from "../a/RunState";
+import RunState from "../RunState";
 
 export const dynamic = "force-dynamic";
 
@@ -87,7 +87,7 @@ export default async function Overview() {
             Net counts <strong>settled</strong> positions only. {usd(t.committedPremium)} tUSDC
             of premium sits against {t.open} windows that expired without <code>settle()</code>{" "}
             being called — spent, but with outcomes not yet known, so it is not reported as a
-            loss. <a href="/preview/app/cover">Settle them on Cover</a>.
+            loss. <a href="/app/cover">Settle them on Cover</a>.
           </p>
         </div>
       </section>
@@ -111,7 +111,7 @@ export default async function Overview() {
             ))}
           </ol>
         )}
-        <p className="why"><a href="/preview/app/activity">All activity →</a> · block {String(tape.head)}</p>
+        <p className="why"><a href="/app/activity">All activity →</a> · block {String(tape.head)}</p>
       </section>
     </>
   );
