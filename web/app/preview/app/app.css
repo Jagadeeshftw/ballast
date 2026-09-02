@@ -299,3 +299,18 @@
   #dir-a .settleRun { flex-direction: column; align-items: stretch; }
   #dir-a .settleRun .btn { width: 100%; }
 }
+
+/* ------------------------------------------------------------- cumulative net */
+
+#dir-a .cum { width: 100%; height: auto; display: block; }
+#dir-a .cumBg { fill: color-mix(in srgb, var(--bone) 2%, var(--deep)); }
+#dir-a .cumGrid { stroke: var(--rail); stroke-width: 1; }
+#dir-a .cumZero { stroke: var(--chart); stroke-width: 1; stroke-dasharray: 4 4; }
+#dir-a .cumAxis { fill: var(--chart); font-size: 12px; }
+#dir-a .cumLine { stroke-width: 2.2; }
+#dir-a .cumLine.up { stroke: var(--covered); } #dir-a .cumLine.down { stroke: var(--exposed); }
+#dir-a .cumArea.up { fill: color-mix(in srgb, var(--covered) 12%, transparent); }
+#dir-a .cumArea.down { fill: color-mix(in srgb, var(--exposed) 12%, transparent); }
+#dir-a .cumDot.won { fill: var(--covered); } #dir-a .cumDot.lost { fill: var(--exposed); }
+#dir-a .cumEnd { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+#dir-a .cumEnd.up { fill: var(--covered); } #dir-a .cumEnd.down { fill: var(--exposed); }

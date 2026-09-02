@@ -2,13 +2,13 @@
  "engine": "0x9026b93dc240244A34B3568aF704a60f4703a115",
  "chainId": 50312,
  "fromBlock": 477068803,
- "toBlock": 477535788,
- "capturedAt": "2026-09-02T05:28:33.262Z",
+ "toBlock": 477820581,
+ "capturedAt": "2026-09-02T13:25:29.155Z",
  "firstEventAt": "2026-09-01T13:50:16.000Z",
- "lastEventAt": "2026-09-02T05:11:13.000Z",
+ "lastEventAt": "2026-09-02T13:17:45.000Z",
  "counts": {
   "CoverOpened": 45,
-  "CoverSettled": 2,
+  "CoverSettled": 44,
   "ToppedUp": 1,
   "SubscriptionOpened": 1,
   "Enrolled": 1,
@@ -21,7 +21,7 @@
   "TickExpired": 1,
   "SubscriptionClosed": 1
  },
- "totalEvents": 6706,
+ "totalEvents": 6748,
  "events": [
   {
    "name": "CoverOpened",
@@ -4820,6 +4820,720 @@
    "user": null,
    "args": {
     "subscriptionId": "15304480"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819053,
+   "ts": 1788354981,
+   "tx": "0x3a7fd58cc425475e23baebdddca4d5dbceadde156622ad2bb69bf0773085b7ff",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104db",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104db",
+    "outcome": 1,
+    "quantity": "190567000",
+    "premium": "145974322",
+    "proceeds": "190567000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819074,
+   "ts": 1788354983,
+   "tx": "0x261550ba1b8c93185a7855aba8bf915a5f284cfdf8f5c1e6d70704dc9de48966",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104eb",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104eb",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "81200000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819096,
+   "ts": 1788354986,
+   "tx": "0xb096de23ea2fd175bad4a577fc065d7f45d791afa50094b908f4007d8f3a791c",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104e7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104e7",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "86200000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819117,
+   "ts": 1788354988,
+   "tx": "0x6200aa500f56a095920796120a8a880b1985744bac27c89d2e44c686de08aede",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f9",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "109000000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819137,
+   "ts": 1788354990,
+   "tx": "0x19e67348f9b599f1daa57fefb1f2e0ce984f8fa6b46d96ed365e66c172c01292",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000104f5",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "109000000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819156,
+   "ts": 1788354992,
+   "tx": "0x60df2b224643cf23ddcb373035a264464ace918d8697af55a08559312ee6ee45",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010507",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010507",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "106000000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819177,
+   "ts": 1788354994,
+   "tx": "0x4c071701e24f92ddc0905fe3573f4531ee067f8a662ae26467b4fbee2679efaa",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010503",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010503",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "105600000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819196,
+   "ts": 1788354996,
+   "tx": "0x2472956e92384aca42378d844c5d7b14de9f8fde5f31c86c4e02e8e7c0522392",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010517",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010517",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "94400000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819216,
+   "ts": 1788354998,
+   "tx": "0x5bbf6febc6a293a7f74b9e46f5815f34eb20f085a123329d4f1faedd6195dfc0",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010513",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010513",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "94600000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819237,
+   "ts": 1788355000,
+   "tx": "0x0b8b4646baa264286ede6d4fe02ad4a845fb4d9a313e5496944b66dcbeebee37",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010525",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010525",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "92400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819259,
+   "ts": 1788355002,
+   "tx": "0xc9602e50f016b2b675528f54912fa68be2358731eb95a6150356d84c874fe296",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010521",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010521",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "88200000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819279,
+   "ts": 1788355004,
+   "tx": "0x354b22596f5f4732fc0443568abe283ebea36f7f4270c1752ab6bf87a5c50f1b",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010533",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010533",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "113000000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819299,
+   "ts": 1788355006,
+   "tx": "0xa78fc67fa25346f08e0677e1454741204c61d81f5c8dbe819e0b034f4e1bf686",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010535",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010535",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "121800000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819319,
+   "ts": 1788355008,
+   "tx": "0x82eafc2c16f1403b2d9b6ef6708304f6862d09db9de64a512124334b608b79d9",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001052f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001052f",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "138400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819340,
+   "ts": 1788355010,
+   "tx": "0xf54769767074c7d954cef92b95b32bb35358607c08d65c27cc6a95f301092044",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010537",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010537",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "120600000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819361,
+   "ts": 1788355012,
+   "tx": "0x208a34b40bf5d9c78f6b20109a9788c0cd171d1c6b05899e513e1bd871f3960f",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010545",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010545",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "79000000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819382,
+   "ts": 1788355014,
+   "tx": "0xbe16535cbd2a8fbb5f6b65b9b38ebc77ce9ca61ce513eb44bdcd7319b5207dcf",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010541",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010541",
+    "outcome": 2,
+    "quantity": "198627000",
+    "premium": "77067276",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819402,
+   "ts": 1788355016,
+   "tx": "0x53571fc16aa844e5b4baba424c5b0aac60dbd0ede9bb40c43a8f7e5df7cfc0ad",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010553",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010553",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "128600000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819422,
+   "ts": 1788355018,
+   "tx": "0x02bdfb61f4a94453f098f60b9932d1f541d0314ecb760f61b744b1c2500237b9",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001054f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001054f",
+    "outcome": 1,
+    "quantity": "6000000",
+    "premium": "3774000",
+    "proceeds": "6000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819442,
+   "ts": 1788355020,
+   "tx": "0xc1f2bd9496ae0e11ee23f99f3614c05524fcecde3ebff83605cbc40b61414bc6",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010561",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010561",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "109000000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819462,
+   "ts": 1788355022,
+   "tx": "0xe8f780df63f19a6bc999cc0c9ddf6c346df3c30e7e9efaa5d398cb67e45d045d",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010563",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010563",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "113600000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819481,
+   "ts": 1788355024,
+   "tx": "0xcbbc0ee23bf8d675ee39eedc93546d37daec557c1bb385601e5cdd12f6cc52a1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001055d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001055d",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "113200000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819501,
+   "ts": 1788355026,
+   "tx": "0x5bfe91ac07280bea79667900e77ef2d04ac74609202dc54ecf70e92b3c03fef5",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010571",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010571",
+    "outcome": 2,
+    "quantity": "172288000",
+    "premium": "50652672",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819522,
+   "ts": 1788355028,
+   "tx": "0x297a8aca285044e26d79398ceabd9577dbc1d68fe5b260eb52dd917e3602181c",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001056d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001056d",
+    "outcome": 2,
+    "quantity": "172288000",
+    "premium": "50652672",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819544,
+   "ts": 1788355030,
+   "tx": "0x128696a8d6774661d02757a526fcaa2ac5bad6b0f0c1927fb88bf85b191e363e",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001057f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001057f",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "115800000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819566,
+   "ts": 1788355033,
+   "tx": "0x8e38589c8262270e5d31f76d80723bc35ad1a295f6ea371b13c1d25578d7e294",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001057b",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001057b",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "115800000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819585,
+   "ts": 1788355034,
+   "tx": "0x4de094242d8c2cc63c4017eb6ea411bf7909aeb2bf0490aaefd508ed3ebc6db1",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001058d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001058d",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "107800000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819605,
+   "ts": 1788355036,
+   "tx": "0x4c3b9649eaf24f32dd5a0797cac3c944b8e7ab9c56bfdfdda263215e2599f587",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001058f",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001058f",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "111600000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819625,
+   "ts": 1788355038,
+   "tx": "0xac46c604b79de251745d2d818faf4f2cb69e3dc4c59590bb12a22b3b233eb2ab",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010589",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Lost",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010589",
+    "outcome": 2,
+    "quantity": "200000000",
+    "premium": "111600000",
+    "proceeds": "0"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819645,
+   "ts": 1788355040,
+   "tx": "0x0a3f9794a7455c5eb88ee1fe140cb9ab26a85fd8157d008843b29146f4cde485",
+   "marketId": "0x000000000000000000000000000000000000000000000000000000000001059d",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x000000000000000000000000000000000000000000000000000000000001059d",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "101400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819665,
+   "ts": 1788355042,
+   "tx": "0x70915baa826282da09be61d70e296dcf76e73863ddb783eb802c0ba3fd81cfc6",
+   "marketId": "0x0000000000000000000000000000000000000000000000000000000000010599",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x0000000000000000000000000000000000000000000000000000000000010599",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "101400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819685,
+   "ts": 1788355044,
+   "tx": "0xea4e6722c1c1ba9895b986cb7238a3aa20e43587fbce322a08ee5e8bde31d445",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105ab",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105ab",
+    "outcome": 1,
+    "quantity": "198555000",
+    "premium": "76840785",
+    "proceeds": "198555000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819710,
+   "ts": 1788355047,
+   "tx": "0x7d016c9cb388dda23fb7001704759c0cdac4529c76850f49ca0cd31495e61cff",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b9",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "115800000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819730,
+   "ts": 1788355049,
+   "tx": "0xf4c1fb33e5a6e0402d1da7715afc4f000b441c8bc1b5dd75db1acb4b10fe9940",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105bb",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105bb",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "125200000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819750,
+   "ts": 1788355051,
+   "tx": "0x2a1c0484f5dcb5da2217d2fa19a1ae73a0c231342a894605caa626cbe6e761ce",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105b5",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "125200000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819770,
+   "ts": 1788355053,
+   "tx": "0xc6497eb2f43d22ec9a5a57885f1dcb66902312cffe2eae14330b71f8365b295f",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c9",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c9",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "94000000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819790,
+   "ts": 1788355055,
+   "tx": "0xff3ba2a14944f493f22b3fa1000578fc3605270678df20c8a260aea7130abbcd",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105c5",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "94000000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819810,
+   "ts": 1788355057,
+   "tx": "0x9cc20743b89fbce9b359fe02f54ce7ac96b28d9ad5ed3780bbe43eb5a62cb3d8",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d7",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "103400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819829,
+   "ts": 1788355059,
+   "tx": "0x6aa3de200d262fcb94e9cf09d81a28c3422f976619b81860919b4cb62d228229",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d3",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105d3",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "103400000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819851,
+   "ts": 1788355061,
+   "tx": "0xfac0edfad119a8e82e45bf54cd0b14d8b16c775eff59442c3a3f213ebef3464e",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e5",
+    "outcome": 1,
+    "quantity": "200000000",
+    "premium": "88600000",
+    "proceeds": "200000000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819871,
+   "ts": 1788355063,
+   "tx": "0x84ad9ca20011b98dfab3766c5e767ad4d25c58c822636b5ace89d31c0b3873fd",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e7",
+    "outcome": 1,
+    "quantity": "194979000",
+    "premium": "74092020",
+    "proceeds": "194979000"
+   }
+  },
+  {
+   "name": "CoverSettled",
+   "block": 477819892,
+   "ts": 1788355065,
+   "tx": "0x668c88e9fbbb82ef884f317a2d7cca55d2f38536a8bdf2533ab45a5755dbc40b",
+   "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+   "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+   "outcome": "Won",
+   "args": {
+    "user": "0x7caEb6fc664219306BBED42183a66282B78AEd96",
+    "marketId": "0x00000000000000000000000000000000000000000000000000000000000105e1",
+    "outcome": 1,
+    "quantity": "143635000",
+    "premium": "41366880",
+    "proceeds": "143635000"
    }
   }
  ]

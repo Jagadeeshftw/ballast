@@ -155,3 +155,25 @@ export function totalsFor(rows: PositionRow[]): Totals {
     hitRate: settled.length >= 5 ? paid / settled.length : null,
   };
 }
+
+
+export type CumPoint = { t: number; net: number; outcome: string; asset: string; premium: number; proceeds: number };
+
+/**
+ * Cumulative net across settled positions, in settlement order.
+ *
+ * Only meaningful once there are enough points to be a series rather than two dots, which is
+ * why the view gates on it. Ordered by when each position SETTLED, not when it opened — the
+ * money moved at settlement.
+ */
+export function cumulativeFor(rows: PositionRow[]): CumPoint[] {
+  const settled = rows
+    .filter((r) => r.outcome !== "Open" && r.settledAt !== null)
+    .sort((a, b) => (a.settledAt ?? 0) - (b.settledAt ?? 0));
+
+  let net = 0;
+  return settled.map((r) => {
+    net += (r.proceeds ?? 0) - r.premium;
+    return { t: r.settledAt!, net, outcome: r.outcome, asset: r.asset, premium: r.premium, proceeds: r.proceeds ?? 0 };
+  });
+}

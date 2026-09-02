@@ -1,5 +1,6 @@
 import { ADDR, EXPLORER, KNOWN_POSITIONS, getPosition } from "@/lib/chain";
-import { positionsFor, totalsFor, type PositionRow } from "@/lib/portfolio";
+import { positionsFor, totalsFor, cumulativeFor, type PositionRow } from "@/lib/portfolio";
+import CumChart from "../CumChart";
 import { recordRange } from "@/lib/record";
 import PayoffA from "../../a/PayoffA";
 import { SettleButton, SettleRun } from "../cover-actions";
@@ -32,6 +33,7 @@ export default async function Cover({
     : show === "lost" ? r.outcome === "Lost"
     : true);
   const unsettled = all.filter((r) => r.outcome === "Open").map((r) => r.marketId);
+  const cum = cumulativeFor(all);
   const range = recordRange();
 
   return (
@@ -63,20 +65,37 @@ export default async function Cover({
         </section>
       )}
 
-      {/* Two settled points is not a time series. The scatter is honest at two and at fifty. */}
-      {t.settled < 5 && (
-        <section>
-          <h2 className="viewH2">The settled positions, on the payoff</h2>
-          <div className="panel">
-            <PayoffA positions={settledPositions} />
-            <p className="why" style={{ marginTop: 16, marginBottom: 0 }}>
-              A cumulative line needs more than two points to mean anything, so this plots the
-              settled positions where they actually landed. The time series appears here on its
-              own once five have settled.
-            </p>
-          </div>
-        </section>
-      )}
+      {/* Under five settled, a cumulative line is two dots pretending to be a trend, so the
+          payoff scatter stands in. Above it, the series is the more useful object. */}
+      <section>
+        <h2 className="viewH2">{t.settled >= 5 ? "Cumulative net, settled positions" : "The settled positions, on the payoff"}</h2>
+        <div className="panel">
+          {t.settled >= 5
+            ? <CumChart points={cum} />
+            : <PayoffA positions={settledPositions} />}
+          <p className="why" style={{ marginTop: 16, marginBottom: 0 }}>
+            {t.settled >= 5 ? (
+              <>
+                A step line rather than a curve: money moves at a settlement and is flat between
+                them, so interpolating would draw a trend that did not happen. Each dot is one
+                settled position, green where the cover paid.{" "}
+                <strong>Read this as a sample, not as a result.</strong> These are{" "}
+                {t.settled} one-minute windows on a thin testnet book, and our own economics
+                says rolling cover every sixty seconds is ruinous over any real horizon — the
+                spread alone runs to hundreds of percent a year at that frequency. A favourable
+                run of {t.settled} windows does not contradict that; it is what a small sample
+                looks like.
+              </>
+            ) : (
+              <>
+                A cumulative line needs more than two points to mean anything, so this plots the
+                settled positions where they actually landed. The time series appears here on
+                its own once five have settled.
+              </>
+            )}
+          </p>
+        </div>
+      </section>
 
       <section>
         <div className="tableHead">
