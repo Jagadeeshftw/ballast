@@ -40,7 +40,9 @@ export const engineAbi = parseAbi([
   "function withdrawEnrolment()",
   "function isEnrolled(address) view returns (bool)",
   "function settle(address,bytes32)",
-  "function settleMany(address[],bytes32[])",
+  // settleMany batches USERS for ONE market, not markets for one user, so it cannot close a
+  // single account's backlog in one call. Kept for completeness; the UI settles per position.
+  "function settleMany(address[],bytes32) returns (uint256,uint256)",
   "function topUp() payable",
 ]);
 
