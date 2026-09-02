@@ -14,18 +14,8 @@
 }
 html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 
-/* Isolation from globals.css.
-   That stylesheet styles BARE ELEMENTS -- `section { margin-top: 54px }`, `main`, `h1`, `h2`,
-   `footer` -- which apply to this page too and are invisible in the markup. The bare section
-   margin is what pushed the hero 54px below the nav and clipped the fold at every viewport,
-   after `section.band` had already done the same thing with negative margins. Neutralise the
-   lot here and set every margin explicitly below. */
-#dir-a section { margin: 0; }
-#dir-a main { padding: 0; }
-#dir-a h1, #dir-a h2, #dir-a h3, #dir-a h4, #dir-a p, #dir-a ul, #dir-a ol, #dir-a dl, #dir-a figure {
-  margin: 0;
-}
-#dir-a footer { margin: 0; padding: 0; border: 0; }
+/* Margins are set explicitly below rather than inherited from anywhere. */
+#dir-a :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
 #dir-a :focus-visible { outline:2px solid var(--beacon); outline-offset:2px; }
 #dir-a ::selection { background: color-mix(in srgb, var(--covered) 30%, transparent); }
 #dir-a a { color: var(--covered); }
@@ -137,10 +127,7 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 
 /* Rhythm: alternating grounds, so each section is its own moment rather than another block
    in a scroll of equal blocks. */
-#dir-a section { padding: 84px 0; }
-/* The hero sizes itself against the viewport; the generic section padding would add 168px
-   to it and put the fold back over the edge. */
-#dir-a .aHeroWrap { padding: 0; }
+#dir-a .sec { padding: 84px 0; }
 #dir-a .aBand {
   background: var(--hull); border-top: 1px solid var(--rail); border-bottom: 1px solid var(--rail);
   position: relative;
@@ -319,7 +306,7 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
   #dir-a .heroLive .gg { max-width: 320px; }
   #dir-a .heroCount { margin-bottom: 0; }
   #dir-a h2 { font-size:var(--s4); }
-  #dir-a section { padding: 52px 0; }
+  #dir-a .sec { padding: 52px 0; }
   #dir-a .twoUp { grid-template-columns: 1fr; gap: 24px; }
   #dir-a .rrow { grid-template-columns: 54px minmax(0,1fr); gap: 8px 16px; padding: 20px 0; }
   #dir-a .rrow .rn { font-size: var(--s4); }

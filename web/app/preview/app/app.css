@@ -12,11 +12,8 @@
   font-size: 15px;
 }
 #dir-a.app :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
-/* a.css styles the landing page's bare `section` with 84px of vertical padding, and it
-   applies here too because both share the #dir-a scope. Neutralise it: this shell sets its
-   own rhythm and 168px between dashboard cards is not it. */
-#dir-a.app section { padding: 0; margin: 0; }
-#dir-a.app .band { background: none; border: 0; }
+/* No defensive reset needed: a.css scopes its section padding to .sec, which this shell
+   does not use. */
 #dir-a.app a { color: var(--covered); }
 
 /* ------------------------------------------------------------------ sidebar */

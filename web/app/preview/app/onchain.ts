@@ -13,7 +13,10 @@ export const WETH: Address = "0x4d8E02BBfCf205828A8352Af4376b165E123D7b0";
 export const GAS = {
   faucet: 2_800_000n, mint: 2_800_000n, approve: 600_000n, deposit: 2_600_000n,
   setPolicy: 700_000n, enrol: 1_400_000n, revoke: 400_000n, withdraw: 500_000n,
-  settle: 2_400_000n, settleMany: 6_000_000n, topUp: 400_000n,
+  // Measured, not guessed: settle() estimates 2,053,708 to 2,796,559 across the live
+  // backlog, so 2,400,000 -- which is what this said before the backlog was costed -- would
+  // have run out of gas on the majority of positions. Doubled from the measured maximum.
+  settle: 5_600_000n, settleMany: 8_000_000n, topUp: 400_000n,
 } as const;
 
 export const erc20 = parseAbi([

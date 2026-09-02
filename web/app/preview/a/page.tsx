@@ -82,7 +82,7 @@ export default async function DirectionA() {
       </section>
 
       {/* ------------------------------------------------------ 2. the problem */}
-      <section className="aBand">
+      <section className="sec aBand">
         <div className="wrap">
           <p className="eyebrow">The problem</p>
           <h2>Cover exists. Buying it every hour by hand does not.</h2>
@@ -101,7 +101,7 @@ export default async function DirectionA() {
       </section>
 
       {/* -------------------------------------------------- 3. how it works */}
-      <section id="how">
+      <section className="sec" id="how">
         <div className="wrap">
           <p className="eyebrow">How it works</p>
           <h2>Three steps, then nothing to do.</h2>
@@ -125,7 +125,7 @@ export default async function DirectionA() {
       </section>
 
       {/* --------------------------------------------- 4. what it actually pays */}
-      <section className="aBand">
+      <section className="sec aBand">
         <div className="wrap">
           <p className="eyebrow">What it actually pays</p>
           <h2>Exact at one depth. Imperfect either side. On purpose.</h2>
@@ -154,7 +154,7 @@ export default async function DirectionA() {
       </section>
 
       {/* ---------------------------------------------- 5. watch it happen */}
-      <section id="live" className="aLive">
+      <section className="sec aLive" id="live" >
         <div className="wrap">
           <p className="eyebrow">Live · Somnia testnet</p>
           <h2>Watch it happen.</h2>
@@ -207,7 +207,7 @@ export default async function DirectionA() {
       </section>
 
       {/* ------------------------------------------ 6. it has already done this */}
-      <section id="numbers" className="aBand">
+      <section className="sec aBand" id="numbers" >
         <div className="wrap">
           <p className="eyebrow">It has already done this</p>
           <h2>Two settled positions. One paid, one did not.</h2>
@@ -267,7 +267,7 @@ export default async function DirectionA() {
       </section>
 
       {/* -------------------------------------------------- 7. and it refuses */}
-      <section>
+      <section className="sec">
         <div className="wrap">
           <p className="eyebrow">And it refuses</p>
           <h2>A refusal is a decision.</h2>
@@ -298,7 +298,7 @@ export default async function DirectionA() {
       </section>
 
       {/* ------------------------------------------------- 8. under the hood */}
-      <section id="hood" className="aBand">
+      <section className="sec aBand" id="hood" >
         <div className="wrap">
           <p className="eyebrow">Under the hood</p>
           <h2>Custody you can leave at any moment.</h2>

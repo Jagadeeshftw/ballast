@@ -1,4 +1,12 @@
 /* Ballast — a stability instrument.
+
+   EVERY RULE HERE IS SCOPED TO .shell, this page's own root. No bare element selector may be
+   added to this file again. Three separate debugging rounds went on rules from here reaching
+   pages they were never written for: section.band's negative margins pushed a preview 28px
+   past the viewport; a bare `section` margin dropped a hero 54px and clipped the fold at every
+   size; 84px of section padding put 168px between dashboard cards. Each rule was correct and
+   each one's reach was not.
+
    The vernacular is marine and one object in it is exact: the Plimsoll line, the load mark
    painted on a hull showing how deep the ship may safely sit. Engraved marks, a waterline,
    gauge numerals. Structural, not decorative. */
@@ -65,7 +73,7 @@ body {
   align-items: start;
 }
 
-main { padding: 56px 0 96px; min-width: 0; }
+.shell main { padding: 56px 0 96px; min-width: 0; }
 
 .rail { position: sticky; top: 0; padding: 56px 0 40px; }
 .rail-inner {
@@ -92,18 +100,18 @@ main { padding: 56px 0 96px; min-width: 0; }
 /* --------------------------------------------------------------- masthead */
 
 .masthead { padding-bottom: 30px; border-bottom: 1px solid var(--rule); }
-h1 { margin: 0; font-size: var(--s4); font-weight: 700; letter-spacing: -0.02em; }
+.shell h1 { margin: 0; font-size: var(--s4); font-weight: 700; letter-spacing: -0.02em; }
 .standfirst { margin: 10px 0 0; max-width: var(--measure); color: var(--silt); font-size: var(--s2); }
 
-section { margin-top: 54px; }
-section.band {
+.shell section { margin-top: 54px; }
+.shell section.band {
   background: var(--chalk);
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
   margin-left: -28px; margin-right: -28px;
   padding: 34px 28px 30px;
 }
-h2 { margin: 0 0 18px; font-size: var(--s2); font-weight: 700; }
+.shell h2 { margin: 0 0 18px; font-size: var(--s2); font-weight: 700; }
 .lede { margin: -6px 0 20px; max-width: var(--measure); color: var(--silt); }
 .note { margin: 20px 0 0; max-width: var(--measure); color: var(--silt); font-size: var(--s1); }
 .note strong, .lede strong { color: var(--hull); font-weight: 600; }
@@ -262,14 +270,14 @@ h2 { margin: 0 0 18px; font-size: var(--s2); font-weight: 700; }
 
 /* ---------------------------------------------------------------- footer */
 
-footer { margin-top: 60px; padding-top: 26px; border-top: 1px solid var(--rule); }
+.shell footer { margin-top: 60px; padding-top: 26px; border-top: 1px solid var(--rule); }
 .colophon { margin: 22px 0 0; max-width: var(--measure); color: var(--silt); font-size: var(--s1); }
 
-a { color: var(--hull); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--hull) 28%, transparent); padding-bottom: 1px; }
+.shell a { color: var(--hull); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--hull) 28%, transparent); padding-bottom: 1px; }
 a:hover { border-bottom-color: var(--hull); }
 a:focus-visible { outline: 2px solid var(--hull); outline-offset: 3px; border-radius: 1px; }
 .mono { font-size: 12.5px; letter-spacing: -0.01em; }
-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+.shell code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
@@ -281,13 +289,13 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
   .rail-inner { border-left: 0; border-bottom: 1px solid var(--rule); padding: 16px 0; flex-direction: row; gap: 32px; flex-wrap: wrap; }
   .rail-big { font-size: var(--s4); }
   .rail-kv { display: none; }
-  main { padding-top: 20px; }
+  .shell main { padding-top: 20px; }
   .chartrow, .dial-wrap, .gauge { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 640px) {
   .shell { padding: 0 16px; }
-  section.band { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+  .shell section.band { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
   .tape li { grid-template-columns: 1fr auto; row-gap: 2px; }
   .tape-dot { display: none; }
   .tape-head, .tape-detail { grid-column: 1 / -1; }
