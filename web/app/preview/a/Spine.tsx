@@ -24,12 +24,20 @@ const MARKS = [
 export default function Spine() {
   const [pct, setPct] = useState(0);
   const [marks, setMarks] = useState<{ id: string; label: string; at: number }[]>([]);
+  const [active, setActive] = useState<string>("top");
 
   useEffect(() => {
     const measure = () => {
       const doc = document.documentElement;
       const scrollable = doc.scrollHeight - window.innerHeight;
       setPct(scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0);
+      // Whichever mark the reader has most recently passed is the one worth naming.
+      let cur = MARKS[0].id;
+      for (const m of MARKS) {
+        const el = document.getElementById(m.id);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) cur = m.id;
+      }
+      setActive(cur);
       setMarks(
         MARKS.map((m) => {
           const el = document.getElementById(m.id);
@@ -60,9 +68,12 @@ export default function Spine() {
           <span key={t} className={`spineTick ${t % 25 === 0 ? "major" : ""}`} style={{ top: `${t}%` }} />
         ))}
         {marks.map((m) => (
-          <span key={m.id} className="spineMark" style={{ top: `${m.at * 100}%` }}>
+          <span key={m.id} className={`spineMark ${active === m.id ? "on" : ""}`}
+            style={{ top: `${m.at * 100}%` }}>
             <i />
-            <b>{m.label}</b>
+            {/* Only the current mark is named. A column of section names is a table of
+                contents; a scale with one label is an instrument telling you where you are. */}
+            {active === m.id && <b>{m.label}</b>}
           </span>
         ))}
         <span className="spineHead" style={{ top: `${pct * 100}%` }} />

@@ -4,6 +4,8 @@ import { loadPreview, STEPS, utc } from "../data";
 import { WideGauge, NarrowGauge, fmtLeft } from "../Gauge";
 import Nav from "./Nav";
 import Spine from "./Spine";
+import Reveal from "./Reveal";
+import PayoffA from "./PayoffA";
 
 export const dynamic = "force-dynamic";
 
@@ -101,7 +103,7 @@ export default async function DirectionA() {
           </p>
           {/* Ruled form rather than three cards: the numerals carry it and the rules make it
               read as a specification. Taken from direction B, which did this better. */}
-          <div className="ruled">
+          <Reveal className="ruled">
             {STEPS.map((s) => (
               <div className="rrow" key={s.n}>
                 <span className="rn">{s.n}</span>
@@ -110,7 +112,7 @@ export default async function DirectionA() {
                 <span className="rfoot">{s.foot}</span>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -125,6 +127,7 @@ export default async function DirectionA() {
             price of <strong>parametric cover</strong> — the same trade flight-delay insurance
             makes, paying the same whether you missed a meeting or a wedding.
           </p>
+          <Reveal className="payoffWrap"><PayoffA positions={positions} /></Reveal>
           <table className="pays">
             <thead>
               <tr><th>ETH falls</th><th>Spot loss</th><th>Cover nets</th><th>Net</th></tr>

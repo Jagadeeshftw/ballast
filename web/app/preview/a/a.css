@@ -63,6 +63,11 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
   margin-left: auto; background: var(--covered); color: #04231D; font-weight: 700;
   padding: 9px 18px; border-radius: 7px; text-decoration: none; font-size: var(--s2); white-space: nowrap;
 }
+/* One call to action on the first screen, one always available after it. */
+#dir-a .aNavCta.anim { transition: opacity .28s ease, transform .28s ease; }
+#dir-a .aNavCta.out { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+#dir-a .aNavCta.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { #dir-a .aNavCta.anim { transition: none; } }
 
 /* ------------------------------------------------------------------ 1. hero */
 
@@ -136,7 +141,26 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 /* The hero sizes itself against the viewport; the generic section padding would add 168px
    to it and put the fold back over the edge. */
 #dir-a .aHeroWrap { padding: 0; }
-#dir-a .aBand { background: var(--hull); border-top: 1px solid var(--rail); border-bottom: 1px solid var(--rail); }
+#dir-a .aBand {
+  background: var(--hull); border-top: 1px solid var(--rail); border-bottom: 1px solid var(--rail);
+  position: relative;
+}
+
+/* Graduation field, not a dot grid.
+   Horizontal rules at the same 37px interval the spine graduates at, so the page reads as
+   chart paper ruled to the instrument's own scale. Masked away from the middle, where the
+   text lives, so it is texture at the margins and never pattern behind a paragraph.
+   rgba(bone, .03) over hull is about a 3% step -- below the 4% ceiling. */
+#dir-a .aBand::before,
+#dir-a .pos::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom,
+    rgba(234,242,243,.030) 0 1px, transparent 1px 37px);
+  -webkit-mask-image: linear-gradient(to right, #000, transparent 32%, transparent 68%, #000);
+  mask-image: linear-gradient(to right, #000, transparent 32%, transparent 68%, #000);
+}
+#dir-a .aBand > *, #dir-a .pos > * { position: relative; }
+#dir-a .pos { position: relative; overflow: hidden; }
 #dir-a .aLede { color: var(--chart); font-size: var(--s3); max-width: 62ch; margin: 0 0 30px; }
 #dir-a .foot { color: var(--chart); font-size: var(--s2); max-width: 76ch; margin: 26px 0 0; }
 #dir-a .subhead { font-size: var(--s4); font-weight: 700; margin: 54px 0 12px; }
@@ -329,12 +353,74 @@ html:has(#dir-a), html:has(#dir-a) body { background:#06131A; }
 #dir-a .spineMark { position: absolute; left: 0; display: flex; align-items: center; gap: 7px; transform: translateY(-50%); }
 #dir-a .spineMark i { width: 15px; height: 1px; background: var(--chart); display: block; }
 #dir-a .spineMark b {
-  font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--chart);
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--bone);
   font-weight: 600; white-space: nowrap;
 }
+#dir-a .spineMark i { background: var(--rail); width: 11px; }
+#dir-a .spineMark.on i { background: var(--covered); width: 19px; }
 #dir-a .spineHead {
   position: absolute; left: -4px; width: 7px; height: 7px; border-radius: 50%;
   background: var(--covered); box-shadow: 0 0 8px var(--covered); transform: translateY(-50%);
 }
 /* Only where the margin is genuinely free: the content column is 1180 wide. */
 @media (min-width: 1400px) { #dir-a .spine { display: block; } }
+
+
+/* ------------------------------------------------------- payoff curve + motion */
+
+#dir-a .payoffWrap { margin: 0 0 34px; }
+#dir-a .pa { width: 100%; height: auto; display: block; max-width: 900px; }
+#dir-a .pa-bg { fill: color-mix(in srgb, var(--bone) 2.5%, var(--deep)); }
+#dir-a .pa-grid { stroke: var(--rail); stroke-width: 1; }
+#dir-a .pa-datum { stroke: var(--chart); stroke-width: 1; }
+#dir-a .pa-strike { stroke: var(--bone); stroke-width: 1.2; stroke-dasharray: 4 4; }
+#dir-a .pa-axis { fill: var(--chart); font-size: 13px; }
+#dir-a .pa-region { fill: var(--chart); font-size: 12px; letter-spacing: .06em; }
+#dir-a .pa-strikelabel { fill: var(--bone); font-size: 13px; }
+#dir-a .pa-fill.won { fill: color-mix(in srgb, var(--covered) 14%, transparent); }
+#dir-a .pa-fill.lost { fill: color-mix(in srgb, var(--exposed) 14%, transparent); }
+#dir-a .pa-line, #dir-a .pa-riser { fill: none; stroke-width: 2.6; }
+#dir-a .pa-line.won, #dir-a .pa-riser.won { stroke: var(--covered); }
+#dir-a .pa-line.lost, #dir-a .pa-riser.lost { stroke: var(--exposed); }
+#dir-a .pa-be { fill: var(--deep); stroke-width: 2; }
+#dir-a .pa-be.won { stroke: var(--covered); } #dir-a .pa-be.lost { stroke: var(--exposed); }
+#dir-a .pa-pt.won { fill: var(--covered); } #dir-a .pa-pt.lost { fill: var(--exposed); }
+#dir-a .pa-label { font-size: 13px; font-weight: 600; }
+#dir-a .pa-label.won { fill: var(--covered); } #dir-a .pa-label.lost { fill: var(--exposed); }
+
+/* MOTION.
+   Every rule below is inside `.go`, a class only JavaScript ever adds. The static styling
+   above IS the finished state, so with scripting off -- or with an observer that never
+   fires -- the curve is simply drawn and the rules are simply there. Nothing waits to be
+   revealed. */
+@keyframes paDraw  { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes paFade  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes paLand  { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: none; } }
+@keyframes ruleDraw { from { background-size: 0% 1px; } to { background-size: 100% 1px; } }
+@keyframes numSettle { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* the step first, then the regions, then what actually happened */
+#dir-a .payoffWrap.go .pa-riser { stroke-dasharray: 1; animation: paDraw .34s ease-out both; }
+#dir-a .payoffWrap.go .pa-line  { stroke-dasharray: 1; animation: paDraw .55s .30s ease-out both; }
+#dir-a .payoffWrap.go .pa-fill  { animation: paFade .5s .62s ease-out both; }
+#dir-a .payoffWrap.go .pa-be    { animation: paFade .3s .9s ease-out both; }
+#dir-a .payoffWrap.go .pa-pt    { transform-box: fill-box; transform-origin: center; animation: paLand .42s 1.0s cubic-bezier(.2,1.5,.4,1) both; }
+#dir-a .payoffWrap.go .pa-label { animation: paFade .3s 1.15s ease-out both; }
+
+/* the rules draw left to right, the numerals settle, once */
+#dir-a .ruled .rrow {
+  border-bottom: 0;
+  background: linear-gradient(var(--rail), var(--rail)) bottom left / 100% 1px no-repeat;
+}
+#dir-a .ruled.go .rrow { animation: ruleDraw .5s ease-out both; }
+#dir-a .ruled.go .rrow:nth-child(2) { animation-delay: .10s; }
+#dir-a .ruled.go .rrow:nth-child(3) { animation-delay: .20s; }
+#dir-a .ruled.go .rn { animation: numSettle .42s ease-out both; }
+#dir-a .ruled.go .rrow:nth-child(2) .rn { animation-delay: .12s; }
+#dir-a .ruled.go .rrow:nth-child(3) .rn { animation-delay: .24s; }
+
+/* Belt and braces: Reveal already refuses to add `.go` under reduced motion, and if it ever
+   did, nothing here would move. */
+@media (prefers-reduced-motion: reduce) {
+  #dir-a .payoffWrap.go *, #dir-a .ruled.go *, #dir-a .ruled.go .rrow { animation: none !important; }
+}

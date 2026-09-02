@@ -22,6 +22,10 @@ const SECTIONS = [
  */
 export default function Nav() {
   const [active, setActive] = useState<string>("");
+  // Rendered visible, so with scripting off there is always a call to action in the nav.
+  // JavaScript then hides it while the hero -- which has its own -- is still on screen.
+  const [heroOut, setHeroOut] = useState(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -37,7 +41,22 @@ export default function Nav() {
       { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
     );
     els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    const hero = document.getElementById("top");
+    let heroIo: IntersectionObserver | undefined;
+    if (hero) {
+      heroIo = new IntersectionObserver(
+        ([e]) => {
+          setHeroOut(!e.isIntersecting);
+          // Enable the transition only after the first measurement, so the button does not
+          // visibly fade out on load when the hero is obviously already on screen.
+          requestAnimationFrame(() => setReady(true));
+        },
+        { rootMargin: "-70px 0px 0px 0px", threshold: 0 },
+      );
+      heroIo.observe(hero);
+    }
+    return () => { io.disconnect(); heroIo?.disconnect(); };
   }, []);
 
   return (
@@ -57,7 +76,9 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <a className="aNavCta" href="#dash">Open the dashboard</a>
+        <a className={`aNavCta ${heroOut ? "in" : "out"} ${ready ? "anim" : ""}`} href="#dash">
+          Open the dashboard
+        </a>
       </div>
     </nav>
   );
