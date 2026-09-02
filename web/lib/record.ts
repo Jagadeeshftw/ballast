@@ -14,6 +14,27 @@ import raw from "./record.json";
  * the live tail is empty, and always says which run it is and when it ran.
  */
 
+/**
+ * The capture stored the raw Solidity enum names; the page speaks in sentences. Without this
+ * the recorded refusals render as "NoExposure" and the SKIP_MEANING lookup misses entirely,
+ * so every recorded decline loses the plain-English reason that is the whole point of the
+ * section. Translated here rather than by re-scanning the chain.
+ */
+const REASON_TEXT: Record<string, string> = {
+  None: "None",
+  PolicyInactiveOrExpired: "Policy inactive or expired",
+  BelowEnrolmentFloor: "Below enrolment floor",
+  NoExposure: "No exposure",
+  NoLiquidity: "No liquidity",
+  CoverTooExpensive: "Cover too expensive",
+  NoHeadroom: "No headroom",
+  BelowMinimumLot: "Below minimum lot",
+  AlreadyCovered: "Already covered",
+  PlacementFailed: "Placement failed",
+  NoOpenPrice: "No open price",
+  WouldMisrepresent: "Would misrepresent",
+};
+
 type RawEvent = {
   name: string; block: number; ts: number | null; tx: string;
   marketId: string | null; user: string | null;
@@ -50,9 +71,11 @@ function toItem(e: RawEvent): TapeItem | null {
     case "CoverOpened":
       return { ...base, kind: "opened", tone: "waterline", headline: "cover opened",
         detail: `${(Number(a.premium) / 1e6).toFixed(2)} tUSDC · asked ${a.requestedBps} bps, got ${a.achievedBps} bps` };
-    case "CoverSkipped":
-      return { ...base, kind: "declined", tone: "heel", headline: e.reason ?? "Unknown",
-        detail: SKIP_MEANING[e.reason ?? ""] ?? "" };
+    case "CoverSkipped": {
+      const reason = REASON_TEXT[e.reason ?? ""] ?? e.reason ?? "Unknown";
+      return { ...base, kind: "declined", tone: "heel", headline: reason,
+        detail: SKIP_MEANING[reason] ?? "" };
+    }
     case "CallbackRan":
       return { ...base, kind: "callback", tone: "silt", headline: "batch ran",
         detail: `scanned ${a.scanned}, covered ${a.covered}` };
