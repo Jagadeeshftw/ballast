@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { size, type Sized } from "@/lib/sizing";
 
 /**
  * Drag the make-whole point and watch the position recompute against the live book.
@@ -120,38 +121,8 @@ export default function Dial({
   );
 }
 
-type Sized = { qty: number; premium: number; achievedBps: number; binding: string | null; exposure: number };
-
 /** The engine's own arithmetic: N = exposure × x / (1 − q), then the ceilings and lot grid. */
-function size(i: {
-  exposure: number; coverPrice: number; lotSize: number; bookQty: number;
-  premiumCeilingBps: number; notionalCapUsd: number; bps: number;
-}): Sized {
-  const q = i.coverPrice;
-  const x = i.bps / 10_000;
-  const wantQty = (i.exposure * x) / (1 - q);
-  let qty = wantQty;
-  let binding: string | null = null;
 
-  const premiumCap = (i.exposure * i.premiumCeilingBps) / 10_000;
-  if (qty * q > premiumCap) {
-    qty = premiumCap / q;
-    binding = `your premium ceiling of ${i.premiumCeilingBps} bps binds first`;
-  }
-  if (qty * q > i.notionalCapUsd) {
-    qty = i.notionalCapUsd / q;
-    binding = "your per-window cap binds first";
-  }
-  if (qty > i.bookQty) {
-    qty = i.bookQty;
-    binding = `the book only offers ${i.bookQty.toFixed(0)} contracts`;
-  }
-  if (i.lotSize > 0) qty = Math.floor(qty / i.lotSize) * i.lotSize;
-
-  const premium = qty * q;
-  const achieved = i.exposure > 0 ? Math.round((qty * (1 - q) * 10_000) / i.exposure) : 0;
-  return { qty, premium, achievedBps: achieved, binding, exposure: i.exposure };
-}
 
 function netAt(s: Sized, x: number) {
   const payout = x > 0 ? s.qty : 0;

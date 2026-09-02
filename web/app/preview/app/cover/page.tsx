@@ -74,7 +74,7 @@ export default async function Cover({
           rather than suspicious -- it says the sample is 44 one-minute windows on a thin
           testnet book, and that our own economics calls rolling at that frequency ruinous. A
           judge who does that arithmetic and finds we did it first reads everything else here
-          differently. Cut the chart before cutting the caveat. */
+          differently. Cut the chart before cutting the caveat. */}
       <section>
         <h2 className="viewH2">{t.settled >= 5 ? "Cumulative net, settled positions" : "The settled positions, on the payoff"}</h2>
         <div className="panel">
