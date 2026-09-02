@@ -236,6 +236,7 @@ deploy. A rebuild with the default profile produces a different artifact.
 | [`latch-sweep.md`](docs/latch-sweep.md) | Every piece of state, what clears it, what if that never arrives |
 | [`onchain-lifecycle.md`](docs/onchain-lifecycle.md) | Full lifecycles with transaction hashes, including both settlements |
 | [`somnia-feedback.md`](docs/somnia-feedback.md) | Findings written up for the Somnia team |
+| [`tailwind-migration-estimate.md`](docs/tailwind-migration-estimate.md) | What migrating the styling to Tailwind would cost, measured |
 | [`run-record.json`](docs/run-record.json) | The complete on-chain record of the engine's run |
 
 ## Licence
