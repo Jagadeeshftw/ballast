@@ -1,0 +1,100 @@
+/* Dashboard. Same tokens and the same construction as the gauge: plain CSS, no framework,
+   nothing that stops working when JavaScript does. */
+
+#dir-a.dPage { --nav: 58px; }
+#dir-a .dMain { padding: 40px 0 90px; }
+#dir-a .dTop { margin-bottom: 40px; }
+#dir-a .dH1 { font-size: clamp(30px, 3.6vw, 52px); line-height: 1.04; letter-spacing: -.03em; margin: 0 0 16px; font-weight: 700; max-width: 18ch; }
+#dir-a .dH2 { font-size: var(--s4); font-weight: 700; margin: 0 0 18px; }
+#dir-a .dChip {
+  font-size: var(--s1); color: var(--chart); border: 1px solid var(--rail);
+  border-radius: 999px; padding: 4px 12px;
+}
+
+/* step rail */
+#dir-a .dRail { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+#dir-a .dPip {
+  font-size: var(--s1); color: var(--chart); border: 1px solid var(--rail);
+  border-radius: 999px; padding: 6px 13px; white-space: nowrap;
+}
+#dir-a .dPip.done { color: var(--covered); border-color: color-mix(in srgb, var(--covered) 40%, transparent); }
+#dir-a .dPip.now { background: var(--beacon); border-color: var(--beacon); color: #1B1403; font-weight: 700; }
+
+#dir-a .dHead { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; font-size: var(--s1); }
+#dir-a .dMono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--chart); word-break: break-all; }
+#dir-a .dDim { color: var(--chart); }
+
+/* panels */
+#dir-a .dPanel, #dir-a .dStep, #dir-a .dExit, #dir-a .dLiveState {
+  background: var(--hull); border: 1px solid var(--rail); border-radius: 12px;
+  padding: 26px; margin-bottom: 16px; position: relative;
+}
+#dir-a .dLiveState { margin-top: 44px; }
+#dir-a .dPanel h3, #dir-a .dExit h3 { font-size: var(--s4); margin: 0 0 8px; font-weight: 700; }
+#dir-a .dWhy { color: var(--chart); margin: 0 0 20px; max-width: 66ch; }
+#dir-a .dStepHead { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+#dir-a .dStepN { color: var(--covered); font-weight: 700; letter-spacing: .1em; font-size: var(--s1); }
+#dir-a .dStep h3 { font-size: var(--s4); margin: 0; font-weight: 700; }
+#dir-a .dStep.done { opacity: .72; }
+#dir-a .dDone { margin-left: auto; font-size: var(--s1); color: var(--covered); }
+#dir-a .dWarn { border-color: color-mix(in srgb, var(--beacon) 55%, transparent); }
+#dir-a .dWarn h3 { color: var(--beacon); }
+
+#dir-a .dRow { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid color-mix(in srgb, var(--rail) 60%, transparent); margin: 0; font-size: var(--s2); }
+#dir-a .dRow span { color: var(--chart); }
+#dir-a .dRow b { font-weight: 700; }
+
+#dir-a .dBtn {
+  display: inline-block; background: var(--covered); color: #04231D; font-weight: 700;
+  padding: 12px 22px; border-radius: 8px; text-decoration: none; font-size: var(--s2);
+  border: 0; cursor: pointer; margin: 16px 10px 0 0; font-family: inherit;
+}
+#dir-a .dBtn.ghost { background: transparent; color: var(--bone); border: 1px solid var(--rail); }
+#dir-a .dBtn:disabled { opacity: .45; cursor: not-allowed; }
+
+#dir-a .dErr {
+  color: var(--exposed); background: color-mix(in srgb, var(--exposed) 10%, transparent);
+  border-left: 3px solid var(--exposed); padding: 14px 18px; border-radius: 0 8px 8px 0;
+  margin: 16px 0; font-size: var(--s2);
+}
+#dir-a .dTx { color: var(--chart); font-size: var(--s2); margin: 12px 0; }
+#dir-a .dNote { color: var(--chart); font-size: var(--s1); margin: 16px 0 0; max-width: 64ch; }
+#dir-a .dFaucets { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; margin: 0 0 18px; padding: 0; font-size: var(--s2); }
+
+/* unpriceable exposure: a state with its own copy, never an error */
+#dir-a .dState {
+  border-left: 3px solid var(--beacon); background: color-mix(in srgb, var(--beacon) 7%, transparent);
+  padding: 16px 20px; border-radius: 0 8px 8px 0; margin-top: 18px;
+}
+#dir-a .dState h4 { margin: 0 0 10px; font-size: var(--s3); color: var(--beacon); }
+#dir-a .dState dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: var(--s2); }
+#dir-a .dState dt { color: var(--chart); white-space: nowrap; } #dir-a .dState dd { margin: 0; }
+
+#dir-a .dLive { display: flex; align-items: center; gap: 9px; color: var(--covered); margin: 0; }
+#dir-a .dLive i { width: 8px; height: 8px; border-radius: 50%; background: var(--beacon); box-shadow: 0 0 8px var(--beacon); }
+
+/* the dial */
+#dir-a .dDial { display: block; margin: 18px 0 6px; }
+#dir-a .dDialTop { display: flex; justify-content: space-between; font-size: var(--s2); margin-bottom: 10px; }
+#dir-a .dDialTop b { font-size: var(--s4); font-variation-settings: "wdth" 118; }
+#dir-a .dDial input[type="range"] { width: 100%; accent-color: var(--covered); }
+#dir-a .dDialFoot { display: block; color: var(--chart); font-size: var(--s1); margin-top: 8px; }
+
+#dir-a .dExit { border-color: color-mix(in srgb, var(--bone) 22%, transparent); margin-top: 34px; }
+#dir-a .dExitRow { display: flex; gap: 12px; flex-wrap: wrap; }
+#dir-a .dGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 22px; margin-bottom: 26px; }
+
+#dir-a .dNarrow { display: none; }
+
+@media (max-width: 900px) {
+  /* 390px cannot hold brand + chip + a six-word button. Drop the chip and shorten the label
+     rather than let the nav push the document 84px wide. */
+  #dir-a .dChip { display: none; }
+  #dir-a .dWide { display: none; }
+  #dir-a .dNarrow { display: inline; }
+  #dir-a .aNavIn { gap: 12px; }
+  #dir-a .dMain { padding: 26px 0 60px; }
+  #dir-a .dPanel, #dir-a .dStep, #dir-a .dExit, #dir-a .dLiveState { padding: 18px; }
+  #dir-a .dBtn { display: block; width: 100%; text-align: center; margin-right: 0; }
+  #dir-a .dExitRow { flex-direction: column; }
+}

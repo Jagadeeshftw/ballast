@@ -33,7 +33,7 @@ export default async function DirectionA() {
               each window opens — no keeper, no cron, nothing of ours running.
             </p>
             <div className="heroActions">
-              <a className="cta" href="#dash">Open the dashboard</a>
+              <a className="cta" href="/preview/app">Open the dashboard</a>
               <div>
                 <span className="statNum">{String(engine.coversOpened)}</span>
                 <span className="statLabel">WINDOWS COVERED, ON CHAIN</span>

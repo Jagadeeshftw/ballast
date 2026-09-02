@@ -76,7 +76,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <a className={`aNavCta ${heroOut ? "in" : "out"} ${ready ? "anim" : ""}`} href="#dash">
+        <a className={`aNavCta ${heroOut ? "in" : "out"} ${ready ? "anim" : ""}`} href="/preview/app">
           Open the dashboard
         </a>
       </div>
