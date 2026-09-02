@@ -35,8 +35,10 @@ export default function Portfolio({ user, settledPositions }: { user: string; se
       <div className="pfHead">
         <h2 className="dH2">Position history</h2>
         <span className="pfSrc">
-          Recorded run{range ? `, ${range}` : ""} — the engine is stopped, so this is the
-          history it wrote to the chain.
+          The demonstration account{" "}
+          <a className="mono" href={`${EXPLORER}/address/${user}`}>{user.slice(0, 10)}…</a>,
+          recorded run{range ? `, ${range}` : ""}. Said plainly because a wallet you connect
+          will have its own history here, and this one is not yours.
         </span>
       </div>
 

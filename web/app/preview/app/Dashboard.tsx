@@ -254,6 +254,17 @@ export default function Dashboard() {
         </p>
       )}
 
+      {!s.enrolled && s.collateral === 0n && (
+        <div className="dPanel">
+          <h3>No history on this account yet</h3>
+          <p className="dWhy">
+            The table further down belongs to the demonstration account, not to you. Once this
+            wallet holds cover, its own windows appear there: what you asked for, what the book
+            gave you and why they differed, the outcome, and what it paid.
+          </p>
+        </div>
+      )}
+
       {settled && (
         <p className="dSetUp">
           <span className="dLive"><i aria-hidden="true" />Set up and enrolled.</span>
