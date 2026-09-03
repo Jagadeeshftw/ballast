@@ -6,6 +6,7 @@ import {
   type Address, type EIP1193Provider,
 } from "viem";
 import { somniaTestnet } from "viem/chains";
+import { useRouter } from "next/navigation";
 import { ADDR, EXPLORER, RPC } from "@/lib/chain";
 import { explain } from "./errors";
 import { WETH, erc20, vaultAbi, engineAbi, sourceAbi } from "./onchain";
@@ -55,6 +56,7 @@ export function useWallet() {
 }
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [ready, setReady] = useState(false);
   const [provider, setProvider] = useState<EIP1193Provider | null>(null);
   const [account, setAccount] = useState<Address | null>(null);
@@ -148,6 +150,23 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   /** Local only: EIP-1193 has no disconnect. Returns the page to its public view. */
   const disconnect = useCallback(() => { setAccount(null); setS(null); setErr(null); setTx(null); }, []);
 
+  /**
+   * The one funnel every write in the dashboard goes through.
+   *
+   * Two things here are load-bearing.
+   *
+   * `waitForTransactionReceipt` RESOLVES for a reverted transaction -- it only rejects if the
+   * receipt never arrives. Without the status check below, a reverted deposit set no error,
+   * cleared the busy state and left a transaction link on screen: the interface said the money
+   * had moved when the chain said it had not. This is the same bug that was fixed in the
+   * settle runner; it was still live here.
+   *
+   * And a confirmed write must be reflected in the SERVER-rendered figures, not just in the
+   * client's wallet state. `read()` refreshes what this provider holds; the vault balance, the
+   * positions table and the status band are rendered on the server and would otherwise keep
+   * showing pre-write values until a manual reload -- someone would see their own deposit
+   * missing. `router.refresh()` re-renders those against the chain as it is now.
+   */
   const send = useCallback(async (what: string, run: (w: ReturnType<typeof createWalletClient>) => Promise<`0x${string}`>) => {
     if (!provider || !account) return;
     setBusy(what); setErr(null); setTx(null);
@@ -155,11 +174,19 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       const wallet = createWalletClient({ account, chain: somniaTestnet, transport: custom(provider) });
       const hash = await run(wallet);
       setTx({ hash, what });
-      await pub.waitForTransactionReceipt({ hash });
+      const receipt = await pub.waitForTransactionReceipt({ hash });
+      if (receipt.status !== "success") {
+        setErr(
+          `${what} was mined but reverted, so nothing changed on chain. The transaction is on the ` +
+          `explorer with the revert reason; gas for it was still spent.`,
+        );
+        return;
+      }
       await read(account);
+      router.refresh();
     } catch (e) { setErr(explain(e)); }
     finally { setBusy(null); }
-  }, [provider, account, read]);
+  }, [provider, account, read, router]);
 
   const value = useMemo<Ctx>(() => ({
     ready, hasProvider: !!provider, account, chainOk, connecting, s, busy, err, tx,

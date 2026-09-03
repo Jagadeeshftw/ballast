@@ -508,30 +508,30 @@ export async function getLiveWindow(makeWholeBps: number): Promise<LiveWindow | 
 export async function buildWindow(marketId: string, makeWholeBps: number): Promise<LiveWindow | null> {
   const nowSec = Math.floor(Date.now() / 1000);
   {
-    const row = await client.readContract({
-      address: ADDR.binaryModule, abi: moduleAbi, functionName: "markets", args: [marketId as `0x${string}`],
-    });
-    if (row.market === "0x0000000000000000000000000000000000000000") return null;
-
-    const [openRaw, assetKey, pending] = await Promise.all([
+    /* Five sequential RPC stages became two. Nothing here depended on `markets` resolving
+       first -- every read in this batch needs only the marketId we were handed -- and the two
+       asset-key lookups are constants, so they join the same batch instead of being fetched
+       one at a time after it. The guards still run, just on results rather than before them. */
+    const [row, openRaw, assetKey, pending, ethKey, btcKey] = await Promise.all([
+      client.readContract({ address: ADDR.binaryModule, abi: moduleAbi, functionName: "markets", args: [marketId as `0x${string}`] }),
       client.readContract({ address: ADDR.engine, abi: engineAbi, functionName: "openPriceOf", args: [marketId as `0x${string}`] }),
       client.readContract({ address: ADDR.engine, abi: engineAbi, functionName: "assetKeyOf", args: [marketId as `0x${string}`] }),
       client.readContract({ address: ADDR.engine, abi: engineListAbi, functionName: "pendingOf", args: [marketId as `0x${string}`] }),
+      client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: ["ETH"] }),
+      client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: ["BTC"] }),
     ]);
+    if (row.market === "0x0000000000000000000000000000000000000000") return null;
     if (openRaw === 0n) return null;
 
-    let asset = ASSET_BY_KEY[assetKey as string] ?? "";
-    if (!asset) {
-      for (const a of ["ETH", "BTC"]) {
-        const k = await client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: [a] });
-        ASSET_BY_KEY[k as string] = a;
-        if (k === assetKey) asset = a;
-      }
-    }
+    ASSET_BY_KEY[ethKey as string] = "ETH";
+    ASSET_BY_KEY[btcKey as string] = "BTC";
+    const asset = ASSET_BY_KEY[assetKey as string] ?? "";
     if (!asset) return null;
 
-    const key = await client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: [asset] });
-    const px = await client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "priceOf", args: [key] });
+    /* `assetKeyFor(asset)` used to be read here to get the price key. It is a whole round
+       trip to recover a value we already hold: `asset` was just resolved FROM `assetKey`, so
+       the key it returns is `assetKey` by construction. */
+    const px = await client.readContract({ address: ADDR.source, abi: sourceAbi, functionName: "priceOf", args: [assetKey as `0x${string}`] });
 
     const strike = Number(openRaw) / 1e18;
     const spot = px[1] ? Number(px[0]) / 1e18 : null;

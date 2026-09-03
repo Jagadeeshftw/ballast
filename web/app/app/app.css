@@ -46,7 +46,7 @@
 #dir-a.app a { color: var(--accent); text-decoration: none; }
 #dir-a.app a:hover { text-decoration: underline; text-underline-offset: 3px; }
 #dir-a.app dd { margin-inline-start: 0; }
-/* landing.css no longer loads here, so the focus ring and selection live with the shell. */
+/* Preflight is not loaded, so the focus ring and selection live with the shell. */
 #dir-a.app :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 #dir-a.app ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); }
 
@@ -405,8 +405,7 @@
 #dir-a .chip.themeBtn:hover { color: var(--bone); border-color: var(--rail); background: color-mix(in srgb, var(--bone) 6%, transparent); }
 
 /* ------------------------------------------------------ not-running state */
-/* Ported from landing.css, which the dashboard no longer loads. Sizes that were var(--s*)
-   are literal here because the shell sets its own denser scale. */
+/* Sizes are literal rather than tokens because the shell sets its own denser scale. */
 
 /* Not an error panel. Beacon rather than exposed: this is a condition to read, not a fault. */
 #dir-a .runState {

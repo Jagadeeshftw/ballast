@@ -1,7 +1,5 @@
 /* Ballast — global ground only.
    Everything that styles a page lives with that page: theme.css for `/`, app.css for `/app`.
-   (landing.css is orphaned -- the old Direction A landing page it served is gone, and the
-   dashboard's tokens moved into app.css. Nothing imports it.)
    This file sets the ground, the font and the box model, and nothing else.
 
    NO BARE ELEMENT SELECTOR MAY BE ADDED HERE beyond html and body. Three separate debugging
