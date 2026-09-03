@@ -159,6 +159,37 @@ Both numbers matter together: usage is over-estimated ~4× *and* billing is at t
 subscription whose limit was set from an estimate pays roughly **twenty-five times** what the
 work costs.
 
+### 5b. Because billing is flat per wake, the price is fully decoupled from the work
+
+The limit is charged whatever the callback does, so every wake costs the same regardless of
+which path it runs. Our handler has two, and they are not remotely comparable in cost.
+
+Counting the run's own on-chain counters:
+
+| | wakes | what that wake did |
+| --- | --- | --- |
+| `callbackCount` — every wake billed | **2,715** | |
+| of which: window registrations | **2,281** (84%) | one struct write, one `priceOf` read |
+| of which: drain wakes | **434** (16%) | walk the pending list and the enrolled users; emitted 1,196 `CallbackRan`, ~2.8 markets each |
+
+Those add up exactly: 2,281 + 434 = 2,715. Every wake did something — but **84% of them did
+the cheap thing and were charged for the expensive one.** Registering a window is a single
+SSTORE and a single view call. Draining scans the book and prices cover for every enrolled
+account. Both were billed 0.07 STT.
+
+That is the part we would most like changed. The 6.7× in finding 5 is an overpay on the
+average wake; this is the observation that there is no average wake — the work per callback
+varies by an order of magnitude and the price does not move at all. A project cannot optimise
+for it either, because the only lever is a single subscription-wide `gasLimit` that must be
+set high enough for the heaviest path, which then prices every light one at that ceiling.
+
+Total for the run: **2,715 wakes × 0.07 = ~190 STT**, on a faucet that pays 0.5 a day.
+
+**Suggestion.** If billing at usage is not possible, allowing a per-subscription `gasLimit` to
+differ by matched topic would let a handler price its cheap path cheaply. Registering an event
+and acting on a batch are different jobs; charging them identically is what made this run
+unaffordable.
+
 ---
 
 ## Smaller notes

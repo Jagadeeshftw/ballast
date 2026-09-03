@@ -141,6 +141,13 @@ dreamDEX rolls about **147 windows an hour** across every series, and the subscr
 the engine for all of them, including the 60-second ones the economics above say never to
 cover. Measured burn: **12.8 STT/hour, 308/day**. The Somnia faucet pays 0.5 a day.
 
+And because the limit is charged whatever the callback does, the price is decoupled from the
+work entirely. Of the **2,715 wakes** the engine was billed for, **2,281 (84%) were window
+registrations** — one struct write and one price read — and only **434 were the drain wakes**
+that actually scan the book and buy cover, handling about 2.8 markets each. Every one of the
+2,715 cost the same 0.07 STT. The 6.7× is the overpay on an average wake; this is the reason
+there is no average wake. Total for the run: **~190 STT**.
+
 The fix needs no new contract — `setSubscriptionFees` already sets the limit, and 4,000,000
 is twice the worst path measured (`poke()` on a live window estimates 1,936,405). That cuts
 the cost 2.5×, not the 10–20× first guessed: a discard-path callback genuinely costs ~1.5M
@@ -160,7 +167,7 @@ precompile does match beyond topic0, but `MarketCreated` indexes `marketId`, `ma
 `pool` — all per-market, all created fresh each window. None of them selects a series.
 
 Because the live page reads a rolling ~1000-block tail (about 100 seconds), the whole run is
-captured and committed as data: **6,706 events, 1–2 September**, in
+captured and committed as data: **6,748 events, 1–2 September**, in
 [`docs/run-record.json`](docs/run-record.json). The page renders it when the live tail is
 empty, labelled as the recorded run, and live wins whenever the engine is running.
 
