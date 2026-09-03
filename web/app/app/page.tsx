@@ -43,7 +43,7 @@ export default async function Overview() {
       <LeadPanel
         eyebrow={policyActive ? "Cover in force" : "No cover in force"}
         aside={
-          <div className="flex gap-8 md:justify-end">
+          <div className="grid grid-cols-2 gap-6">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Open cover</div>
               <div className="mt-1 font-mono text-[22px] font-medium tabular-nums text-ink">{t.open}</div>
@@ -120,7 +120,8 @@ export default async function Overview() {
         <div className="panel" style={{ marginTop: 12 }}>
           <p className="why" style={{ marginBottom: 0 }}>
             Net counts <strong>settled</strong> positions only. {usd(t.committedPremium)} tUSDC
-            of premium sits against {t.open} windows that expired without <code>settle()</code>{" "}
+            of premium sits against {t.open} {t.open === 1 ? "window" : "windows"} that expired
+            without <code>settle()</code>{" "}
             being called — spent, but with outcomes not yet known, so it is not reported as a
             loss. <a href="/app/cover">Settle them on Cover</a>.
           </p>

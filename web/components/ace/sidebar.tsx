@@ -1,34 +1,34 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { IconMenu2, IconX, IconLayoutSidebarLeftExpand, IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
 
 /**
- * Aceternity's Sidebar (`@aceternity/sidebar`), restyled to the palette and with one
- * structural change on the desktop side.
+ * Aceternity's Sidebar (`@aceternity/sidebar`), restyled, with two changes.
  *
- * The catalogue's version drives the collapse from React state: the rail is `useState(false)`
- * and each label is a `motion.span` with `animate={{ opacity: open ? 1 : 0, display: open ?
- * "inline-block" : "none" }}`. Because that is `animate` rather than `initial`, framer-motion
- * server-renders the labels already at `opacity: 0; display: none` -- and since the expansion
- * is a JS hover handler, nothing ever brings them back without scripting. The rail would ship
- * as six unlabelled icons with no way to read them.
+ * FIRST -- the collapse is CSS, not React state. The catalogue's labels are `motion.span`s with
+ * `animate={{ opacity: open ? 1 : 0, display: open ? "inline-block" : "none" }}`. Because that
+ * is `animate` and not `initial`, framer-motion server-renders them already hidden, and since
+ * the expansion is a JS hover handler nothing brings them back: the rail ships as six
+ * unlabelled icons. Here the labels are always in the HTML at full opacity, and the rail
+ * simply clips them -- each row is a grid whose first track is EXACTLY the rail width, so the
+ * label column starts at the clip edge rather than a few pixels inside it (which rendered as a
+ * column of first letters and looked like a fault).
  *
- * So the desktop rail expands through CSS instead: the container is `overflow-hidden` at rail
- * width and grows on `:hover`/`:focus-within`, while each row is a fixed full-width grid whose
- * label is simply CLIPPED rather than hidden. The label text is present, at full opacity, in
- * the server-rendered HTML; hovering reveals it with no JavaScript involved, and keyboard
- * focus does the same, which the state-driven version never handled. Same look, same motion,
- * and it survives the no-JS render the dashboard is required to produce.
- *
- * The mobile half is the catalogue's unchanged in behaviour -- a hamburger opening a
- * full-screen overlay -- because it is gated behind `open &&` inside `AnimatePresence`, so
- * nothing of it is server-rendered invisible.
+ * SECOND -- expansion is pinned by a click, not by hover. Hover-expand on a fixed rail covers
+ * the content underneath, and the alternative -- letting the content shrink as the rail grows
+ * -- reflows the page while the pointer is moving across it. Neither is acceptable. A pin is a
+ * deliberate act: the content column shifts once, because the reader asked for it. Keyboard
+ * focus expands too, and shifts the content the same way, because tabbing into the rail is
+ * equally deliberate. Nothing is ever obscured in either state.
  */
 
-type SidebarCtx = { open: boolean; setOpen: React.Dispatch<React.SetStateAction<boolean>> };
+type SidebarCtx = {
+  open: boolean; setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  pinned: boolean; togglePin: () => void; mounted: boolean;
+};
 const SidebarContext = createContext<SidebarCtx | undefined>(undefined);
 
 export const useSidebar = () => {
@@ -38,8 +38,35 @@ export const useSidebar = () => {
 };
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
-  const [open, setOpen] = useState(false);
-  return <SidebarContext.Provider value={{ open, setOpen }}>{children}</SidebarContext.Provider>;
+  const [open, setOpen] = useState(false);          // mobile overlay
+  const [pinned, setPinned] = useState(false);      // desktop rail
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    try { setPinned(localStorage.getItem("ballast.rail") === "pinned"); } catch { /* private mode */ }
+    setMounted(true);
+  }, []);
+
+  /* The class goes on the shell rather than the rail: the content column is what has to move,
+     and it is not a descendant of the rail. */
+  useEffect(() => {
+    const shell = document.getElementById("dir-a");
+    if (shell) shell.classList.toggle("railPinned", pinned);
+  }, [pinned]);
+
+  const togglePin = () => {
+    setPinned((v) => {
+      const next = !v;
+      try { localStorage.setItem("ballast.rail", next ? "pinned" : "rail"); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
+  return (
+    <SidebarContext.Provider value={{ open, setOpen, pinned, togglePin, mounted }}>
+      {children}
+    </SidebarContext.Provider>
+  );
 };
 
 export const SidebarBody = ({ children, className }: { children: React.ReactNode; className?: string }) => (
@@ -49,26 +76,40 @@ export const SidebarBody = ({ children, className }: { children: React.ReactNode
   </>
 );
 
-/** Rail width collapsed, full width on hover or keyboard focus. Pure CSS. */
 export const DesktopSidebar = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <aside
     aria-label="Sections"
     className={cn(
-      /* Fixed, not in flow: the rail reserves 68px in the grid and the expansion OVERLAYS the
-         content. In flow it would push the page sideways on every hover -- layout shift on an
-         idle mouse move, which the quality floor rules out. */
-      "group/rail fixed left-0 top-0 z-50 hidden h-svh flex-col overflow-hidden border-r border-rule bg-raised",
-      "[--rail-w:68px]",
-      "shadow-none hover:shadow-2xl hover:shadow-black/25 focus-within:shadow-2xl",
-      "w-[var(--rail-w)] focus-within:w-[248px] hover:w-[248px]",
-      "transition-[width] duration-300 ease-out motion-reduce:transition-none md:flex",
+      "railAside fixed left-0 top-0 z-50 hidden h-svh flex-col overflow-hidden border-r border-rule bg-raised",
+      "transition-[width] duration-200 ease-out motion-reduce:transition-none md:flex",
       className,
     )}
   >
-    {/* Fixed inner width so labels are clipped by the rail rather than reflowing as it grows. */}
     <div className="flex h-full w-[248px] flex-col gap-1 py-3">{children}</div>
   </aside>
 );
+
+/** Pin control. Renders only after mount, so it is never a dead button with scripting off. */
+export const PinToggle = () => {
+  const { pinned, togglePin, mounted } = useSidebar();
+  if (!mounted) return null;
+  return (
+    <button
+      type="button"
+      onClick={togglePin}
+      aria-pressed={pinned}
+      title={pinned ? "Collapse the sidebar" : "Keep the sidebar open"}
+      aria-label={pinned ? "Collapse the sidebar" : "Keep the sidebar open"}
+      className="grid h-10 grid-cols-[var(--rail-w)_1fr] items-center rounded-lg text-[13px] text-muted transition-colors hover:bg-ink/[0.04] hover:text-ink"
+    >
+      <span className="grid place-items-center" aria-hidden="true">
+        {pinned ? <IconLayoutSidebarLeftCollapse size={19} stroke={1.6} />
+                : <IconLayoutSidebarLeftExpand size={19} stroke={1.6} />}
+      </span>
+      <span className="whitespace-nowrap text-left">{pinned ? "Collapse" : "Keep open"}</span>
+    </button>
+  );
+};
 
 export const MobileSidebar = ({ children }: { children: React.ReactNode }) => {
   const { open, setOpen } = useSidebar();
@@ -114,12 +155,6 @@ export const SidebarLink = ({
     aria-current={active ? "page" : undefined}
     {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
     className={cn(
-      /* The icon cell is EXACTLY the collapsed rail width, so the label column begins at the
-         clip edge and not one pixel inside it. The first attempt used padding and a gap, which
-         left the label starting around 46px inside a 68px rail -- so ~22px of every word
-         survived the clip and the rail rendered as a column of first letters. Getting this
-         wrong looks like a rendering fault rather than a collapsed rail, so it is a grid with
-         a fixed first track rather than anything that has to be eyeballed. */
       "group/link grid h-10 grid-cols-[var(--rail-w)_1fr] items-center rounded-lg text-[14px] transition-colors",
       active ? "bg-signal/10 text-ink" : "text-muted hover:bg-ink/[0.04] hover:text-ink",
     )}
@@ -127,8 +162,6 @@ export const SidebarLink = ({
     <span className={cn("grid place-items-center", active && "text-signal")} aria-hidden="true">
       {icon}
     </span>
-    {/* Full opacity and present in the server-rendered HTML; it simply sits outside the clip
-        until the rail widens. Nothing here depends on JavaScript. */}
     <span className="whitespace-nowrap pr-4 transition-transform duration-150 group-hover/link:translate-x-0.5">
       {label}
     </span>

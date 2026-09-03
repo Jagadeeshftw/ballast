@@ -38,13 +38,27 @@
   font-size: 15px;
 }
 
-/* Not a grid any more. The rail is fixed (so hovering it cannot move the page), which takes
-   it out of flow -- and the mobile bar beside it is display:none on desktop, so the grid was
-   left with one in-flow child and squashed the entire dashboard into the 68px rail column.
-   An offset is the right shape for an overlay rail. */
+/* The rail is fixed and therefore out of flow, so the content column is offset rather than
+   laid out beside it. Both widths move TOGETHER: the rail never covers content in either
+   state, which is the whole point of pinning rather than hovering.
+   The offset is a transition so the pin reads as one deliberate movement. */
+#dir-a { --rail-w: 68px; --rail-open: 248px; }
+#dir-a .railAside { width: var(--rail-w); }
 #dir-a .appMain { margin-left: 0; }
 @media (min-width: 768px) {
-  #dir-a .appMain { margin-left: var(--rail-w); }
+  #dir-a .appMain {
+    margin-left: var(--rail-w);
+    transition: margin-left .2s ease-out;
+  }
+  /* Pinned by click, or expanded because the reader tabbed into it. Both are deliberate, so
+     both shift the content rather than covering it. */
+  #dir-a.railPinned .railAside,
+  #dir-a .railAside:focus-within { width: var(--rail-open); }
+  #dir-a.railPinned .appMain { margin-left: var(--rail-open); }
+  #dir-a:has(.railAside:focus-within) .appMain { margin-left: var(--rail-open); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #dir-a .appMain, #dir-a .railAside { transition: none; }
 }
 #dir-a.app :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
 /* No defensive reset needed: a.css scopes its section padding to .sec, which this shell
@@ -122,7 +136,10 @@
 
 /* ------------------------------------------------------------------ body */
 
-#dir-a .appBody { max-width: 1240px; width: 100%; margin: 0 auto; padding: 30px 26px 90px; }
+/* Was max-width 1240 with 26px padding: 66px of gutter each side at 1440 and 306px at 1920,
+   which read as an unfinished page rather than a considered measure. Prose inside still caps
+   itself in ch, so widening the column does not produce unreadable line lengths. */
+#dir-a .appBody { max-width: 1640px; width: 100%; margin: 0 auto; padding: 28px 32px 80px; }
 #dir-a .appBody > section { margin-top: 34px; }
 #dir-a .viewH1 { font-size: 30px; font-weight: 700; letter-spacing: -.02em; }
 #dir-a .viewH2 { font-size: 17px; font-weight: 700; margin-bottom: 12px; }

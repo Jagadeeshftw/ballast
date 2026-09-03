@@ -26,12 +26,19 @@ export function LeadPanel({
           background:
             "radial-gradient(60% 120% at 12% 0%, color-mix(in srgb, var(--color-signal) 22%, transparent), transparent 60%)",
         }} />
-      <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-9">
-        <div>
+      {/* `1fr auto` pushed the secondary figures to the far right edge and left a void across
+         the middle at wide widths. A ruled second column keeps them adjacent to the prose and
+         reads as a deliberate division rather than as leftover space. */}
+      <div className="relative grid gap-8 p-6 md:grid-cols-[minmax(0,1fr)_minmax(300px,36%)] md:gap-10 md:p-9">
+        <div className="min-w-0">
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">{eyebrow}</div>
           {children}
         </div>
-        {aside && <div className="md:text-right">{aside}</div>}
+        {aside && (
+          <div className="self-center border-t border-rule pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+            {aside}
+          </div>
+        )}
       </div>
     </div>
   );
