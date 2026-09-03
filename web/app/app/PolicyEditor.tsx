@@ -6,6 +6,7 @@ import { somniaTestnet } from "viem/chains";
 import { ADDR } from "@/lib/chain";
 import { size } from "@/lib/sizing";
 import { useWallet } from "./wallet";
+import TxStatus from "./TxStatus";
 import { GAS, vaultAbi } from "./onchain";
 
 const DAY = 86_400;
@@ -50,13 +51,7 @@ export default function PolicyEditor({
 
   return (
     <>
-      {err && <p className="err">{err}</p>}
-      {tx && (
-        <p className="txline">
-          {tx.what} sent — <a href={`https://shannon-explorer.somnia.network/tx/${tx.hash}`} target="_blank" rel="noreferrer">
-            {tx.hash.slice(0, 18)}…</a>
-        </p>
-      )}
+      <TxStatus />
 
       <div className="polGrid">
         <div className="panel">

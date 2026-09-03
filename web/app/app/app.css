@@ -494,3 +494,14 @@
 #dir-a .filters a.on {
   color: var(--on-accent); background: var(--accent); font-weight: 600;
 }
+
+/* ------------------------------------------------- engine explanation parts */
+/* feature-with-inline-icons, restyled: four scannable answers rather than one block. */
+#dir-a .runParts { display: grid; gap: 18px; margin: 0 0 22px; }
+@media (min-width: 760px) { #dir-a .runParts { grid-template-columns: 1fr 1fr; gap: 22px 32px; } }
+#dir-a .runParts dt {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--beacon); font-weight: 600; font-size: 14px; margin-bottom: 5px;
+}
+#dir-a .runParts dd { margin: 0; color: var(--chart); font-size: 14px; line-height: 1.6; max-width: 60ch; }
+#dir-a .runParts dd strong { color: var(--bone); font-weight: 600; }

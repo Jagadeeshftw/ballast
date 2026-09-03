@@ -6,6 +6,7 @@ import { formatUnits } from "viem";
 import { somniaTestnet } from "viem/chains";
 import { ADDR } from "@/lib/chain";
 import { useWallet } from "./wallet";
+import TxStatus from "./TxStatus";
 import { GAS, WETH, erc20, vaultAbi } from "./onchain";
 import { NoGasBanner } from "./TopBar";
 
@@ -42,13 +43,7 @@ export default function FundsActions() {
   return (
     <>
       {s.stt === 0n && <NoGasBanner />}
-      {err && <p className="err">{err}</p>}
-      {tx && (
-        <p className="txline">
-          {tx.what} sent — <a href={`https://shannon-explorer.somnia.network/tx/${tx.hash}`} target="_blank" rel="noreferrer">
-            {tx.hash.slice(0, 18)}…</a>
-        </p>
-      )}
+      <TxStatus />
 
       <div className="polGrid">
         <div className="panel">
