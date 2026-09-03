@@ -15,7 +15,7 @@ import ThemeToggle from "@/components/site/ThemeToggle";
  */
 export default function TopBar({
   engineLive, engineNote, unread,
-}: { engineLive: boolean; engineNote: string; unread: number }) {
+}: { engineLive: boolean | null; engineNote: string; unread: number }) {
   const { ready, hasProvider, account, chainOk, connecting, s, connect, disconnect } = useWallet();
   const [menu, setMenu] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -37,8 +37,12 @@ export default function TopBar({
       <span className="chip">
         <i className="dot live" aria-hidden="true" />Somnia testnet
       </span>
-      <span className={`chip ${engineLive ? "" : "warn"}`} title={engineNote}>
-        <i aria-hidden="true">⌁</i>{engineLive ? "engine live" : "engine stopped"}
+      {/* Three states, not two. "stopped" and "we could not tell" are different claims, and
+          showing the first when the second is true is the kind of small lie that costs a
+          reader their trust in every other figure on the page. */}
+      <span className={`chip ${engineLive === null ? "alert" : engineLive ? "" : "warn"}`} title={engineNote}>
+        <i aria-hidden="true">⌁</i>
+        {engineLive === null ? "engine unknown" : engineLive ? "engine live" : "engine stopped"}
       </span>
 
       {noGas && (

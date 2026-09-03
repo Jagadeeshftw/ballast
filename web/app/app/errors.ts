@@ -29,7 +29,7 @@ const ERRORS = parseAbi([
   "error NotEligible()",
 ]);
 
-const usd = (v: bigint) => `${(Number(v) / 1e6).toLocaleString(undefined, { maximumFractionDigits: 6 })} tUSDC`;
+const usd = (v: bigint) => `${(Number(v) / 1e6).toLocaleString("en-GB", { maximumFractionDigits: 6 })} tUSDC`;
 const utc = (v: bigint) =>
   new Date(Number(v) * 1000).toISOString().replace("T", " ").slice(0, 19) + " UTC";
 
