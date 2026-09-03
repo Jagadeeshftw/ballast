@@ -25,3 +25,6 @@ next-env.d.ts
 # --- OS / editor ---
 .DS_Store
 Thumbs.db
+
+# Playwright screenshots must never land in the repo.
+web/undefined/
