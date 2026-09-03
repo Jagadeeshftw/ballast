@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 import {
   Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle,
 } from "@/components/ace/resizable-navbar";
@@ -34,6 +35,7 @@ export default function SiteNav() {
         </a>
         <NavItems items={LINKS} />
         <div className="relative z-20 flex items-center gap-2">
+          <ThemeToggle />
           <a href="/app"
             className="rounded-md bg-signal px-4 py-2 text-sm font-bold text-ground transition hover:brightness-110">
             Open the dashboard
@@ -46,7 +48,10 @@ export default function SiteNav() {
           <a href="#top" className="flex items-center gap-2.5 text-ink">
             <Mark /><span className="font-bold tracking-tight">Ballast</span>
           </a>
-          <MobileNavToggle isOpen={open} onClick={() => setOpen(!open)} />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <MobileNavToggle isOpen={open} onClick={() => setOpen(!open)} />
+          </div>
         </MobileNavHeader>
         <MobileNavMenu isOpen={open} onClose={() => setOpen(false)}>
           {LINKS.map((l) => (

@@ -6,6 +6,8 @@ import SiteNav from "@/components/site/SiteNav";
 import HowTimeline from "@/components/site/HowTimeline";
 import CumulativeNet from "@/components/site/CumulativeNet";
 import Faq from "@/components/site/Faq";
+import ProblemStream from "@/components/site/ProblemStream";
+import HonestScroll from "@/components/site/HonestScroll";
 import SiteFooter from "@/components/site/SiteFooter";
 
 export const dynamic = "force-dynamic";
@@ -43,42 +45,44 @@ export default async function Landing() {
   ] as const;
 
   return (
-    <div id="top" className="min-h-screen bg-ground font-sans text-ink">
+    <div id="top" className="site min-h-screen bg-ground font-sans text-ink">
       <SiteNav />
 
       {/* ══ HERO ══ asymmetric, full-bleed, carrying the same-block proof ══ */}
-      <section className="relative overflow-hidden border-b border-rule">
+      {/* The nav is sticky, so it occupies flow; the hero takes the rest of the first screen
+          and centres within it rather than relying on fixed padding that overflows. */}
+      <section className="relative flex min-h-[calc(100svh-56px)] flex-col justify-center overflow-hidden border-b border-rule">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(60% 50% at 18% 0%, rgba(224,161,48,.14), transparent 65%)," +
-              "radial-gradient(45% 40% at 88% 6%, rgba(111,185,143,.07), transparent 70%)," +
-              "linear-gradient(to right, rgba(69,64,47,.35) 1px, transparent 1px)," +
-              "linear-gradient(to bottom, rgba(69,64,47,.35) 1px, transparent 1px)",
+              "radial-gradient(60% 50% at 18% 0%, var(--hero-glow-a), transparent 65%)," +
+              "radial-gradient(45% 40% at 88% 6%, var(--hero-glow-b), transparent 70%)," +
+              "linear-gradient(to right, var(--hero-grid) 1px, transparent 1px)," +
+              "linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px)",
             backgroundSize: "auto, auto, 88px 88px, 88px 88px",
             maskImage: "radial-gradient(120% 90% at 30% 0%, #000 30%, transparent 78%)",
             WebkitMaskImage: "radial-gradient(120% 90% at 30% 0%, #000 30%, transparent 78%)",
           }}
         />
-        <div className="relative mx-auto max-w-7xl px-6 pt-32 pb-20 md:px-10 md:pt-40 md:pb-28">
-          <div className="grid items-end gap-12 lg:grid-cols-[1.35fr_1fr]">
+        <div className="relative mx-auto w-full max-w-7xl px-6 py-8 md:px-10 md:py-14">
+          <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
             <div>
-              <p className="mb-6 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
+              <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
                 Parametric cover · Somnia · dreamDEX
               </p>
-              <h1 className="max-w-[16ch] text-balance text-[clamp(38px,6vw,76px)] font-black leading-[1.02] tracking-[-0.035em]">
+              <h1 className="max-w-[17ch] text-balance text-[clamp(32px,min(4.6vw,7.2vh),64px)] font-black leading-[1.03] tracking-[-0.035em]">
                 Your position buys its own cover, in the same block.
               </h1>
-              <p className="mt-7 max-w-[52ch] text-lg leading-relaxed text-muted">
+              <p className="mt-5 max-w-[52ch] text-[clamp(14.5px,1.25vw,18px)] leading-relaxed text-muted">
                 You hold ETH. It can fall while you sleep, and the instruments that would cover
                 that fall expire every sixty seconds — so in practice nobody rolls them.{" "}
                 <strong className="font-medium text-ink">
                   Ballast does, and nothing of ours is running when it happens.
                 </strong>
               </p>
-              <div className="mt-9 flex flex-wrap items-center gap-3">
+              <div className="mt-7 flex flex-wrap items-center gap-3">
                 <a href="/app"
                   className="rounded-md bg-signal px-6 py-3.5 text-[15px] font-bold text-ground transition hover:brightness-110">
                   Open the dashboard
@@ -92,14 +96,14 @@ export default async function Landing() {
 
             {/* the thesis, as evidence */}
             <div className="rounded-xl border border-rule bg-raised/70 backdrop-blur-sm">
-              <div className="flex items-baseline justify-between gap-3 border-b border-rule px-5 py-3">
+              <div className="flex items-baseline justify-between gap-3 border-b border-rule px-4 py-2.5 sm:px-5 sm:py-3">
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
                   Same block · zero latency
                 </span>
                 <span className="font-mono text-[11px] font-semibold text-signal">476941284</span>
               </div>
               <div className="grid sm:grid-cols-2">
-                <div className="border-b border-rule px-5 py-4 sm:border-b-0 sm:border-r">
+                <div className="border-b border-rule px-4 py-3 sm:border-b-0 sm:border-r sm:px-5 sm:py-4">
                   <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
                     dreamDEX opens a window
                   </div>
@@ -108,7 +112,7 @@ export default async function Landing() {
                     0x0434d364…0d075d5fcd4
                   </a>
                 </div>
-                <div className="px-5 py-4">
+                <div className="px-4 py-3 sm:px-5 sm:py-4">
                   <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
                     Ballast&rsquo;s handler runs
                   </div>
@@ -118,7 +122,7 @@ export default async function Landing() {
                   </a>
                 </div>
               </div>
-              <p className="border-t border-rule px-5 py-4 text-[13px] leading-relaxed text-muted">
+              <p className="border-t border-rule px-4 py-3 text-[12.5px] leading-relaxed text-muted sm:px-5 sm:py-4 sm:text-[13px]">
                 Not a fast bot. Somnia&rsquo;s reactivity precompile executes the handler as a
                 synthetic transaction{" "}
                 <strong className="font-semibold text-paid">inside the block that triggered it</strong>{" "}
@@ -129,27 +133,34 @@ export default async function Landing() {
         </div>
       </section>
 
-      {/* ══ THE PROBLEM ══ offset two-column, one large figure ══ */}
-      <section className="border-b border-rule">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-[1fr_auto] md:items-center md:px-10 md:py-24">
-          <div>
-            <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">The problem</p>
-            <h2 className="max-w-[20ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
-              Cover exists. Buying it every hour by hand does not.
-            </h2>
-            <p className="mt-5 max-w-[58ch] leading-relaxed text-muted">
-              On this venue the instruments that would cover a fall expire every sixty seconds.
-              Nobody sits up all night re-buying them, so the position ends up uncovered — not by
-              decision, but by fatigue. Ballast is the part that does not get tired.
-            </p>
+      {/* ══ THE PROBLEM ══ a stream you would have to keep up with ══ */}
+      <section className="overflow-hidden border-b border-rule">
+        <div className="mx-auto max-w-7xl px-6 pt-20 md:px-10 md:pt-24">
+          <div className="grid gap-10 md:grid-cols-[1.25fr_auto] md:items-end">
+            <div>
+              <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">The problem</p>
+              <h2 className="max-w-[18ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
+                Cover exists. Keeping up with it does not.
+              </h2>
+              <p className="mt-5 max-w-[56ch] leading-relaxed text-muted">
+                On this venue the instruments that would cover a fall expire every sixty seconds.
+                Nobody sits up all night re-buying them, so the position ends up uncovered — not
+                by decision, but by fatigue. Ballast is the part that does not get tired.
+              </p>
+            </div>
+            <div className="border-l-2 border-signal pl-7">
+              <div className="font-mono text-[40px] font-medium leading-none tracking-tight md:text-[56px]">
+                {n0(RECORD.counts.CallbackRan ?? 0)}
+              </div>
+              <div className="mt-3 max-w-[20ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-muted">
+                callbacks delivered without a keeper
+              </div>
+            </div>
           </div>
-          <div className="border-l-2 border-signal pl-7">
-            <div className="font-mono text-[44px] font-medium leading-none tracking-tight md:text-[64px]">
-              {n0(RECORD.counts.CallbackRan ?? 0)}
-            </div>
-            <div className="mt-3 max-w-[22ch] font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-muted">
-              callbacks delivered without a keeper
-            </div>
+        </div>
+        <div className="pb-16 md:pb-20">
+          <div className="mx-auto max-w-7xl px-6 md:px-10">
+            <ProblemStream />
           </div>
         </div>
       </section>
@@ -159,83 +170,39 @@ export default async function Landing() {
         <HowTimeline />
       </section>
 
-      {/* ══ WHAT IT PAYS ══ the honest section, table-led ══ */}
+      {/* ══ WHAT IT PAYS ══ the strongest argument, walked one region at a time ══ */}
       <section id="pays" className="border-b border-rule">
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-24">
           <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">The honest part</p>
           <h2 className="max-w-[22ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
             Exact at one depth. Wrong on both sides of it, on purpose.
           </h2>
+          <p className="mt-5 max-w-[64ch] leading-relaxed text-muted">
+            Event Contracts are <strong className="font-medium text-ink">at-the-money binaries</strong>:
+            one strike per window, struck at the window&rsquo;s opening price, paying a fixed
+            amount per winning contract. There is no strike ladder — 562 markets checked, at most
+            one strike per venue per window. So{" "}
+            <strong className="font-medium text-ink">no quantity of contracts produces a flat net line</strong>,
+            and Ballast does not claim one. The gap either side is{" "}
+            <strong className="font-medium text-ink">basis risk</strong>, the defining property of{" "}
+            <strong className="font-medium text-ink">parametric cover</strong> — the same trade
+            flight-delay insurance makes, paying the same whether you missed a meeting or a wedding.
+          </p>
 
-          <div className="mt-10 grid gap-12 lg:grid-cols-[1.1fr_1fr]">
-            <div className="space-y-5 text-muted">
-              <p className="leading-relaxed">
-                Event Contracts are <strong className="font-medium text-ink">at-the-money binaries</strong>:
-                one strike per window, struck at the window&rsquo;s opening price, paying a fixed
-                amount per winning contract. There is no strike ladder — 562 markets checked, at
-                most one strike per venue per window. So{" "}
-                <strong className="font-medium text-ink">no quantity of contracts produces a flat net line</strong>,
-                and Ballast does not claim one.
-              </p>
-              <p className="leading-relaxed">
-                What it produces is a fixed payout on a trigger. Cover is exact at the depth you
-                choose, over-compensates above it and under-compensates below. That gap is{" "}
-                <strong className="font-medium text-ink">basis risk</strong>, and it is the defining
-                property of <strong className="font-medium text-ink">parametric cover</strong> — the
-                same trade flight-delay insurance makes, paying the same amount whether you missed a
-                meeting or a wedding. It is not a defect to engineer away. It is what you are buying.
-              </p>
-              <p className="leading-relaxed">
-                Ballast always shows the make-whole point it{" "}
-                <strong className="font-medium text-ink">achieved</strong>, never the one you asked
-                for, and says which limit bound the size when they differ.
-              </p>
-            </div>
-
-            <div>
-              <div className="overflow-x-auto rounded-xl border border-rule">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-rulehi">
-                      <th className="px-4 py-3 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">ETH falls</th>
-                      <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">Spot</th>
-                      <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">Cover nets</th>
-                      <th className="px-4 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">Net</th>
-                    </tr>
-                  </thead>
-                  <tbody className="font-mono">
-                    <tr className="border-b border-rule">
-                      <td className="px-4 py-3">1.0%</td>
-                      <td className="px-4 py-3 text-right text-muted">−{n2(exposure * 0.01)}</td>
-                      <td className="px-4 py-3 text-right text-paid">+{n2(coverNet)}</td>
-                      <td className="px-4 py-3 text-right text-paid">+{n2(at(0.01))}</td>
-                    </tr>
-                    <tr className="border-b border-rule bg-signal/[0.07]">
-                      <td className="px-4 py-3">2.5%</td>
-                      <td className="px-4 py-3 text-right text-muted">−{n2(exposure * 0.025)}</td>
-                      <td className="px-4 py-3 text-right text-paid">+{n2(coverNet)}</td>
-                      <td className="px-4 py-3 text-right font-semibold">{n2(Math.abs(at(0.025)))}</td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3">5.0%</td>
-                      <td className="px-4 py-3 text-right text-muted">−{n2(exposure * 0.05)}</td>
-                      <td className="px-4 py-3 text-right text-paid">+{n2(coverNet)}</td>
-                      <td className="px-4 py-3 text-right text-lost">−{n2(Math.abs(at(0.05)))}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-4 text-[13px] leading-relaxed text-muted">
-                Not an illustration. Computed from the live measured exposure of{" "}
-                <span className="font-mono text-ink">{n2(exposure)} tUSDC</span> (2 WETH at{" "}
-                {ethPx ? n2(ethPx) : "—"}), the cover price of{" "}
-                <span className="font-mono text-ink">{Q}</span> actually paid on a settled position,
-                and the 250 bps make-whole point on the live policy. The middle row is the
-                make-whole point, and it lands on zero because that is what the make-whole point
-                means.
-              </p>
-            </div>
+          <div className="mt-10">
+            <HonestScroll exposure={exposure} coverNet={coverNet}
+              at={[at(0.01), at(0.025), at(0.05)]} />
           </div>
+
+          <p className="mt-8 max-w-[76ch] text-[13px] leading-relaxed text-muted">
+            Not an illustration. Every figure is computed from the live measured exposure of{" "}
+            <span className="font-mono text-ink">{n2(exposure)} tUSDC</span> (2 WETH at{" "}
+            {ethPx ? n2(ethPx) : "—"}), the cover price of <span className="font-mono text-ink">{Q}</span>{" "}
+            actually paid on a settled position, and the 250 bps make-whole point on the live
+            policy. Ballast always shows the make-whole point it{" "}
+            <strong className="font-medium text-ink">achieved</strong>, never the one you asked
+            for, and says which limit bound the size when they differ.
+          </p>
         </div>
       </section>
 

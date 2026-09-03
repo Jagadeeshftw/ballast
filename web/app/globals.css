@@ -10,12 +10,12 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { background: #16150F; }
+html { background: var(--color-ground, #16150F); }
 
 body {
   margin: 0;
-  background: #16150F;
-  color: #F2EEE4;
+  background: var(--color-ground, #16150F);
+  color: var(--color-ink, #F2EEE4);
   font-family: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.5;

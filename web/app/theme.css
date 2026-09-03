@@ -21,14 +21,82 @@
   --color-paid:    #6FB98F;   /*  7.85:1 — semantic */
   --color-lost:    #D1674F;   /*  5.02:1 — semantic */
 
+  /* Hero texture, per theme: a grid that is barely there on ink is heavy on paper. */
+  --hero-grid: rgba(69,64,47,.35);
+  --hero-glow-a: rgba(224,161,48,.14);
+  --hero-glow-b: rgba(111,185,143,.07);
+
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* ── Light theme ───────────────────────────────────────────────────────────
+   Not an inversion. The ground is warm paper rather than white — the same world
+   in daylight — and every accent is re-derived, because burnt gold at #E0A130
+   measures 2.2:1 on paper and would have failed outright. The two earlier light
+   directions failed on exactly this, so all five text colours are checked on
+   BOTH the ground and the raised surface:
+
+     ink #1A1812  16.02 / 17.45      signal #8A5A11  5.34 / 5.81
+     muted #6B6455 5.29 /  5.77      paid   #2F7A55  4.70 / 5.12
+                                     lost   #A83E28  5.60 / 6.10
+
+   Dark is the default identity, so it lives on :root. The light theme applies
+   when the OS asks for it and no explicit choice overrides, or when the toggle
+   stamps it. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+:root:not([data-theme="dark"]) {
+  @media (prefers-color-scheme: light) {
+    --hero-grid: rgba(120,108,84,.16);
+    --hero-glow-a: rgba(224,161,48,.20);
+    --hero-glow-b: rgba(47,122,85,.07);
+    --color-ground: #F7F3E9;
+    --color-raised: #FFFDF7;
+    --color-raise2: #F1EADA;
+    --color-rule:   #E3DCCB;
+    --color-rulehi: #CFC5AE;
+    --color-ink:    #1A1812;
+    --color-muted:  #6B6455;
+    --color-signal: #8A5A11;
+    --color-paid:   #2F7A55;
+    --color-lost:   #A83E28;
+  }
+}
+
+:root[data-theme="light"] {
+  --hero-grid: rgba(120,108,84,.16);
+  --hero-glow-a: rgba(224,161,48,.20);
+  --hero-glow-b: rgba(47,122,85,.07);
+  --color-ground: #F7F3E9;
+  --color-raised: #FFFDF7;
+  --color-raise2: #F1EADA;
+  --color-rule:   #E3DCCB;
+  --color-rulehi: #CFC5AE;
+  --color-ink:    #1A1812;
+  --color-muted:  #6B6455;
+  --color-signal: #8A5A11;
+  --color-paid:   #2F7A55;
+  --color-lost:   #A83E28;
+}
+
 @layer base {
-  /* Preflight is deliberately not loaded, so the browser's default link underline survives.
-     Reset it for the site surface only -- the dashboard's own CSS already handles its links. */
-  .font-sans a { text-decoration: none; }
+  /* Preflight is deliberately not loaded, because the dashboard at /app is 800 lines of
+     hand-written CSS that assumes browser defaults. So the site surface gets its own reset,
+     scoped to .site, covering everything preflight would have: twelve element defaults were
+     still active and two of them were visible -- the link underline, and border-spacing on
+     tables, which drew a box around the refusal and FAQ rules. */
+  .site :where(h1,h2,h3,h4,h5,h6,p,blockquote,figure,dl,dd,ul,ol,hr,pre) { margin: 0; }
+  .site :where(ul,ol) { padding-inline-start: 0; list-style: none; }
+  .site :where(table) { border-collapse: collapse; border-spacing: 0; }
+  .site :where(fieldset) { margin: 0; padding: 0; border: 0; }
+  .site :where(hr) { border: 0; border-top: 1px solid var(--color-rule); margin: 0; }
+  .site :where(button,input,select,textarea) {
+    font: inherit; color: inherit; margin: 0; padding: 0; border: 0; background: transparent;
+  }
+  .site :where(img,svg,video) { display: block; max-width: 100%; }
+  .site a { text-decoration: none; }
+  .site summary::-webkit-details-marker { display: none; }
   /* The navbar is sticky, so a jump link would otherwise land with its heading underneath it. */
   section[id], div[id] { scroll-margin-top: 96px; }
   html { scroll-behavior: smooth; }
@@ -36,7 +104,9 @@
 
   /* Numbers line up in columns; running text does not want tabular punctuation. */
   .font-mono, table, .tabular { font-variant-numeric: tabular-nums; }
-  html { background: var(--color-ground); }
+  html { background: var(--color-ground); color-scheme: dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { color-scheme: light; } }
   body {
     background: var(--color-ground);
     color: var(--color-ink);
