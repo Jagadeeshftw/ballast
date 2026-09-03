@@ -51,7 +51,7 @@ export default async function Landing() {
       {/* ══ HERO ══ asymmetric, full-bleed, carrying the same-block proof ══ */}
       {/* The nav is sticky, so it occupies flow; the hero takes the rest of the first screen
           and centres within it rather than relying on fixed padding that overflows. */}
-      <section className="relative flex min-h-[calc(100svh-56px)] flex-col justify-center overflow-hidden border-b border-rule">
+      <section className="relative flex min-h-svh flex-col justify-center overflow-hidden border-b border-rule pt-[56px]">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"

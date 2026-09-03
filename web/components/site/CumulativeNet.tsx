@@ -30,13 +30,13 @@ export default function CumulativeNet({ points }: { points: CumPoint[] }) {
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" role="img"
       aria-label={`Cumulative net across ${points.length} settled positions, ending at ${end.toFixed(2)} tUSDC`}>
-      <line x1={PAD.l} y1={zero} x2={W - PAD.r} y2={zero} stroke="#9A9384" strokeWidth="1" strokeDasharray="4 4" opacity=".7" />
-      <path d={`${line} L ${sx(points.length - 1)} ${zero} L ${sx(0)} ${zero} Z`} fill="#6FB98F" opacity=".13" />
-      <path d={line} fill="none" stroke="#6FB98F" strokeWidth="2" />
+      <line x1={PAD.l} y1={zero} x2={W - PAD.r} y2={zero} stroke="var(--color-muted)" strokeWidth="1" strokeDasharray="4 4" opacity=".7" />
+      <path d={`${line} L ${sx(points.length - 1)} ${zero} L ${sx(0)} ${zero} Z`} fill="var(--color-paid)" opacity=".13" />
+      <path d={line} fill="none" stroke="var(--color-paid)" strokeWidth="2" />
       {points.map((p, i) => (
-        <circle key={i} cx={sx(i)} cy={sy(p.net)} r="2.4" fill={p.outcome === "Won" ? "#6FB98F" : "#D1674F"} />
+        <circle key={i} cx={sx(i)} cy={sy(p.net)} r="2.4" fill={p.outcome === "Won" ? "var(--color-paid)" : "var(--color-lost)"} />
       ))}
-      <text x={W - PAD.r} y={sy(end) - 10} textAnchor="end" fill="#6FB98F"
+      <text x={W - PAD.r} y={sy(end) - 10} textAnchor="end" fill="var(--color-paid)"
         fontSize="15" fontWeight="600" fontFamily="var(--font-plex-mono), monospace">
         +{end.toFixed(2)} tUSDC
       </text>
