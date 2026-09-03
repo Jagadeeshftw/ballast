@@ -483,26 +483,12 @@
   #dir-a .engRow { grid-template-columns: 1fr; }
 }
 
-/* -------------------------------------------------- loading / error states */
-/* A spinner says "wait"; this says what is being waited on. The bars are a placeholder for
-   the figure grid that is about to land, sized like it, so nothing jumps when it arrives. */
-#dir-a .loadState { padding: 4px 0; }
-#dir-a .loadHead {
-  display: flex; align-items: center; gap: 9px;
-  font-size: 15px; font-weight: 600; color: var(--bone); margin-bottom: 8px;
-}
-#dir-a .loadDot {
-  width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none;
-  animation: ballastPulse 1.3s ease-in-out infinite;
-}
-@keyframes ballastPulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
-@media (prefers-reduced-motion: reduce) { #dir-a .loadDot { animation: none; } }
-
-#dir-a .loadBars { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 22px; margin-top: 22px; }
-#dir-a .loadBars span {
-  display: block; height: 58px; border-radius: 10px;
-  border: 1px solid var(--rail); background: var(--hull);
-}
+/* ------------------------------------------------------------ error state */
+/* There is deliberately NO route-level loading.tsx. It creates a Suspense boundary, and Next
+   streams the real content into a hidden template that only JavaScript can swap in -- so with
+   scripting off the dashboard sat on "Reading Somnia" forever while the populated shell it is
+   required to render sat invisible in the same response. The pages read in well under two
+   seconds now, so the skeleton was buying very little and costing the no-JS render. */
 
 #dir-a .errActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 
