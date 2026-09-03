@@ -2,6 +2,7 @@ import { EXPLORER, SKIP_MEANING, type TapeItem } from "@/lib/chain";
 import { RECORD, recordRange } from "@/lib/record";
 import { getTape } from "@/lib/chain";
 import { RecordedBanner } from "../../RunState";
+import { EmptyState } from "@/components/ace/empty-state";
 
 export const dynamic = "force-dynamic";
 
@@ -103,13 +104,10 @@ export default async function Activity({
         )}
 
         {slice.length === 0 ? (
-          <div className="panel">
-            <h3>Nothing under this filter</h3>
-            <p className="why">
-              The run recorded no {filter.label.toLowerCase()} events.{" "}
-              <a href="?">Show everything</a>.
-            </p>
-          </div>
+          <EmptyState title="Nothing under this filter">
+            The run recorded no {filter.label.toLowerCase()} events. That is a property of this
+            filter, not of the run — <a href="?">show everything</a>.
+          </EmptyState>
         ) : (
           <ul className="feed">
             {slice.map((i, n) => <Row key={`${i.tx}-${i.block}-${n}`} i={i} />)}

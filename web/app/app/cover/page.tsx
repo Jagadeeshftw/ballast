@@ -4,6 +4,7 @@ import CumChart from "../CumChart";
 import { recordRange } from "@/lib/record";
 import PayoffA from "../../PayoffA";
 import { SettleButton, SettleRun } from "../cover-actions";
+import { EmptyState } from "@/components/ace/empty-state";
 
 export const dynamic = "force-dynamic";
 
@@ -125,7 +126,10 @@ export default async function Cover({
         </p>
 
         {rows.length === 0 ? (
-          <div className="panel"><p className="why">No positions match that filter.</p></div>
+          <EmptyState title="No positions match that filter">
+            Every position the engine opened is still here — <a href="?">clear the filter</a> to
+            see them.
+          </EmptyState>
         ) : (
           <div className="tableWrap">
             <table className="tbl">

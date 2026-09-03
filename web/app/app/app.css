@@ -269,7 +269,11 @@
 #dir-a .filters a:hover { color: var(--bone); }
 
 /* Scrolls inside itself; the page never scrolls sideways. */
-#dir-a .tableWrap { overflow-x: auto; border: 1px solid var(--rail); border-radius: 10px; background: var(--hull); }
+/* Same frame as the stat cards, so the table reads as part of the set rather than a separate
+   widget: 12px radius, hairline rule, raised ground. The header sticks so the column names
+   survive a long scroll. */
+#dir-a .tableWrap { overflow-x: auto; border: 1px solid var(--rail); border-radius: 12px; background: var(--hull); }
+#dir-a .tbl thead th { position: sticky; top: 0; z-index: 1; background: var(--hull); }
 #dir-a .tbl { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 900px; }
 #dir-a .tbl th {
   text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
@@ -470,3 +474,23 @@
 }
 #dir-a .bellWord { color: var(--chart); }
 @media (max-width: 900px) { #dir-a .bellWord { display: none; } }
+
+/* ------------------------------------------------------------- filter pills */
+/* The catalogue's Tabs component was the obvious fit here and does not work: it holds the
+   active tab in React state and reorders the list on click, so filtering and paging would
+   stop working with scripting off -- and on Activity those are querystring links precisely so
+   they keep working. The pill treatment is taken; the anchors stay anchors. */
+#dir-a .filters {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding: 3px; border-radius: 999px;
+  border: 1px solid var(--rail); background: var(--hull);
+}
+#dir-a .filters a {
+  border: 0; border-radius: 999px; padding: 6px 14px;
+  font-size: 13px; color: var(--chart); text-decoration: none; white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease;
+}
+#dir-a .filters a:hover { color: var(--bone); background: color-mix(in srgb, var(--bone) 6%, transparent); }
+#dir-a .filters a.on {
+  color: var(--on-accent); background: var(--accent); font-weight: 600;
+}

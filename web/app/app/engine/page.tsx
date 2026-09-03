@@ -3,6 +3,7 @@ import { getEngineState } from "@/lib/chain";
 import { RECORD, recordRange } from "@/lib/record";
 import RunState from "../../RunState";
 import { StatGrid } from "@/components/ace/stat-grid";
+import { Disclosure } from "@/components/ace/disclosure";
 import { IconPlugConnected, IconCoin, IconReceipt2, IconRepeat, IconCalendarEvent } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
@@ -122,23 +123,33 @@ export default async function Engine() {
           Every one of these is a subscription or constructor parameter, readable on chain.
           None of them requires a new contract to change.
         </p>
-        <div className="panel">
-          <dl className="engKv">
-            <Kv k="Enrolled accounts" v={n0(e.enrolledCount)}
-              note="accounts the engine will act for" />
-            <Kv k="Windows pending" v={n0(e.pendingCount)}
-              note="seen, not yet resolved either way" />
-            <Kv k="Max attempts" v={n0(e.maxAttempts)}
-              note="tries before a window is given up as unpriceable" />
-            <Kv k="Initial delay" v={`${n0(e.initialDelay)}s`}
-              note="wait before the first attempt, so the book can form" />
-            <Kv k="Callbacks per window" v={(Number(e.ratioX100) / 100).toFixed(2)}
-              note="measured, not configured — how many wakes each window costs" />
-            <Kv k="Windows remaining" v={n0(e.windowsRemaining)}
-              note="at the current balance" />
-            <Kv k="Health reading" v={e.stale ? "Stale" : "Fresh"}
-              note={e.stale ? "the engine has not been woken recently" : "recently woken"} />
-          </dl>
+        <div className="panel" style={{ paddingTop: 4, paddingBottom: 4 }}>
+          <Disclosure summary="Enrolment and queue" defaultOpen>
+            <dl className="engKv">
+              <Kv k="Enrolled accounts" v={n0(e.enrolledCount)}
+                note="accounts the engine will act for" />
+              <Kv k="Windows pending" v={n0(e.pendingCount)}
+                note="seen, not yet resolved either way" />
+            </dl>
+          </Disclosure>
+          <Disclosure summary="Retry ladder" defaultOpen>
+            <dl className="engKv">
+              <Kv k="Max attempts" v={n0(e.maxAttempts)}
+                note="tries before a window is given up as unpriceable" />
+              <Kv k="Initial delay" v={`${n0(e.initialDelay)}s`}
+                note="wait before the first attempt, so the book can form" />
+            </dl>
+          </Disclosure>
+          <Disclosure summary="Cost and runway">
+            <dl className="engKv">
+              <Kv k="Callbacks per window" v={(Number(e.ratioX100) / 100).toFixed(2)}
+                note="measured, not configured — how many wakes each window costs" />
+              <Kv k="Windows remaining" v={n0(e.windowsRemaining)}
+                note="at the current balance and this contract's own cost estimate" />
+              <Kv k="Health reading" v={e.stale ? "Stale" : "Fresh"}
+                note={e.stale ? "the engine has not been woken recently" : "recently woken"} />
+            </dl>
+          </Disclosure>
         </div>
       </section>
 
