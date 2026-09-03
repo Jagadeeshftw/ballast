@@ -37,9 +37,11 @@ function Links() {
 
   return (
     <>
-      <a href={BASE} onClick={close}
-        className="mb-4 flex items-center gap-3 rounded-lg px-2 py-1.5 text-[17px] font-bold text-ink">
-        <span className="grid size-6 shrink-0 place-items-center"><Wordmark size={22} /></span>
+      {/* Same fixed first track as the links, so the wordmark centres in the collapsed rail
+          and the name sits outside the clip rather than showing as a stray "B". */}
+      <a href={BASE} onClick={close} title="Ballast"
+        className="mb-4 grid h-10 grid-cols-[var(--rail-w,68px)_1fr] items-center text-[17px] font-bold text-ink">
+        <span className="grid place-items-center"><Wordmark size={22} /></span>
         <span className="whitespace-nowrap">Ballast</span>
       </a>
 

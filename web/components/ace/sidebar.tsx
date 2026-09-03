@@ -58,14 +58,15 @@ export const DesktopSidebar = ({ children, className }: { children: React.ReactN
          content. In flow it would push the page sideways on every hover -- layout shift on an
          idle mouse move, which the quality floor rules out. */
       "group/rail fixed left-0 top-0 z-50 hidden h-svh flex-col overflow-hidden border-r border-rule bg-raised",
+      "[--rail-w:68px]",
       "shadow-none hover:shadow-2xl hover:shadow-black/25 focus-within:shadow-2xl",
-      "w-[68px] focus-within:w-[248px] hover:w-[248px]",
+      "w-[var(--rail-w)] focus-within:w-[248px] hover:w-[248px]",
       "transition-[width] duration-300 ease-out motion-reduce:transition-none md:flex",
       className,
     )}
   >
     {/* Fixed inner width so labels are clipped by the rail rather than reflowing as it grows. */}
-    <div className="flex h-full w-[248px] flex-col gap-1 p-3">{children}</div>
+    <div className="flex h-full w-[248px] flex-col gap-1 py-3">{children}</div>
   </aside>
 );
 
@@ -109,18 +110,26 @@ export const SidebarLink = ({
   <a
     href={href}
     onClick={onClick}
+    title={label}
     aria-current={active ? "page" : undefined}
     {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
     className={cn(
-      "group/link flex items-center gap-3 rounded-lg px-2.5 py-2 text-[14px] transition-colors",
+      /* The icon cell is EXACTLY the collapsed rail width, so the label column begins at the
+         clip edge and not one pixel inside it. The first attempt used padding and a gap, which
+         left the label starting around 46px inside a 68px rail -- so ~22px of every word
+         survived the clip and the rail rendered as a column of first letters. Getting this
+         wrong looks like a rendering fault rather than a collapsed rail, so it is a grid with
+         a fixed first track rather than anything that has to be eyeballed. */
+      "group/link grid h-10 grid-cols-[var(--rail-w)_1fr] items-center rounded-lg text-[14px] transition-colors",
       active ? "bg-signal/10 text-ink" : "text-muted hover:bg-ink/[0.04] hover:text-ink",
     )}
   >
-    <span className={cn("grid size-6 shrink-0 place-items-center", active && "text-signal")}>
+    <span className={cn("grid place-items-center", active && "text-signal")} aria-hidden="true">
       {icon}
     </span>
-    {/* Always rendered, always opaque -- the rail clips it when collapsed. */}
-    <span className="whitespace-nowrap transition-transform duration-150 group-hover/link:translate-x-0.5">
+    {/* Full opacity and present in the server-rendered HTML; it simply sits outside the clip
+        until the rail widens. Nothing here depends on JavaScript. */}
+    <span className="whitespace-nowrap pr-4 transition-transform duration-150 group-hover/link:translate-x-0.5">
       {label}
     </span>
   </a>

@@ -2,7 +2,7 @@
 export default function NotFound() {
   return (
     <div className="panel">
-      <h3>There is no such view</h3>
+      <h1 className="viewH1" style={{ fontSize: 22, marginBottom: 8 }}>There is no such view</h1>
       <p className="why">
         The dashboard has six: <a href="/app">Overview</a>, <a href="/app/cover">Cover</a>,{" "}
         <a href="/app/policy">Policy</a>, <a href="/app/funds">Funds</a>,{" "}
