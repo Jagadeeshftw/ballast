@@ -5,7 +5,7 @@ import {
   IconLayoutDashboard, IconShieldHalf, IconTargetArrow, IconWallet,
   IconBolt, IconTimelineEvent, IconBrandGithub, IconFileText, IconWorld,
 } from "@tabler/icons-react";
-import { Sidebar, SidebarBody, SidebarLink, PinToggle, useSidebar } from "@/components/ace/sidebar";
+import { Sidebar, SidebarBody, SidebarLink, useSidebar } from "@/components/ace/sidebar";
 import Wordmark from "../Wordmark";
 
 const BASE = "/app";
@@ -53,7 +53,6 @@ function Links() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-1 border-t border-rule pt-3">
-        <PinToggle />
         {EXTERNAL.map((e) => (
           <SidebarLink key={e.href} href={e.href} label={e.label} icon={e.icon}
             external={e.href.startsWith("http")} onClick={close} />

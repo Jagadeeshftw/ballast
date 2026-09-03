@@ -38,28 +38,19 @@
   font-size: 15px;
 }
 
-/* The rail is fixed and therefore out of flow, so the content column is offset rather than
-   laid out beside it. Both widths move TOGETHER: the rail never covers content in either
-   state, which is the whole point of pinning rather than hovering.
-   The offset is a transition so the pin reads as one deliberate movement. */
+/* The rail is IN FLOW, as the catalogue component is: it animates its own width on hover and
+   the content column shifts with it. Being in flow it cannot overlap the content at all --
+   the shift is the mechanism, not a defect.
+   Flex rather than grid, deliberately: the mobile bar beside the rail is display:none on
+   desktop, and a grid with a fixed first track put the whole dashboard in the 68px rail
+   column once that bar stopped counting as a child. A flex row has no such failure mode. */
 #dir-a { --rail-w: 68px; --rail-open: 248px; }
-#dir-a .railAside { width: var(--rail-w); }
-#dir-a .appMain { margin-left: 0; }
-@media (min-width: 768px) {
-  #dir-a .appMain {
-    margin-left: var(--rail-w);
-    transition: margin-left .2s ease-out;
-  }
-  /* Pinned by click, or expanded because the reader tabbed into it. Both are deliberate, so
-     both shift the content rather than covering it. */
-  #dir-a.railPinned .railAside,
-  #dir-a .railAside:focus-within { width: var(--rail-open); }
-  #dir-a.railPinned .appMain { margin-left: var(--rail-open); }
-  #dir-a:has(.railAside:focus-within) .appMain { margin-left: var(--rail-open); }
+#dir-a.app { display: flex; align-items: flex-start; }
+#dir-a .appMain { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 767.98px) {
+  #dir-a.app { display: block; }
 }
-@media (prefers-reduced-motion: reduce) {
-  #dir-a .appMain, #dir-a .railAside { transition: none; }
-}
+
 #dir-a.app :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
 /* No defensive reset needed: a.css scopes its section padding to .sec, which this shell
    does not use. */

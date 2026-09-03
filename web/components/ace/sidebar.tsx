@@ -1,34 +1,29 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { IconMenu2, IconX, IconLayoutSidebarLeftExpand, IconLayoutSidebarLeftCollapse } from "@tabler/icons-react";
+import { IconMenu2, IconX } from "@tabler/icons-react";
 
 /**
- * Aceternity's Sidebar (`@aceternity/sidebar`), restyled, with two changes.
+ * Aceternity's Sidebar (`@aceternity/sidebar`), restyled to the palette.
  *
- * FIRST -- the collapse is CSS, not React state. The catalogue's labels are `motion.span`s with
+ * It behaves as the catalogue component does: the rail sits in flow at icon width, expands on
+ * hover, collapses when the pointer leaves, and the content column shifts with it. Being in
+ * flow it cannot overlap the content at all -- the shift IS the mechanism.
+ *
+ * ONE deviation, and only one. The catalogue's labels are `motion.span`s carrying
  * `animate={{ opacity: open ? 1 : 0, display: open ? "inline-block" : "none" }}`. Because that
- * is `animate` and not `initial`, framer-motion server-renders them already hidden, and since
- * the expansion is a JS hover handler nothing brings them back: the rail ships as six
- * unlabelled icons. Here the labels are always in the HTML at full opacity, and the rail
- * simply clips them -- each row is a grid whose first track is EXACTLY the rail width, so the
- * label column starts at the clip edge rather than a few pixels inside it (which rendered as a
- * column of first letters and looked like a fault).
- *
- * SECOND -- expansion is pinned by a click, not by hover. Hover-expand on a fixed rail covers
- * the content underneath, and the alternative -- letting the content shrink as the rail grows
- * -- reflows the page while the pointer is moving across it. Neither is acceptable. A pin is a
- * deliberate act: the content column shifts once, because the reader asked for it. Keyboard
- * focus expands too, and shifts the content the same way, because tabbing into the rail is
- * equally deliberate. Nothing is ever obscured in either state.
+ * is `animate` and not `initial`, framer-motion server-renders them already at
+ * `opacity: 0; display: none`, and since the expansion is a JS hover handler nothing ever
+ * brings them back: the rail ships as six unlabelled icons to anyone without scripting. So the
+ * collapse is CSS here. Each row is a grid whose first track is EXACTLY the rail width, which
+ * puts the label column at the clip edge rather than a few pixels inside it -- inside it, the
+ * rail renders as a column of first letters and reads as a fault. Labels are present at full
+ * opacity in the server HTML, and `:hover` / `:focus-within` reveal them with no JavaScript.
  */
 
-type SidebarCtx = {
-  open: boolean; setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  pinned: boolean; togglePin: () => void; mounted: boolean;
-};
+type SidebarCtx = { open: boolean; setOpen: React.Dispatch<React.SetStateAction<boolean>> };
 const SidebarContext = createContext<SidebarCtx | undefined>(undefined);
 
 export const useSidebar = () => {
@@ -38,35 +33,8 @@ export const useSidebar = () => {
 };
 
 export const Sidebar = ({ children }: { children: React.ReactNode }) => {
-  const [open, setOpen] = useState(false);          // mobile overlay
-  const [pinned, setPinned] = useState(false);      // desktop rail
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    try { setPinned(localStorage.getItem("ballast.rail") === "pinned"); } catch { /* private mode */ }
-    setMounted(true);
-  }, []);
-
-  /* The class goes on the shell rather than the rail: the content column is what has to move,
-     and it is not a descendant of the rail. */
-  useEffect(() => {
-    const shell = document.getElementById("dir-a");
-    if (shell) shell.classList.toggle("railPinned", pinned);
-  }, [pinned]);
-
-  const togglePin = () => {
-    setPinned((v) => {
-      const next = !v;
-      try { localStorage.setItem("ballast.rail", next ? "pinned" : "rail"); } catch { /* ignore */ }
-      return next;
-    });
-  };
-
-  return (
-    <SidebarContext.Provider value={{ open, setOpen, pinned, togglePin, mounted }}>
-      {children}
-    </SidebarContext.Provider>
-  );
+  const [open, setOpen] = useState(false); // mobile overlay only
+  return <SidebarContext.Provider value={{ open, setOpen }}>{children}</SidebarContext.Provider>;
 };
 
 export const SidebarBody = ({ children, className }: { children: React.ReactNode; className?: string }) => (
@@ -80,36 +48,15 @@ export const DesktopSidebar = ({ children, className }: { children: React.ReactN
   <aside
     aria-label="Sections"
     className={cn(
-      "railAside fixed left-0 top-0 z-50 hidden h-svh flex-col overflow-hidden border-r border-rule bg-raised",
+      "railAside sticky top-0 hidden h-svh shrink-0 flex-col overflow-hidden border-r border-rule bg-raised",
+      "w-[var(--rail-w)] hover:w-[var(--rail-open)] focus-within:w-[var(--rail-open)]",
       "transition-[width] duration-200 ease-out motion-reduce:transition-none md:flex",
       className,
     )}
   >
-    <div className="flex h-full w-[248px] flex-col gap-1 py-3">{children}</div>
+    <div className="flex h-full w-[var(--rail-open)] flex-col gap-1 py-3">{children}</div>
   </aside>
 );
-
-/** Pin control. Renders only after mount, so it is never a dead button with scripting off. */
-export const PinToggle = () => {
-  const { pinned, togglePin, mounted } = useSidebar();
-  if (!mounted) return null;
-  return (
-    <button
-      type="button"
-      onClick={togglePin}
-      aria-pressed={pinned}
-      title={pinned ? "Collapse the sidebar" : "Keep the sidebar open"}
-      aria-label={pinned ? "Collapse the sidebar" : "Keep the sidebar open"}
-      className="grid h-10 grid-cols-[var(--rail-w)_1fr] items-center rounded-lg text-[13px] text-muted transition-colors hover:bg-ink/[0.04] hover:text-ink"
-    >
-      <span className="grid place-items-center" aria-hidden="true">
-        {pinned ? <IconLayoutSidebarLeftCollapse size={19} stroke={1.6} />
-                : <IconLayoutSidebarLeftExpand size={19} stroke={1.6} />}
-      </span>
-      <span className="whitespace-nowrap text-left">{pinned ? "Collapse" : "Keep open"}</span>
-    </button>
-  );
-};
 
 export const MobileSidebar = ({ children }: { children: React.ReactNode }) => {
   const { open, setOpen } = useSidebar();
