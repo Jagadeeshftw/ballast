@@ -4,7 +4,7 @@ import { positionsFor, totalsFor, cumulativeFor } from "@/lib/portfolio";
 import { RECORD, recordRange } from "@/lib/record";
 import SiteNav from "@/components/site/SiteNav";
 import HowTimeline from "@/components/site/HowTimeline";
-import CumulativeNet from "@/components/site/CumulativeNet";
+import NumbersBento from "@/components/site/NumbersBento";
 import Faq from "@/components/site/Faq";
 import ProblemStream from "@/components/site/ProblemStream";
 import HonestScroll from "@/components/site/HonestScroll";
@@ -214,32 +214,14 @@ export default async function Landing() {
             Forty-four settled positions, twenty-seven of which paid.
           </h2>
 
-          <div className="mt-10 grid gap-3 md:grid-cols-4 md:grid-rows-2">
-            <div className="rounded-xl border border-rule bg-raised p-6 md:col-span-2 md:row-span-2">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                Cumulative net · settled positions
-              </div>
-              <CumulativeNet points={cum} />
-              {/* ═════════════════════════════════════════════════════════════════
-                  LOAD-BEARING. Do not shorten when the page feels long. A positive
-                  net on a 61% hit rate is exactly what a trading-literate reader
-                  distrusts on sight; this is what turns it from suspicious into
-                  credible. Cut the chart before cutting this. */}
-              <p className="mt-5 border-l-2 border-signal pl-4 text-[13px] leading-relaxed text-muted">
-                <strong className="font-medium text-ink">Read this as a sample, not a result.</strong>{" "}
-                These are 44 one-minute windows on a thin testnet book. Our own economics says
-                rolling cover every sixty seconds is ruinous over any real horizon — at that
-                frequency the spread alone runs to hundreds of percent a year, which is why the
-                product defaults to the four-hour and twenty-four-hour windows. A favourable run of
-                44 does not contradict that. It is what a small sample looks like.
-              </p>
-            </div>
-
-            <Cell k="Premium, settled" v={n2(t.settledPremium)} u="tUSDC" />
-            <Cell k="Paid out" v={n2(t.paidOut)} u="tUSDC" tone="paid" />
-            <Cell k="Net, settled" v={`+${n2(t.settledNet)}`} u="tUSDC" tone="paid" />
-            <Cell k="Windows that paid" v={`${t.paid} / ${t.settled}`} u={`${Math.round((t.paid / t.settled) * 100)}%`} />
-          </div>
+          <NumbersBento
+            points={cum}
+            settledPremium={n2(t.settledPremium)}
+            paidOut={n2(t.paidOut)}
+            settledNet={n2(t.settledNet)}
+            paid={t.paid}
+            settled={t.settled}
+          />
 
           <p className="mt-6 max-w-[72ch] text-[14px] leading-relaxed text-muted">
             At-the-money cover is the most expensive cover this instrument offers. Because the
@@ -267,14 +249,21 @@ export default async function Landing() {
               </p>
             </div>
 
-            <dl className="divide-y divide-dashed divide-rulehi border-y border-dashed border-rulehi">
+            {/* Not a bordered container. The counts differ by an order of magnitude, so the
+                rule under each row is drawn to that length — the section becomes a small
+                chart of what the engine refused, which is what the numbers actually are. */}
+            <dl className="space-y-7">
               {declines.map(([label, count, why]) => (
-                <div key={label} className="flex items-baseline justify-between gap-6 py-4">
-                  <div>
+                <div key={label}>
+                  <div className="flex items-baseline justify-between gap-6">
                     <dt className="font-medium">{label}</dt>
-                    <dd className="mt-1 text-[13px] leading-relaxed text-muted">{why}</dd>
+                    <dd className="shrink-0 font-mono text-lg text-signal">{n0(count)}</dd>
                   </div>
-                  <div className="shrink-0 font-mono text-lg text-signal">{n0(count)}</div>
+                  <dd className="mt-1 text-[13px] leading-relaxed text-muted">{why}</dd>
+                  <div className="mt-3 h-px w-full bg-rule" aria-hidden="true">
+                    <div className="h-px bg-signal/70"
+                      style={{ width: `${Math.round((count / declines[0][1]) * 100)}%` }} />
+                  </div>
                 </div>
               ))}
             </dl>

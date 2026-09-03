@@ -40,11 +40,13 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
-  const backgroundColors = ["#16150F", "#16150F", "#16150F"]; // the page's own ground
+  const backgroundColors = ["var(--color-ground)", "var(--color-ground)", "var(--color-ground)"];
+  // Mixed against the raised surface token, so each theme resolves its own panel rather than
+  // baking the dark one in. Each gradient carries the payoff region it belongs to.
   const linearGradients = [
-    "linear-gradient(160deg, rgba(111,185,143,.22), rgba(31,29,22,.9))", // over-compensated
-    "linear-gradient(160deg, rgba(224,161,48,.24), rgba(31,29,22,.9))", // the make-whole point
-    "linear-gradient(160deg, rgba(209,103,79,.22), rgba(31,29,22,.9))", // under-compensated
+    "linear-gradient(160deg, color-mix(in srgb, var(--color-paid) 22%, var(--color-raised)), var(--color-raised))",
+    "linear-gradient(160deg, color-mix(in srgb, var(--color-signal) 24%, var(--color-raised)), var(--color-raised))",
+    "linear-gradient(160deg, color-mix(in srgb, var(--color-lost) 22%, var(--color-raised)), var(--color-raised))",
   ];
 
   const [backgroundGradient, setBackgroundGradient] = useState(
@@ -57,14 +59,12 @@ export const StickyScroll = ({
 
   return (
     <motion.div
-      animate={{
-        backgroundColor: backgroundColors[activeCard % backgroundColors.length],
-      }}
-      className="relative flex h-[32rem] justify-center gap-10 overflow-y-auto rounded-xl border border-rule p-6 md:p-10"
+      style={{ backgroundColor: backgroundColors[activeCard % backgroundColors.length] }}
+      className="relative flex h-[32rem] justify-between gap-10 overflow-y-auto rounded-xl border border-rule p-6 md:p-10"
       ref={ref}
     >
-      <div className="div relative flex items-start px-4">
-        <div className="max-w-2xl">
+      <div className="relative flex items-start">
+        <div className="max-w-xl">
           {content.map((item, index) => (
             <div key={item.title + index} className="my-16">
               <motion.h2

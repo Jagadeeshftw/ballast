@@ -96,17 +96,19 @@ export default function Faq({
           </p>
         </div>
 
-        <div className="border-t border-dashed border-rulehi">
+        <div className="-mt-2">
           {items.map(([q, a]) => (
-            <details key={q} className="group border-b border-dashed border-rulehi py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[17px] font-medium marker:hidden">
-                {q}
-                <span aria-hidden="true"
-                  className="shrink-0 font-mono text-lg text-signal transition-transform group-open:rotate-45">
-                  +
+            <details key={q} className="group border-b border-rule py-6 last:border-0">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-[17px] font-medium transition-colors marker:hidden hover:text-signal">
+                <span className="flex gap-4">
+                  <span aria-hidden="true"
+                    className="mt-[3px] shrink-0 font-mono text-[12px] text-signal transition-transform duration-200 group-open:rotate-90">
+                    ▸
+                  </span>
+                  {q}
                 </span>
               </summary>
-              <div className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-muted">{a}</div>
+              <div className="mt-4 max-w-[62ch] pl-8 text-[15px] leading-relaxed text-muted">{a}</div>
             </details>
           ))}
         </div>

@@ -26,8 +26,17 @@
   --hero-glow-a: rgba(224,161,48,.14);
   --hero-glow-b: rgba(111,185,143,.07);
 
+  /* The marquee sets --animation-duration and --animation-direction and expects an
+     animate-scroll utility. In Tailwind v3 that came from the JS config; v4 wants it here,
+     and without it the cards simply never moved. */
+  --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@keyframes scroll {
+  to { transform: translate(calc(-50% - 0.5rem)); }
 }
 
 /* ── Light theme ───────────────────────────────────────────────────────────

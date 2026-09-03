@@ -18,11 +18,11 @@ export default function HonestScroll({
 
   const panel = (label: string, tone: string, spot: string, net: string) => (
     <div className="flex h-full flex-col justify-between p-7">
-      <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink/70">{label}</div>
+      <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">{label}</div>
       <div>
-        <div className="font-mono text-[13px] text-ink/70">spot {spot}</div>
+        <div className="font-mono text-[13px] text-muted">spot {spot}</div>
         <div className={`mt-1 font-mono text-4xl font-medium tracking-tight ${tone}`}>{net}</div>
-        <div className="mt-1 font-mono text-[11px] text-ink/60">net, tUSDC</div>
+        <div className="mt-1 font-mono text-[11px] text-muted">net, tUSDC</div>
       </div>
     </div>
   );
