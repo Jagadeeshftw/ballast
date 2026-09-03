@@ -1,6 +1,8 @@
 import { ADDR, EXPLORER } from "@/lib/chain";
 import { loadPreview } from "../../data";
 import FundsActions from "../FundsActions";
+import { StatGrid } from "@/components/ace/stat-grid";
+import { IconWallet, IconLock, IconArrowBarToDown, IconAlertTriangle } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
@@ -20,17 +22,21 @@ export default async function Funds() {
         name and never touches your dreamDEX account.
       </p>
 
-      <section className="band statusBand">
-        <div className="statusGrid">
-          <div><dt>Vault balance</dt><dd className="big">{usd(vault.collateral)}</dd><dd className="sub">tUSDC</dd></div>
-          <div><dt>Reserved</dt><dd className="big">{usd(vault.reserved)}</dd><dd className="sub">against open cover</dd></div>
-          <div><dt>Withdrawable</dt><dd className="big">{usd(vault.free)}</dd><dd className="sub">unconditional</dd></div>
-          <div>
-            <dt>Unaccounted</dt><dd className="big">{usd(vault.surplus)}</dd>
-            <dd className="sub">expect 0 — anything else means tokens arrived outside deposit()</dd>
-          </div>
-        </div>
-      </section>
+      <StatGrid
+        cols={4}
+        items={[
+          { label: "Vault balance", icon: <IconWallet size={14} stroke={1.8} />,
+            value: usd(vault.collateral), note: "tUSDC" },
+          { label: "Reserved", icon: <IconLock size={14} stroke={1.8} />,
+            value: usd(vault.reserved), note: "against open cover" },
+          { label: "Withdrawable", icon: <IconArrowBarToDown size={14} stroke={1.8} />,
+            value: usd(vault.free), note: "unconditional" },
+          { label: "Unaccounted", icon: <IconAlertTriangle size={14} stroke={1.8} />,
+            value: usd(vault.surplus),
+            note: "expect 0 — anything else means tokens arrived outside deposit()",
+            tone: vault.surplus > 0n ? "lost" : undefined },
+        ]}
+      />
 
       <section>
         <FundsActions />

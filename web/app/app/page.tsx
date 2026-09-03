@@ -4,6 +4,8 @@ import { positionsFor, totalsFor } from "@/lib/portfolio";
 import { notificationsFor } from "./notifications";
 import Checklist from "./Checklist";
 import RunState from "../RunState";
+import { StatGrid } from "@/components/ace/stat-grid";
+import { IconChartLine, IconTargetArrow, IconShieldHalf, IconClockPlay, IconBolt } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
@@ -25,43 +27,48 @@ export default async function Overview() {
       <h1 className="viewH1">Overview</h1>
 
       {/* The one place the graduation field appears. */}
-      <section className="band statusBand">
-        <div className="statusGrid">
-          <div>
-            <dt>Measured exposure</dt>
-            <dd className="big">{exposure ? `${usd(exposure)}` : "—"}</dd>
-            <dd className="sub">{exposure ? "tUSDC of ETH, read from the book" : "unpriceable — the book is one-sided"}</dd>
-          </div>
-          <div>
-            <dt>Policy</dt>
-            <dd className="mid">{policyActive
-              ? `Make whole a fall of ${(Number(vault.policy[1]) / 100).toFixed(2)}%`
-              : "No active policy"}</dd>
-            <dd className="sub">{policyActive
-              ? `paying at most ${(Number(vault.policy[2]) / 100).toFixed(2)}% per window · to ${utc(vault.policy[3]).slice(0, 10)}`
-              : "the engine can do nothing on this account"}</dd>
-          </div>
-          <div>
-            <dt>Open cover</dt>
-            <dd className="big">{t.open}</dd>
-            <dd className="sub">windows still to settle</dd>
-          </div>
-          <div>
-            <dt>Next window</dt>
-            <dd className="mid">{shown ? `${shown.asset} · ${shown.intervalLabel}` : "none queued"}</dd>
-            <dd className="sub">{shown
+      <StatGrid
+        cols={5}
+        items={[
+          {
+            label: "Measured exposure",
+            icon: <IconChartLine size={14} stroke={1.8} />,
+            value: exposure ? usd(exposure) : "—",
+            note: exposure
+              ? "tUSDC of ETH, read from the book"
+              : "unpriceable — the book is one-sided",
+          },
+          {
+            label: "Policy",
+            icon: <IconTargetArrow size={14} stroke={1.8} />,
+            value: policyActive ? `${(Number(vault.policy[1]) / 100).toFixed(2)}%` : "None",
+            note: policyActive
+              ? `made whole, paying at most ${(Number(vault.policy[2]) / 100).toFixed(2)}% per window · to ${utc(vault.policy[3]).slice(0, 10)}`
+              : "the engine can do nothing on this account",
+          },
+          {
+            label: "Open cover",
+            icon: <IconShieldHalf size={14} stroke={1.8} />,
+            value: t.open,
+            note: "windows still to settle",
+          },
+          {
+            label: "Next window",
+            icon: <IconClockPlay size={14} stroke={1.8} />,
+            value: shown ? `${shown.asset} · ${shown.intervalLabel}` : "None",
+            note: shown
               ? shown.secondsLeft > 0 ? `closes in ${shown.secondsLeft}s` : "settling"
-              : "the engine reacts when dreamDEX rolls the next one"}</dd>
-          </div>
-          <div>
-            <dt>Engine</dt>
-            <dd className="mid">{engine.subscribed ? "Watching" : "Stopped"}</dd>
-            <dd className="sub">{engine.subscribed
-              ? "subscribed to every window"
-              : "out of gas — see Engine"}</dd>
-          </div>
-        </div>
-      </section>
+              : "the engine reacts when dreamDEX rolls the next one",
+          },
+          {
+            label: "Engine",
+            icon: <IconBolt size={14} stroke={1.8} />,
+            value: engine.subscribed ? "Watching" : "Stopped",
+            note: engine.subscribed ? "subscribed to every window" : "out of gas — see Engine",
+            tone: engine.subscribed ? undefined : "lost",
+          },
+        ]}
+      />
 
       <section>
         <h2 className="viewH2">Your setup</h2>
@@ -75,15 +82,20 @@ export default async function Overview() {
 
       <section>
         <h2 className="viewH2">Totals</h2>
-        <div className="panel">
-          <div className="figGrid">
-            <Fig k="Premium, settled" v={usd(t.settledPremium)} u="tUSDC" />
-            <Fig k="Paid out" v={usd(t.paidOut)} u="tUSDC" tone="up" />
-            <Fig k="Net, settled" v={usd(t.settledNet)} u="tUSDC" tone={t.settledNet >= 0 ? "up" : "down"} />
-            <Fig k="Windows covered" v={String(t.positions)} u={`${t.settled} settled`} />
-            <Fig k="Windows that paid" v={`${t.paid} of ${t.settled}`} u={t.hitRate === null ? "too few to rate" : `${Math.round(t.hitRate * 100)}%`} />
-          </div>
-          <p className="why" style={{ marginTop: 20, marginBottom: 0 }}>
+        <StatGrid
+          cols={5}
+          items={[
+            { label: "Premium, settled", value: usd(t.settledPremium), note: "tUSDC" },
+            { label: "Paid out", value: usd(t.paidOut), note: "tUSDC", tone: "paid" },
+            { label: "Net, settled", value: usd(t.settledNet), note: "tUSDC",
+              tone: t.settledNet >= 0 ? "paid" : "lost" },
+            { label: "Windows covered", value: String(t.positions), note: `${t.settled} settled` },
+            { label: "Windows that paid", value: `${t.paid} of ${t.settled}`,
+              note: t.hitRate === null ? "too few to rate" : `${Math.round(t.hitRate * 100)}%` },
+          ]}
+        />
+        <div className="panel" style={{ marginTop: 12 }}>
+          <p className="why" style={{ marginBottom: 0 }}>
             Net counts <strong>settled</strong> positions only. {usd(t.committedPremium)} tUSDC
             of premium sits against {t.open} windows that expired without <code>settle()</code>{" "}
             being called — spent, but with outcomes not yet known, so it is not reported as a
@@ -117,12 +129,3 @@ export default async function Overview() {
   );
 }
 
-function Fig({ k, v, u, tone }: { k: string; v: string; u: string; tone?: string }) {
-  return (
-    <div className="fig">
-      <span className="figK">{k.toUpperCase()}</span>
-      <span className={`figV ${tone ?? ""}`}>{v}</span>
-      <span className="figU">{u}</span>
-    </div>
-  );
-}

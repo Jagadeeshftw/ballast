@@ -2,6 +2,8 @@ import { ADDR, EXPLORER } from "@/lib/chain";
 import { getEngineState } from "@/lib/chain";
 import { RECORD, recordRange } from "@/lib/record";
 import RunState from "../../RunState";
+import { StatGrid } from "@/components/ace/stat-grid";
+import { IconPlugConnected, IconCoin, IconReceipt2, IconRepeat, IconCalendarEvent } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
 
@@ -9,15 +11,6 @@ const stt = (v: bigint) => (Number(v) / 1e18).toLocaleString("en-GB", { minimumF
 const usd = (v: bigint) => (Number(v) / 1e6).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const n0 = (v: bigint | number) => Number(v).toLocaleString("en-GB");
 
-function Fig({ k, v, u, tone }: { k: string; v: string; u?: string; tone?: string }) {
-  return (
-    <div className="fig">
-      <span className="figK">{k.toUpperCase()}</span>
-      <span className={`figV ${tone ?? ""}`}>{v}</span>
-      {u && <span className="figU">{u}</span>}
-    </div>
-  );
-}
 
 function Kv({ k, v, note }: { k: string; v: React.ReactNode; note?: string }) {
   return (
@@ -59,35 +52,25 @@ export default async function Engine() {
         keeper to trust.
       </p>
 
-      <section className="band statusBand">
-        <div className="statusGrid">
-          <div>
-            <dt>Subscription</dt>
-            <dd className="mid">{e.subscribed ? "Open" : "Closed"}</dd>
-            <dd className="sub">{e.subscribed ? `id ${n0(e.subId)}` : "ran out of gas"}</dd>
-          </div>
-          <div>
-            <dt>Engine balance</dt>
-            <dd className="big">{stt(e.balance)}</dd>
-            <dd className="sub">STT</dd>
-          </div>
-          <div>
-            <dt>Cost per callback</dt>
-            <dd className="mid">{stt(e.costPerCallback)}</dd>
-            <dd className="sub">STT, billed at the gas limit</dd>
-          </div>
-          <div>
-            <dt>Callbacks left</dt>
-            <dd className="big">{n0(e.callbacksLeft)}</dd>
-            <dd className="sub">at the current balance and price</dd>
-          </div>
-          <div>
-            <dt>Can schedule</dt>
-            <dd className="mid">{e.canSchedule ? "Yes" : "No"}</dd>
-            <dd className="sub">{e.canSchedule ? "a wake can be booked now" : "no wake can be booked"}</dd>
-          </div>
-        </div>
-      </section>
+      <StatGrid
+        cols={5}
+        items={[
+          { label: "Subscription", icon: <IconPlugConnected size={14} stroke={1.8} />,
+            value: e.subscribed ? "Open" : "Closed",
+            note: e.subscribed ? `id ${n0(e.subId)}` : "no subscription is open",
+            tone: e.subscribed ? "paid" : "lost" },
+          { label: "Engine balance", icon: <IconCoin size={14} stroke={1.8} />,
+            value: stt(e.balance), note: "STT" },
+          { label: "Cost per callback", icon: <IconReceipt2 size={14} stroke={1.8} />,
+            value: stt(e.costPerCallback), note: "STT, as this contract computes it" },
+          { label: "Callbacks left", icon: <IconRepeat size={14} stroke={1.8} />,
+            value: n0(e.callbacksLeft), note: "at the current balance and that figure" },
+          { label: "Can schedule", icon: <IconCalendarEvent size={14} stroke={1.8} />,
+            value: e.canSchedule ? "Yes" : "No",
+            note: e.canSchedule ? "a wake can be booked now" : "no wake can be booked",
+            tone: e.canSchedule ? "paid" : "lost" },
+        ]}
+      />
 
       {!e.subscribed && (
         <RunState subscribed={e.subscribed} lastCallbackAt={e.lastCallbackAt}
@@ -103,17 +86,18 @@ export default async function Engine() {
           against, and refusing those is the behaviour, not a failure of it.{" "}
           <a href="/app/activity">Every refusal, with its reason</a>.
         </p>
-        <div className="panel">
-          <div className="figGrid">
-            <Fig k="Windows seen" v={n0(e.windowsEnqueued)} u="reacted to in-block" />
-            <Fig k="Wakes billed" v={n0(e.callbackCount)} u="every event the subscription matched" />
-            <Fig k="Windows scanned" v={n0(RECORD.counts.CallbackRan ?? 0)} u="wakes that did cover work" />
-            <Fig k="Covers opened" v={n0(e.coversOpened)} u="positions taken" />
-            <Fig k="Covers settled" v={n0(e.coversSettled)} u="outcomes known" />
-            <Fig k="Premium paid" v={usd(e.premiumPaidTotal)} u="tUSDC" />
-            <Fig k="Proceeds paid" v={usd(e.proceedsPaidTotal)} u="tUSDC" tone="up" />
-          </div>
-        </div>
+        <StatGrid
+          cols={4}
+          items={[
+            { label: "Windows seen", value: n0(e.windowsEnqueued), note: "reacted to in-block" },
+            { label: "Wakes billed", value: n0(e.callbackCount), note: "every event the subscription matched" },
+            { label: "Windows scanned", value: n0(RECORD.counts.CallbackRan ?? 0), note: "wakes that did cover work" },
+            { label: "Covers opened", value: n0(e.coversOpened), note: "positions taken" },
+            { label: "Covers settled", value: n0(e.coversSettled), note: "outcomes known" },
+            { label: "Premium paid", value: usd(e.premiumPaidTotal), note: "tUSDC" },
+            { label: "Proceeds paid", value: usd(e.proceedsPaidTotal), note: "tUSDC", tone: "paid" },
+          ]}
+        />
         {/* ═══════════════════════════════════════════════════════════════════
             LOAD-BEARING. Three numbers on this page disagree with three numbers in
             the panel above it, and a reader who spots that and gets no explanation
