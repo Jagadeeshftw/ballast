@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { EXPLORER } from "@/lib/chain";
 import { useWallet } from "./wallet";
 import { FAUCETS } from "./onchain";
+import ThemeToggle from "@/components/site/ThemeToggle";
 
 /**
  * Network, engine, notifications, wallet.
@@ -47,6 +48,8 @@ export default function TopBar({
       )}
 
       <span className="tbarGap" />
+
+      <ThemeToggle className="chip themeBtn" />
 
       <a className="chip bell" href={`/app/activity`} aria-label={`${unread} notifications`}>
         <i aria-hidden="true">◔</i>{unread > 0 && <b>{unread}</b>}

@@ -12,7 +12,7 @@ type Theme = "dark" | "light";
  * so the server-rendered page never flashes the wrong theme; this component only reads back
  * what that script decided and lets the reader change it.
  */
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }: { className?: string } = {}) {
   const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<Theme>("dark");
 
@@ -36,7 +36,9 @@ export default function ThemeToggle() {
       onClick={() => set(theme === "dark" ? "light" : "dark")}
       aria-label={`Switch to the ${theme === "dark" ? "light" : "dark"} theme`}
       title={`Switch to the ${theme === "dark" ? "light" : "dark"} theme`}
-      className="flex size-9 items-center justify-center rounded-full border border-rule text-muted transition-colors hover:border-rulehi hover:text-ink"
+      /* The dashboard passes its own chip class so the control matches the bar it sits in
+         rather than importing the landing page's button shape into a denser surface. */
+      className={className ?? "flex size-9 items-center justify-center rounded-full border border-rule text-muted transition-colors hover:border-rulehi hover:text-ink"}
     >
       {theme === "dark" ? (
         /* sun: offers the light theme */

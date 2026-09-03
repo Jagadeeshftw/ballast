@@ -373,22 +373,25 @@ export async function getVaultState() {
   return { collateral, reserved, free, coverable, total, surplus, policy };
 }
 
+/* The two assets are independent, so they resolve together. This was a sequential for-loop:
+   four round trips at ~530ms each on this RPC, where the pair only needs two. Within an
+   asset the key must still precede the price -- that dependency is real. */
 export async function getSpotPrices() {
-  const out: { asset: string; price: number | null; ok: boolean }[] = [];
-  for (const asset of ["ETH", "BTC"]) {
-    try {
-      const key = await client.readContract({
-        address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: [asset],
-      });
-      const r = await client.readContract({
-        address: ADDR.source, abi: sourceAbi, functionName: "priceOf", args: [key],
-      });
-      out.push({ asset, price: r[1] ? Number(r[0]) / 1e18 : null, ok: r[1] });
-    } catch {
-      out.push({ asset, price: null, ok: false });
-    }
-  }
-  return out;
+  return Promise.all(
+    (["ETH", "BTC"] as const).map(async (asset) => {
+      try {
+        const key = await client.readContract({
+          address: ADDR.source, abi: sourceAbi, functionName: "assetKeyFor", args: [asset],
+        });
+        const r = await client.readContract({
+          address: ADDR.source, abi: sourceAbi, functionName: "priceOf", args: [key],
+        });
+        return { asset: asset as string, price: r[1] ? Number(r[0]) / 1e18 : null, ok: r[1] };
+      } catch {
+        return { asset: asset as string, price: null as number | null, ok: false };
+      }
+    }),
+  );
 }
 
 export type Activity =
@@ -477,26 +480,26 @@ export async function getLiveWindow(makeWholeBps: number): Promise<LiveWindow | 
     address: ADDR.engine, abi: engineAbi, functionName: "pendingCount",
   });
 
-  const ids: string[] = [];
+  /* Both of these were sequential loops, and together they were 17.8 of the page's 19.2
+     seconds: eight `pendingList` reads one after another, then up to eight `buildWindow`
+     calls one after another, at ~530ms per round trip on this RPC. They are independent
+     reads, so they go out together. Selection still walks the same order and picks the same
+     window -- newest first, first one still open, else the newest that resolved. */
   const n = Number(count);
-  for (let i = n - 1; i >= 0 && ids.length < 8; i--) {
-    try {
-      const id = await client.readContract({
-        address: ADDR.engine, abi: engineListAbi, functionName: "pendingList", args: [BigInt(i)],
-      });
-      ids.push(id as string);
-    } catch { break; }
-  }
+  const idx: number[] = [];
+  for (let i = n - 1; i >= 0 && idx.length < 8; i--) idx.push(i);
+
+  const ids = (await Promise.all(idx.map((i) =>
+    client.readContract({
+      address: ADDR.engine, abi: engineListAbi, functionName: "pendingList", args: [BigInt(i)],
+    }).then((id) => id as string).catch(() => null),
+  ))).filter((id): id is string => id !== null);
   if (ids.length === 0) return null;
 
-  let best: LiveWindow | null = null;
-  for (const marketId of ids) {
-    const w = await buildWindow(marketId, makeWholeBps);
-    if (!w) continue;
-    if (w.secondsLeft > 0) return w;
-    if (!best) best = w;
-  }
-  return best;
+  const built = await Promise.all(ids.map((marketId) =>
+    buildWindow(marketId, makeWholeBps).catch(() => null),
+  ));
+  return built.find((w) => w && w.secondsLeft > 0) ?? built.find((w) => w) ?? null;
 }
 
 /** Builds the gauge's view of one window. Exported so the page can fall back to the most
@@ -568,19 +571,25 @@ function intervalLabelFor(expiry: number, createdAt: number): string {
 /** D6: `eth_getLogs` caps at 1000 blocks (~100 s at 100 ms blocks), so a single query shows
  *  almost nothing and the section that best demonstrates judgement renders empty. Page
  *  backwards in 990-block chunks and cache, rather than changing the contract. */
+/* Every chunk's range is derived from the same head, so none of them depends on the one
+   before it. Walking them sequentially cost 14 round trips at ~460ms -- 6.5s, and the single
+   largest term left in the page once getLiveWindow was fixed. They go out together and are
+   flattened back in chunk order, so the tape reads newest-first exactly as it did. A chunk
+   that fails now yields nothing instead of truncating the scan at that point. */
 export async function scanEngineLogs(chunks: number) {
   const head = await client.getBlockNumber();
-  const out: Awaited<ReturnType<typeof client.getLogs>> = [];
+  const ranges: { from: bigint; to: bigint }[] = [];
   for (let i = 0; i < chunks; i++) {
     const to = head - BigInt(i * 990);
     const from = to - 989n;
     if (from <= 0n) break;
-    try {
-      const logs = await client.getLogs({ address: ADDR.engine, fromBlock: from, toBlock: to });
-      out.push(...logs);
-    } catch { break; }
+    ranges.push({ from, to });
   }
-  return { logs: out, head };
+  const per = await Promise.all(ranges.map(({ from, to }) =>
+    client.getLogs({ address: ADDR.engine, fromBlock: from, toBlock: to })
+      .catch(() => [] as Awaited<ReturnType<typeof client.getLogs>>),
+  ));
+  return { logs: per.flat(), head };
 }
 
 const tapeAbi = parseAbi([

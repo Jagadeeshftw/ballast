@@ -17,10 +17,13 @@ export default function RunState({
   if (subscribed) return null;
 
   const since = lastCallbackAt > 0n ? nowSec - Number(lastCallbackAt) : null;
+  /* Plural agreement, because "1 days ago" on the one panel that exists to sound candid
+     undermines the whole thing. */
+  const unit = (n: number, one: string) => `${n} ${n === 1 ? one : one + "s"} ago`;
   const ago = since === null ? "unknown"
-    : since < 3600 ? `${Math.round(since / 60)} minutes ago`
-    : since < 86_400 ? `${Math.round(since / 3600)} hours ago`
-    : `${Math.round(since / 86_400)} days ago`;
+    : since < 3600 ? unit(Math.round(since / 60), "minute")
+    : since < 86_400 ? unit(Math.round(since / 3600), "hour")
+    : unit(Math.round(since / 86_400), "day");
 
   const bal = Number(balance) / 1e18;
   const range = recordRange();

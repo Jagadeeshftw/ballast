@@ -1,4 +1,3 @@
-import "../landing.css";
 import "./app.css";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";

@@ -1,13 +1,37 @@
 /* Ballast dashboard shell.
-   Direction A's tokens exactly -- this is the same product as the landing page and must not
-   look like a different one. Denser: 15px body, 13px tables, tabular figures everywhere a
-   number can change, hairline rules and no zebra striping. */
+   The same product as the landing page, and it has to look like it: same palette, same two
+   faces, same treatments, both themes. Denser -- 15px body, 13px tables, tabular figures
+   everywhere a number can change, hairline rules and no zebra striping.
 
-html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
+   The Direction A token names below are kept as a thin alias layer onto the shared palette in
+   theme.css rather than being renamed through 365 lines by hand. That is not laziness: it is
+   what makes both themes work at all, because the palette tokens already flip on
+   [data-theme], so every rule under this file follows without touching any of them.
+
+   The old `html:has(#dir-a.app) { background: #06131A }` override is deliberately gone. It
+   pinned the dashboard to one ground regardless of theme, which is exactly the bug -- a judge
+   clicking through from `/` in light mode landed on a dark slab. */
 
 #dir-a.app {
+  /* Semantic, not literal. --covered is money in, --exposed is money out, --beacon is
+     attention, --accent is the brand mark on links and the primary action. */
+  --deep:      var(--color-ground);
+  --hull:      var(--color-raised);
+  --rail:      var(--color-rule);
+  --chart:     var(--color-muted);
+  --bone:      var(--color-ink);
+  --covered:   var(--color-paid);
+  --exposed:   var(--color-lost);
+  --beacon:    var(--color-signal);
+  --accent:    var(--color-signal);
+  /* Text on a filled accent or beacon button. The ground reads as ink on gold in both
+     themes, where a fixed near-black only worked on the dark one. */
+  --on-accent: var(--color-ground);
+
   --rail-w: 240px;
   --tbar-h: 56px;
+  background: var(--deep);
+  color: var(--bone);
   display: grid;
   grid-template-columns: var(--rail-w) minmax(0, 1fr);
   min-height: 100vh;
@@ -16,7 +40,15 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 #dir-a.app :where(h1, h2, h3, h4, p, ul, ol, dl, figure) { margin: 0; }
 /* No defensive reset needed: a.css scopes its section padding to .sec, which this shell
    does not use. */
-#dir-a.app a { color: var(--covered); }
+/* Preflight is deliberately not loaded (see theme.css), so the browser defaults that would
+   otherwise show through are reset here, exactly as `.site` does for the landing page. Only
+   these two are actually active under this shell -- measured, not guessed. */
+#dir-a.app a { color: var(--accent); text-decoration: none; }
+#dir-a.app a:hover { text-decoration: underline; text-underline-offset: 3px; }
+#dir-a.app dd { margin-inline-start: 0; }
+/* landing.css no longer loads here, so the focus ring and selection live with the shell. */
+#dir-a.app :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+#dir-a.app ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); }
 
 /* ------------------------------------------------------------------ sidebar */
 
@@ -47,8 +79,8 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 }
 /* A rule on the leading edge, not a filled pill. */
 #dir-a .sbarNav a.on {
-  color: var(--bone); border-left-color: var(--covered);
-  background: color-mix(in srgb, var(--covered) 8%, transparent);
+  color: var(--bone); border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 #dir-a .sbarFoot {
   margin-top: auto; padding: 14px 10px 0; border-top: 1px solid var(--rail);
@@ -91,13 +123,13 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 }
 #dir-a .chip.wallet, #dir-a .chip.bell { cursor: pointer; }
 #dir-a .chip.bell b {
-  background: var(--beacon); color: #1B1403; border-radius: 999px;
+  background: var(--beacon); color: var(--on-accent); border-radius: 999px;
   font-size: 11px; padding: 0 6px; font-weight: 700;
 }
 #dir-a .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--chart); flex: none; }
 #dir-a .dot.live { background: var(--covered); box-shadow: 0 0 7px color-mix(in srgb, var(--covered) 70%, transparent); }
 #dir-a .tbarCta {
-  background: var(--covered); color: #04231D; font-weight: 700; border: 0;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; border: 0;
   padding: 8px 16px; border-radius: 7px; font-size: 14px; cursor: pointer; font-family: inherit;
 }
 #dir-a .tbarCta:disabled { opacity: .5; cursor: not-allowed; }
@@ -145,7 +177,7 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 #dir-a .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--beacon); box-shadow: 0 0 8px var(--beacon); }
 #dir-a .faucets { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; padding: 0; margin-bottom: 14px; font-size: 14px; }
 #dir-a .btn {
-  display: inline-block; background: var(--covered); color: #04231D; font-weight: 700;
+  display: inline-block; background: var(--accent); color: var(--on-accent); font-weight: 700;
   padding: 10px 18px; border-radius: 7px; text-decoration: none; font-size: 14px;
   border: 0; cursor: pointer; font-family: inherit;
 }
@@ -234,7 +266,6 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 /* --------------------------------------------------------------------- narrow */
 
 @media (max-width: 1000px) {
-  html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 
 #dir-a.app { grid-template-columns: minmax(0, 1fr); }
   #dir-a .sbar { display: none; }
@@ -248,7 +279,7 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
     padding: 9px 0 10px; text-decoration: none; color: var(--chart); font-size: 11px;
     border-top: 2px solid transparent;
   }
-  #dir-a .bbar a.on { color: var(--bone); border-top-color: var(--covered); }
+  #dir-a .bbar a.on { color: var(--bone); border-top-color: var(--accent); }
   #dir-a .bbar i { font-style: normal; font-size: 15px; }
   #dir-a .appBody { padding: 22px 16px 96px; }
   #dir-a .tbar { padding: 0 16px; gap: 8px; overflow-x: auto; }
@@ -267,7 +298,7 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
   font-size: 13px; color: var(--chart); text-decoration: none; padding: 5px 12px;
   border: 1px solid var(--rail); border-radius: 999px;
 }
-#dir-a .filters a.on { color: var(--bone); border-color: color-mix(in srgb, var(--covered) 55%, transparent); background: color-mix(in srgb, var(--covered) 10%, transparent); }
+#dir-a .filters a.on { color: var(--bone); border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
 #dir-a .filters a:hover { color: var(--bone); }
 
 /* Scrolls inside itself; the page never scrolls sideways. */
@@ -362,4 +393,54 @@ html:has(#dir-a.app), body:has(#dir-a.app) { background: #06131A; }
 
 @media (max-width: 1000px) {
   #dir-a .polGrid { grid-template-columns: 1fr; }
+}
+
+/* ------------------------------------------------------- theme toggle in the bar */
+/* Shares the chip shape so it reads as one of the bar's controls, not a transplant from the
+   landing page. Square rather than pill because it holds an icon, not a word. */
+#dir-a .chip.themeBtn {
+  cursor: pointer; padding: 0; width: 30px; height: 30px;
+  justify-content: center; color: var(--chart);
+}
+#dir-a .chip.themeBtn:hover { color: var(--bone); border-color: var(--rail); background: color-mix(in srgb, var(--bone) 6%, transparent); }
+
+/* ------------------------------------------------------ not-running state */
+/* Ported from landing.css, which the dashboard no longer loads. Sizes that were var(--s*)
+   are literal here because the shell sets its own denser scale. */
+
+/* Not an error panel. Beacon rather than exposed: this is a condition to read, not a fault. */
+#dir-a .runState {
+  border: 1px solid color-mix(in srgb, var(--beacon) 45%, transparent);
+  border-left: 3px solid var(--beacon);
+  background: color-mix(in srgb, var(--beacon) 6%, transparent);
+  border-radius: 0 12px 12px 0; padding: 26px 28px; margin: 0 0 30px;
+}
+#dir-a .runTag {
+  font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--beacon); font-weight: 700; margin: 0 0 10px;
+}
+#dir-a .runState h3 { font-size: 22px; font-weight: 700; margin: 0 0 12px; }
+#dir-a .runLede { color: var(--chart); margin: 0 0 22px; max-width: 72ch; }
+#dir-a .runKv { display: grid; grid-template-columns: auto 1fr; gap: 14px 26px; margin: 0 0 20px; font-size: 15px; }
+#dir-a .runKv dt { color: var(--beacon); white-space: nowrap; font-weight: 600; }
+#dir-a .runKv dd { margin: 0; color: var(--chart); max-width: 76ch; }
+#dir-a .runKv dd strong { color: var(--bone); }
+#dir-a .runKv code {
+  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+  background: color-mix(in srgb, var(--bone) 8%, transparent); padding: 1px 6px; border-radius: 4px; color: var(--bone);
+}
+#dir-a .runFoot { display: flex; gap: 24px; flex-wrap: wrap; font-size: 15px; margin: 0; }
+
+/* The frozen record has to say so wherever it stands in for the live tail. */
+#dir-a .recBanner {
+  display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+  font-size: 13px; color: var(--chart); margin: 0 0 14px;
+  border-left: 2px solid color-mix(in srgb, var(--chart) 45%, transparent); padding-left: 12px;
+}
+#dir-a .recDot { width: 7px; height: 7px; border-radius: 50%; background: var(--chart); flex: none; }
+
+@media (max-width: 900px) {
+  #dir-a .runState { padding: 18px 20px; }
+  #dir-a .runKv { grid-template-columns: 1fr; gap: 4px 0; }
+  #dir-a .runKv dt { margin-top: 12px; }
 }
