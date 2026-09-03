@@ -55,8 +55,15 @@ export default function TopBar({
 
       <ThemeToggle className="chip themeBtn" />
 
-      <a className="chip bell" href={`/app/activity`} aria-label={`${unread} notifications`}>
-        <i aria-hidden="true">◔</i>{unread > 0 && <b>{unread}</b>}
+      {/* Was a bell badged "44 notifications". Nothing tracks read state, so none of them was
+          ever unread, and all 44 are settlements from a run that finished -- a counter that
+          can never decrement is theatre, and it linked to a view about something else. It is
+          now what it actually is: a labelled count of settlements, pointing at them. */}
+      <a className="chip bell" href="/app/activity?show=cover"
+        title="Every cover that has settled, on Activity">
+        <i aria-hidden="true">◔</i>
+        <b>{unread}</b>
+        <span className="bellWord">settled</span>
       </a>
 
       {!ready ? (
