@@ -38,7 +38,7 @@ export default function ProblemStream() {
     <div className="mt-10">
       <InfiniteMovingCards items={items} direction="left" speed="slow" />
       <p className="mt-6 text-[13px] text-muted">
-        Real windows from the recorded run, {RECORD.counts.WindowEnqueued?.toLocaleString()} of
+        Real windows from the recorded run, {RECORD.counts.WindowEnqueued?.toLocaleString("en-GB")} of
         them in a day. This is the thing you would have to keep up with.
       </p>
     </div>

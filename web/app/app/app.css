@@ -163,10 +163,10 @@
 #dir-a .why { color: var(--chart); font-size: 15px; max-width: 74ch; margin-bottom: 14px; }
 #dir-a .why:last-child { margin-bottom: 0; }
 #dir-a .why code, #dir-a .panel code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
+  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
   background: color-mix(in srgb, var(--bone) 8%, transparent); padding: 1px 5px; border-radius: 4px;
 }
-#dir-a .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--chart); word-break: break-all; }
+#dir-a .mono { font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--chart); word-break: break-all; }
 #dir-a .err {
   color: var(--exposed); background: color-mix(in srgb, var(--exposed) 10%, transparent);
   border-left: 3px solid var(--exposed); padding: 13px 16px; border-radius: 0 8px 8px 0;
@@ -443,4 +443,43 @@
   #dir-a .runState { padding: 18px 20px; }
   #dir-a .runKv { grid-template-columns: 1fr; gap: 4px 0; }
   #dir-a .runKv dt { margin-top: 12px; }
+}
+
+/* -------------------------------------------------------------- pager */
+/* Querystring links, not buttons: the Activity list pages without JavaScript, and a judge
+   with scripting off still reaches every event. Disabled ends are spans, not dead links. */
+#dir-a .pager {
+  display: flex; align-items: center; gap: 18px; margin-top: 14px;
+  font-size: 13px; color: var(--chart);
+}
+#dir-a .pager a { color: var(--accent); }
+#dir-a .pager span[aria-disabled] { opacity: .4; }
+#dir-a .pagerAt { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+/* Feed dots for the kinds the Activity view adds beyond the overview's three. */
+#dir-a .feedDot.gaveUp { background: var(--exposed); }
+#dir-a .feedDot.callback,
+#dir-a .feedDot.tick { background: color-mix(in srgb, var(--chart) 60%, transparent); }
+#dir-a .feedDot.tickExpired { background: var(--beacon); }
+#dir-a .feedDot.enqueued,
+#dir-a .feedDot.attempt { background: color-mix(in srgb, var(--chart) 45%, transparent); }
+
+/* ---------------------------------------------------- engine parameter list */
+/* Two columns on a desk, stacked on a phone. The note sits under the value rather than
+   beside it, so the values stay in one scannable column whatever the label length. */
+#dir-a .engKv { display: flex; flex-direction: column; }
+#dir-a .engRow {
+  display: grid; grid-template-columns: minmax(160px, 240px) minmax(0, 1fr);
+  gap: 4px 24px; padding: 12px 0;
+  border-top: 1px solid color-mix(in srgb, var(--rail) 60%, transparent);
+}
+#dir-a .engRow:first-child { border-top: 0; padding-top: 0; }
+#dir-a .engRow dt { color: var(--chart); font-size: 14px; }
+#dir-a .engRow dd {
+  color: var(--bone); font-size: 15px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+#dir-a .engNote { display: block; color: var(--chart); font-size: 13px; font-weight: 400; margin-top: 2px; }
+@media (max-width: 700px) {
+  #dir-a .engRow { grid-template-columns: 1fr; }
 }

@@ -41,10 +41,10 @@ export default function RunState({
       <dl className="runKv">
         <dt>What it did</dt>
         <dd>
-          {(RECORD.counts.WindowEnqueued ?? 0).toLocaleString()} windows seen ·{" "}
-          {(RECORD.counts.CallbackRan ?? 0).toLocaleString()} callbacks ·{" "}
-          {(RECORD.counts.CoverOpened ?? 0).toLocaleString()} covers opened ·{" "}
-          {(RECORD.counts.CoverSettled ?? 0).toLocaleString()} settled
+          {(RECORD.counts.WindowEnqueued ?? 0).toLocaleString("en-GB")} windows seen ·{" "}
+          {(RECORD.counts.CallbackRan ?? 0).toLocaleString("en-GB")} callbacks ·{" "}
+          {(RECORD.counts.CoverOpened ?? 0).toLocaleString("en-GB")} covers opened ·{" "}
+          {(RECORD.counts.CoverSettled ?? 0).toLocaleString("en-GB")} settled
           {range ? `, ${range}` : ""}
         </dd>
         <dt>Why it stopped</dt>
