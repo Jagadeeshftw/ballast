@@ -18,6 +18,10 @@ export default function FundsActions() {
   const [amount, setAmount] = useState("1000");
 
   if (!ready || !hasProvider || !account) {
+    /* The disconnected view used to be one short paragraph, which left most of the page empty
+       and gave a reader no idea what this surface actually does. It now shows the four actions
+       it offers, visibly inert. Nothing here pretends to work: every control is disabled and
+       says why, which is the honest version of a preview. */
     return (
       <div className="panel">
         <h3>{hasProvider ? "Connect to move funds" : "No wallet in this browser"}</h3>
@@ -27,7 +31,27 @@ export default function FundsActions() {
             ? "Depositing, withdrawing and minting need a wallet."
             : "To transact, open this in a browser with an EVM wallet installed."}
         </p>
-        {hasProvider && <button type="button" className="btn" onClick={connect}>Connect wallet</button>}
+        {hasProvider && (
+          <button type="button" className="btn" onClick={connect}>Connect wallet</button>
+        )}
+
+        <ul className="actionPreview">
+          {[
+            ["Mint test tUSDC", "10,000 per claim, repeatable — this is a testnet faucet, not a purchase."],
+            ["Deposit into the vault", "Two steps: approve the token, then deposit. Ballast holds it as collateral."],
+            ["Withdraw", "Unconditional on the free balance. Cover that is still open holds the rest until it settles."],
+            ["Mint test WETH", "Gives the account exposure for the engine to measure and cover."],
+          ].map(([title, why]) => (
+            <li key={title}>
+              <span className="actionName">{title}</span>
+              <span className="actionWhy">{why}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="why" style={{ marginBottom: 0 }}>
+          Revoking a policy and withdrawing are always one action away and never gated on the
+          engine running.
+        </p>
       </div>
     );
   }

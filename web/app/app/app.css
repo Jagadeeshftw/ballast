@@ -522,3 +522,15 @@
 }
 #dir-a .runParts dd { margin: 0; color: var(--chart); font-size: 14px; line-height: 1.6; max-width: 60ch; }
 #dir-a .runParts dd strong { color: var(--bone); font-weight: 600; }
+
+/* ------------------------------------------------ disconnected action preview */
+/* What this surface does, shown inert rather than hidden. Not buttons: a disabled button
+   invites a click it cannot honour, and a list states the same thing without the lie. */
+#dir-a .actionPreview {
+  display: grid; gap: 1px; margin: 18px 0; padding: 0; list-style: none;
+  border: 1px solid var(--rail); border-radius: 10px; overflow: hidden; background: var(--rail);
+}
+@media (min-width: 900px) { #dir-a .actionPreview { grid-template-columns: 1fr 1fr; } }
+#dir-a .actionPreview li { display: block; padding: 14px 16px; background: var(--hull); }
+#dir-a .actionName { display: block; font-size: 14px; font-weight: 600; color: var(--chart); }
+#dir-a .actionWhy { display: block; margin-top: 3px; font-size: 13px; line-height: 1.5; color: var(--chart); opacity: .8; }
