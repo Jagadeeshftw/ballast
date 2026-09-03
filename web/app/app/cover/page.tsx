@@ -153,8 +153,9 @@ export default async function Cover({
 
 function Row({ r }: { r: PositionRow }) {
   const tone = r.outcome === "Won" ? "up" : r.outcome === "Lost" ? "down" : "dim";
+  const edge = r.outcome === "Won" ? "won" : r.outcome === "Lost" ? "lost" : "open";
   return (
-    <tr>
+    <tr className={edge}>
       <td><strong>{r.asset}</strong> <span className="dim">#{parseInt(r.marketId, 16)}</span></td>
       <td className="dim">{utcShort(r.openedAt)}</td>
       <td className="num">{usd(r.premium)}</td>

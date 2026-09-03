@@ -289,14 +289,35 @@
   border-bottom: 1px solid var(--rail); position: sticky; top: 0; background: var(--hull);
 }
 /* Hairline rules, no zebra striping. */
-#dir-a .tbl td { padding: 11px 14px; border-bottom: 1px solid color-mix(in srgb, var(--rail) 55%, transparent); vertical-align: top; }
+#dir-a .tbl td {
+  padding: 15px 14px; border-bottom: 1px solid color-mix(in srgb, var(--rail) 55%, transparent);
+  vertical-align: middle;
+}
 #dir-a .tbl tbody tr:last-child td { border-bottom: 0; }
 #dir-a .tbl tbody tr:hover td { background: color-mix(in srgb, var(--bone) 3%, transparent); }
 #dir-a .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* A tone rule on the leading edge of each row, the same device the stat cells use, so an
+   outcome is legible while scanning the column of figures rather than only when the pill is
+   read. The first cell carries it because a pseudo-element on <tr> cannot be positioned
+   reliably across border-collapse. */
+#dir-a .tbl tbody td:first-child { position: relative; padding-left: 18px; }
+#dir-a .tbl tbody tr.won td:first-child::before,
+#dir-a .tbl tbody tr.lost td:first-child::before,
+#dir-a .tbl tbody tr.open td:first-child::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+}
+#dir-a .tbl tbody tr.won td:first-child::before  { background: color-mix(in srgb, var(--covered) 75%, transparent); }
+#dir-a .tbl tbody tr.lost td:first-child::before { background: color-mix(in srgb, var(--exposed) 75%, transparent); }
+#dir-a .tbl tbody tr.open td:first-child::before { background: color-mix(in srgb, var(--beacon) 70%, transparent); }
+
+/* Outcome pill gets a dot, so it reads as a state and not as a word. */
+#dir-a .tag { display: inline-flex; align-items: center; gap: 6px; }
+#dir-a .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
 #dir-a .tbl .dim { color: var(--chart); }
 #dir-a .tbl .up { color: var(--covered); } #dir-a .tbl .down { color: var(--exposed); }
 #dir-a .whyCell { display: block; font-size: 11px; color: var(--chart); margin-top: 3px; text-align: right; }
-#dir-a .links { display: flex; gap: 11px; white-space: nowrap; }
+#dir-a .links { display: flex; gap: 11px; white-space: nowrap; font-size: 12px; }
 #dir-a .links a { text-decoration: none; }
 #dir-a .links a:hover { text-decoration: underline; }
 
@@ -332,10 +353,44 @@
 /* ------------------------------------------------------------------- policy */
 
 #dir-a .polGrid { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); gap: 14px; }
+/* The dial is the one control on the dashboard that sets money, so it gets chrome rather than
+   a bare accent-color range: a track that shows how far along the value sits, a thumb big
+   enough to grab, and the ends of the range labelled so the number has a scale to sit in.
+   Still a native input, so it keeps its keyboard behaviour and its accessibility for free. */
 #dir-a .dial { display: block; margin: 4px 0 18px; }
-#dir-a .dialTop { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--chart); margin-bottom: 10px; }
-#dir-a .dialTop b { font-size: 26px; color: var(--bone); font-variation-settings: "wdth" 118; letter-spacing: -.02em; }
-#dir-a .dial input[type="range"] { width: 100%; accent-color: var(--covered); }
+#dir-a .dialTop { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--chart); margin-bottom: 12px; }
+#dir-a .dialTop b {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 30px; font-weight: 500; color: var(--bone); letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+#dir-a .dial input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 22px; background: transparent; cursor: pointer; display: block;
+}
+#dir-a .dial input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border-radius: 999px;
+  background: linear-gradient(to right,
+    var(--accent) 0 calc(var(--fill, 50%) ), var(--rail) calc(var(--fill, 50%)) 100%);
+}
+#dir-a .dial input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: var(--rail); }
+#dir-a .dial input[type="range"]::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--accent); }
+#dir-a .dial input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; margin-top: -6px; border-radius: 50%;
+  background: var(--bone); border: 3px solid var(--accent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / .3);
+}
+#dir-a .dial input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--accent);
+  background: var(--bone); box-shadow: 0 1px 3px rgb(0 0 0 / .3);
+}
+#dir-a .dial input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 999px; }
+#dir-a .dialScale {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px; color: var(--chart); margin-top: 6px;
+}
 #dir-a .dialFoot { display: block; font-size: 12px; color: var(--chart); margin-top: 7px; }
 
 #dir-a .kv { display: grid; grid-template-columns: auto 1fr; gap: 9px 20px; font-size: 14px; margin: 0; }

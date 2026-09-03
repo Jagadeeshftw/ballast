@@ -59,17 +59,23 @@ export function SettleRun({ user, marketIds }: { user: string; marketIds: string
   return (
     <div className="settleRun">
       <div>
-        <strong>{marketIds.length} positions are unsettled.</strong>
+        <strong>
+          {marketIds.length === 1
+            ? "1 position is unsettled."
+            : `${marketIds.length} positions are unsettled.`}
+        </strong>
         <p className="why">
-          Settling is permissionless, so anyone can close these — you do not have to be the
-          account holder. Each position is its own transaction: the engine&rsquo;s batch call
-          groups users within one market, not markets within one user, so there is no single
-          call that closes a backlog. This settles the {batch.length} oldest.
+          Settling is permissionless, so anyone can close {marketIds.length === 1 ? "it" : "these"} —
+          you do not have to be the account holder. Each position is its own transaction: the
+          engine&rsquo;s batch call groups users within one market, not markets within one user,
+          so there is no single call that closes a backlog.{" "}
+          {batch.length === 1 ? "This settles the oldest." : `This settles the ${batch.length} oldest.`}
         </p>
       </div>
       <button type="button" className="btn" onClick={run}
         disabled={!account || !chainOk || !!busy || running}>
-        {running ? `Settling ${done + 1} of ${batch.length}…` : `Settle ${batch.length} oldest`}
+        {running ? `Settling ${done + 1} of ${batch.length}…`
+          : batch.length === 1 ? "Settle the oldest" : `Settle ${batch.length} oldest`}
       </button>
     </div>
   );

@@ -65,7 +65,9 @@ export default function PolicyEditor({
             </span>
             <input type="range" min={50} max={500} step={10} value={bps}
               onChange={(e) => setBps(Number(e.target.value))}
+              style={{ ["--fill" as string]: `${((bps - 50) / 450) * 100}%` } as React.CSSProperties}
               aria-label="Make-whole point in basis points" />
+            <span className="dialScale" aria-hidden="true"><span>0.50%</span><span>5.00%</span></span>
             <span className="dialFoot">{bps} basis points</span>
           </label>
 
