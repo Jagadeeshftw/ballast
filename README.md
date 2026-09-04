@@ -132,6 +132,22 @@ the user's vault balance while a different, live engine was taking enrolments:
 
 Every redeploy recovered its runway first: 45.38, 43.05 and 39.14 STT swept back.
 
+## The record is committed, so most of the site needs no chain read
+
+The engine's whole run is captured as JSON and committed to this repository, so the history it
+wrote is part of the site rather than something the site fetches. Positions, totals, the
+cumulative chart, every refusal with its reason, the block ranges and the transaction hashes
+all come from that file.
+
+**Only three figures on the entire site are genuinely live:** the vault balance, the engine's
+counters, and the spot price used to measure exposure.
+
+That is why the site stays up when the testnet does not. With Somnia's RPC endpoint returning
+502 — which it did for an extended period on 4 September — every page still rendered
+server-side with its full content, and `/app/cover` and `/app/activity` were complete with
+nothing missing and no notice at all, because neither needs a network. The three live figures
+show an em dash and say what could not be read, rather than a zero nobody measured.
+
 ## Why it is not running right now
 
 The engine is stopped, deliberately, and the reason is a measured property of the venue

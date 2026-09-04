@@ -5,6 +5,7 @@ export const dynamic = "force-static";
 
 const HEADINGS: Heading[] = [
   { id: "contracts", text: "Three contracts" },
+  { id: "committed", text: "Most of this site needs no chain read" },
   { id: "same-block", text: "The same-block path" },
   { id: "delay", text: "Why buying is delayed" },
   { id: "engine-set", text: "The engine set" },
@@ -40,6 +41,28 @@ export default function HowItWorks() {
         It holds positions in its own name and never touches your dreamDEX account. It has no
         operator permission over you, and it does not need one — see{" "}
         <a href="/docs/custody">Custody</a>.
+      </div>
+
+      <H2 id="committed">Most of this site needs no chain read</H2>
+      <p>
+        The engine&rsquo;s whole run is captured as JSON and <strong>committed to the
+        repository</strong>, so the history it wrote is part of the site rather than something
+        the site fetches. That is not a caching trick — it is a property worth stating.
+      </p>
+      <p>
+        Positions, totals, the cumulative chart, every refusal and its reason, the block ranges
+        and the transaction hashes are all read from that file.{" "}
+        <strong>Only three figures on the entire site are genuinely live:</strong> the vault
+        balance, the engine&rsquo;s counters, and the spot price used to measure exposure.
+      </p>
+      <div className="callout note">
+        <span className="calloutTitle">Which is why the site stays up when the testnet does not</span>
+        When Somnia&rsquo;s RPC endpoint is unreachable — and testnet endpoints are — every page
+        still renders, server-side, with its full content. <a href="/app/cover">Cover</a> and{" "}
+        <a href="/app/activity">Activity</a> are complete with nothing missing and no notice at
+        all, because neither needs a network. The three live figures show an em dash and say
+        what could not be read, rather than a zero we did not measure. Most of what this product
+        shows is permanent, and permanent things do not need asking for twice.
       </div>
 
       <H2 id="same-block">The same-block path</H2>
