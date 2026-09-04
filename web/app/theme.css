@@ -123,3 +123,20 @@
   }
   :focus-visible { outline: 2px solid var(--color-signal); outline-offset: 3px; border-radius: 2px; }
 }
+
+/* ------------------------------------------------- chain-unavailable note */
+/* Server-rendered, so the HTML is complete without JavaScript. Same edge-rule device the app
+   uses for state, and the same voice as the engine-stopped copy: a condition, not a fault. */
+.site .chainNote, #dir-a .chainNote {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 0; padding: 12px 18px;
+  border-bottom: 1px solid var(--color-rule);
+  background: color-mix(in srgb, var(--color-signal) 8%, transparent);
+  font-size: 13.5px; line-height: 1.55; color: var(--color-muted);
+}
+.site .chainNote strong, #dir-a .chainNote strong { color: var(--color-ink); font-weight: 600; }
+.site .chainNoteDot, #dir-a .chainNoteDot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--color-signal);
+  flex: none; margin-top: 7px;
+}
+.site .siteChainNote { position: sticky; top: 0; z-index: 60; backdrop-filter: blur(6px); }

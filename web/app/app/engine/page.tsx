@@ -3,6 +3,7 @@ import { getEngineState } from "@/lib/chain";
 import { RECORD, recordRange } from "@/lib/record";
 import RunState from "../../RunState";
 import { StatGrid } from "@/components/ace/stat-grid";
+import ChainNote from "@/components/site/ChainNote";
 import { Disclosure } from "@/components/ace/disclosure";
 import { IconPlugConnected, IconCoin, IconReceipt2, IconRepeat, IconCalendarEvent } from "@tabler/icons-react";
 
@@ -33,7 +34,44 @@ function Kv({ k, v, note }: { k: string; v: React.ReactNode; note?: string }) {
  * recorded-run label. Only the rolling event tail needs that, and it lives on Activity.
  */
 export default async function Engine() {
-  const e = await getEngineState();
+  const e = await getEngineState().catch(() => null);
+
+  /* Almost every figure on this page is a live counter, so there is no partial version worth
+     rendering. It says what it could not read and shows the recorded run, which needs no
+     network — rather than a page of em dashes pretending to be a reading. */
+  if (!e) {
+    return (
+      <>
+        <ChainNote />
+        <h1 className="viewH1">Engine</h1>
+        <p className="why" style={{ marginTop: 8 }}>
+          The reactive contract that does the buying.{" "}
+          <a className="mono" href={`${EXPLORER}/address/${ADDR.engine}`}>{ADDR.engine}</a> —
+          subscribed to dreamDEX&rsquo;s window events, woken by Somnia&rsquo;s reactivity
+          precompile inside the block that triggered it.
+        </p>
+        <div className="panel">
+          <h3>Its live state could not be read</h3>
+          <p className="why">
+            This view is almost entirely live counters, and the RPC did not answer, so there is
+            nothing here worth showing as a number. The contract is unaffected: its counters are
+            on chain and readable on{" "}
+            <a href={`${EXPLORER}/address/${ADDR.engine}`}>the explorer</a> whether this page can
+            reach them or not.
+          </p>
+          <p className="why" style={{ marginBottom: 0 }}>
+            What it did over the recorded run is committed to the repository and needs no
+            network at all: {n0(RECORD.counts.WindowEnqueued ?? 0)} windows seen,{" "}
+            {n0(RECORD.counts.CallbackRan ?? 0)} callbacks,{" "}
+            {n0(RECORD.counts.CoverOpened ?? 0)} covers opened,{" "}
+            {n0(RECORD.counts.CoverSettled ?? 0)} settled{recordRange() ? `, ${recordRange()}` : ""}.{" "}
+            <a href="/app/activity">Read it on Activity</a>, or{" "}
+            <a href="/docs/findings">why it is stopped</a>.
+          </p>
+        </div>
+      </>
+    );
+  }
   const nowSec = Math.floor(Date.now() / 1000);
   const range = recordRange();
 

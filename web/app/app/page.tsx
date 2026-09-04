@@ -4,6 +4,7 @@ import { positionsFor, totalsFor } from "@/lib/portfolio";
 import { notificationsFor } from "./notifications";
 import Checklist from "./Checklist";
 import { StatGrid } from "@/components/ace/stat-grid";
+import ChainNote from "@/components/site/ChainNote";
 import { LeadPanel, StateBanner } from "@/components/ace/lead-panel";
 import { IconChartLine, IconTargetArrow, IconShieldHalf, IconClockPlay, IconBolt } from "@tabler/icons-react";
 
@@ -13,27 +14,28 @@ const usd = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2,
 
 /** Overview: what is my situation, in one screen. */
 export default async function Overview() {
-  const { vault, engine, shown, eth, tape } = await loadPreview();
+  const { vault, engine, shown, eth, tape, chainOk } = await loadPreview();
   const rows = positionsFor(ADDR.demoUser);
   const t = totalsFor(rows);
   const notes = notificationsFor(ADDR.demoUser).slice(0, 5);
   const nowSec = Math.floor(Date.now() / 1000);
 
-  const policyActive = vault.policy[0] && Number(vault.policy[3]) * 1000 > Date.now();
+  const policyActive = !!vault && vault.policy[0] && Number(vault.policy[3]) * 1000 > Date.now();
   const exposure = eth?.ok && eth.price ? eth.price * 2 : null; // the demonstration account holds 2 WETH
   /* What the cover pays where it is exact. Same derivation as the landing page's worked
      example -- at the make-whole point the position's loss and the cover's net payout are
      equal by construction -- but from the LIVE policy rather than a constant, so the two
      surfaces cannot drift apart. */
-  const makeWhole = Number(vault.policy[1]) / 10_000;
+  const makeWhole = vault ? Number(vault.policy[1]) / 10_000 : 0;
   const madeWhole = exposure !== null && policyActive ? exposure * makeWhole : null;
 
   return (
     <>
+      {!chainOk && <ChainNote />}
       <h1 className="viewH1">Overview</h1>
 
       {/* The one place the graduation field appears. */}
-      {!engine.subscribed && (
+      {engine && !engine.subscribed && (
         <StateBanner href="/app/engine" cta="Why, and how to restart it">
           The engine is not running, so no new cover is being bought. Everything it did is
           settled and on chain, and the vault is withdrawable as normal.
@@ -83,9 +85,9 @@ export default async function Overview() {
                 <strong className="font-mono font-medium text-ink">{(makeWhole * 100).toFixed(2)}%</strong>
                 {" "}— which on this position pays{" "}
                 <strong className="font-mono font-medium text-paid">{usd(madeWhole!)}</strong> tUSDC,
-                for at most {(Number(vault.policy[2]) / 100).toFixed(2)}% of it per window. Exact at
+                for at most {vault ? (Number(vault.policy[2]) / 100).toFixed(2) : "—"}% of it per window. Exact at
                 that depth and imperfect either side of it, which is what parametric cover is.
-                Runs to {utc(vault.policy[3]).slice(0, 10)}.
+                Runs to {vault ? utc(vault.policy[3]).slice(0, 10) : "—"}.
               </p>
             ) : (
               <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-muted">

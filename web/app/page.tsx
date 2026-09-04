@@ -2,6 +2,7 @@ import { ADDR, EXPLORER } from "@/lib/chain";
 import { loadPreview, utc } from "./data";
 import { positionsFor, totalsFor, cumulativeFor } from "@/lib/portfolio";
 import { RECORD, recordRange } from "@/lib/record";
+import ChainNote, { Live } from "@/components/site/ChainNote";
 import SiteNav from "@/components/site/SiteNav";
 import HowTimeline from "@/components/site/HowTimeline";
 import NumbersBento from "@/components/site/NumbersBento";
@@ -22,7 +23,7 @@ const Q = 0.494;
 const XSTAR = 0.025;
 
 export default async function Landing() {
-  const { vault, engine, eth } = await loadPreview();
+  const { vault, engine, eth, chainOk } = await loadPreview();
 
   const rows = positionsFor(ADDR.demoUser);
   const t = totalsFor(rows);
@@ -46,6 +47,7 @@ export default async function Landing() {
 
   return (
     <div id="top" className="site min-h-screen bg-ground font-sans text-ink">
+      {!chainOk && <ChainNote className="siteChainNote" />}
       <SiteNav />
 
       {/* ══ HERO ══ asymmetric, full-bleed, carrying the same-block proof ══ */}
@@ -278,7 +280,7 @@ export default async function Landing() {
             <div>
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">Current state</p>
               <h2 className="max-w-[20ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
-                {engine.subscribed
+                {engine?.subscribed
                   ? "Running, and watching every window."
                   : "It is stopped, and the reason is worth reading."}
               </h2>
@@ -295,7 +297,7 @@ export default async function Landing() {
                 The fix needs no new contract — the limit is a subscription parameter — but applying
                 it means reopening the subscription, and that requires the engine to hold{" "}
                 <strong className="font-medium text-ink">32 STT</strong>, a floor checked once at
-                creation and never spent. It holds {Number(engine.balance) / 1e18 > 0 ? (Number(engine.balance) / 1e18).toFixed(2) : "0"}.{" "}
+                creation and never spent. It holds {engine ? (Number(engine.balance) / 1e18).toFixed(2) : "an amount we could not read"}.{" "}
                 <strong className="font-medium text-ink">topUp() is payable and permissionless</strong>,
                 so anyone can restart it.
               </p>
@@ -303,11 +305,11 @@ export default async function Landing() {
 
             <dl className="rounded-xl border border-rule bg-raised p-6 font-mono text-[13px]">
               {[
-                ["Engine balance", `${(Number(engine.balance) / 1e18).toFixed(6)} STT`],
-                ["Subscribed", String(engine.subscribed)],
-                ["Callbacks delivered", n0(Number(engine.callbackCount))],
-                ["Vault balance", `${n2(Number(vault.collateral) / 1e6)} tUSDC`],
-                ["Withdrawable now", `${n2(Number(vault.free) / 1e6)} tUSDC`],
+                ["Engine balance", engine ? `${(Number(engine.balance) / 1e18).toFixed(6)} STT` : "—"],
+                ["Subscribed", engine ? String(engine.subscribed) : "—"],
+                ["Callbacks delivered", engine ? n0(Number(engine.callbackCount)) : "—"],
+                ["Vault balance", vault ? `${n2(Number(vault.collateral) / 1e6)} tUSDC` : "—"],
+                ["Withdrawable now", vault ? `${n2(Number(vault.free) / 1e6)} tUSDC` : "—"],
                 ["ETH spot", ethPx ? n2(ethPx) : "unpriceable — book one-sided"],
                 ["Read at", utc(Math.floor(Date.now() / 1000))],
               ].map(([k, v]) => (

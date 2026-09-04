@@ -46,7 +46,10 @@ export default async function Activity({
   const show = FILTERS.some((f) => f.k === sp.show) ? sp.show! : "all";
   const filter = FILTERS.find((f) => f.k === show)!;
 
-  const live = await getTape(14);
+  /* The live tail is the OPTIONAL half of this page — the record carries it whenever the tail
+     is empty, which is already the normal case with the engine stopped. A failed read is just
+     another empty tail, so it degrades into exactly the path that already exists. */
+  const live = await getTape(14).catch(() => ({ items: [], head: 0n, spanBlocks: 0 }));
   /* The live tail is a rolling ~1,400-block window -- about two minutes on this chain. With
      the engine stopped it is empty, and an empty list would read as "nothing ever happened"
      rather than "nothing happened in the last two minutes". The record stands in, and says

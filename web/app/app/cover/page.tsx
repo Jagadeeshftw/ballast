@@ -24,7 +24,11 @@ export default async function Cover({
   searchParams,
 }: { searchParams: Promise<{ show?: string }> }) {
   const { show = "all" } = await searchParams;
-  const settledPositions = await Promise.all(KNOWN_POSITIONS.map((p) => getPosition(p)));
+  /* The positions table is built from the frozen record, which needs no network. These live
+     reads only decorate it, so a failure drops the decoration rather than the page. */
+  const settledPositions = (await Promise.all(
+    KNOWN_POSITIONS.map((p) => getPosition(p).catch(() => null)),
+  )).filter((p): p is NonNullable<typeof p> => p !== null);
 
   const all = positionsFor(ADDR.demoUser);
   const t = totalsFor(all);
