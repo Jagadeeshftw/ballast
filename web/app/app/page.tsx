@@ -104,7 +104,19 @@ export default async function Overview() {
       </section>
 
       <section>
-        <h2 className="viewH2">Totals · settled positions only</h2>
+        {/* The attribution is load-bearing. Sitting under "Your setup", an unqualified
+            "Totals" reads as the connected wallet's own history -- 45 positions and +770 that
+            belong to someone else. Cover already names the account and says so; this must too.
+            Presenting a number as belonging to a reader it does not belong to is the one thing
+            this build has been careful never to do. */}
+        <h2 className="viewH2">The demonstration account&rsquo;s totals</h2>
+        <p className="why" style={{ marginTop: -4 }}>
+          Settled positions only, held by{" "}
+          <a className="mono" href={`${EXPLORER}/address/${ADDR.demoUser}`}>{ADDR.demoUser.slice(0, 10)}…</a>{" "}
+          — not by any wallet you connect. A wallet you connect will have its own history, and
+          it starts empty.{" "}
+          <a href="/docs/economics#sample">Why this is a sample, not a result</a>.
+        </p>
         <StatGrid
           cols={5}
           items={[

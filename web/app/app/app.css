@@ -68,6 +68,14 @@
 #dir-a :where(button, input, select, textarea) { font: inherit; color: inherit; }
 #dir-a .appBody a { color: var(--accent); }
 #dir-a .appBody a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* An anchor styled as a button must not take the content-link colour. `#dir-a .appBody a`
+   (0,1,1 after the id) outranks `#dir-a .btn` (0,1,0), so every <a class="btn"> rendered its
+   label at exactly the button's own background: contrast 1.00, in BOTH themes. The checklist's
+   "Set it on Policy" was a filled block with no visible text. Buttons are not content links,
+   so they are matched at the same weight here. */
+#dir-a .appBody a.btn { color: var(--on-accent); text-decoration: none; }
+#dir-a .appBody a.btn.ghost { color: var(--bone); }
+#dir-a .appBody a.btn:hover { text-decoration: none; }
 #dir-a.app dd { margin-inline-start: 0; }
 /* Preflight is not loaded, so the focus ring and selection live with the shell. */
 #dir-a.app :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
