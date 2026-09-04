@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/ballast_logo.png" alt="Ballast" width="180">
+</p>
+
 # Ballast
 
 **Ballast buys downside cover for your crypto automatically — a small, fixed payout that
@@ -6,6 +10,7 @@ and say how deep a fall you want covered; the chain does the rest, with no keepe
 and nothing of ours running.
 
 Live on Somnia Shannon testnet: **<https://ballast.0xo.in>** ·
+Documentation: **<https://ballast.0xo.in/docs>** (the markdown in [`docs/`](docs/) is its source) ·
 dashboard **<https://ballast.0xo.in/app>**
 
 | Contract | Address |
