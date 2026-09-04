@@ -19,10 +19,13 @@ const Q = 0.494;
 const n2 = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default async function WhatItPays() {
-  const { vault, eth, positions } = await loadPreview();
+  const live = await loadPreview().then((d) => d).catch(() => null);
+  const vault = live?.vault ?? null;
+  const eth = live?.eth ?? null;
+  const positions = live?.positions ?? [];
   const ethPx = eth?.ok && eth.price ? eth.price : null;
   const exposure = ethPx ? ethPx * 2 : null;
-  const xstar = Number(vault.policy[1]) / 10_000;
+  const xstar = vault ? Number(vault.policy[1]) / 10_000 : 0.025;
   const qty = exposure ? (exposure * xstar) / (1 - Q) : null;
   const coverNet = qty ? qty - qty * Q : null;
   const at = (f: number) => (exposure && coverNet !== null ? -exposure * f + coverNet : null);
@@ -140,7 +143,15 @@ export default async function WhatItPays() {
         step is what the instrument pays; the regions are what it costs either side of the load
         line; the points are what actually happened.
       </p>
-      <div className="docFig"><PayoffA positions={positions} /></div>
+      {positions.length > 0 ? (
+        <div className="docFig"><PayoffA positions={positions} /></div>
+      ) : (
+        <div className="callout">
+          <span className="calloutTitle">The chart could not be drawn</span>
+          It plots the real settled positions, which are read from the chain, and that read did
+          not answer. The same chart is on <a href="/app/cover">Cover</a>.
+        </div>
+      )}
 
       <H2 id="basis">Basis risk, named</H2>
       <p>

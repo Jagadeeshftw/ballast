@@ -210,3 +210,9 @@
   border: 1px solid var(--rail); border-radius: 12px; background: var(--hull);
 }
 #docs .docFig svg { display: block; width: 100%; height: auto; min-width: 640px; }
+
+#docs .docRetry {
+  background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px;
+  padding: 9px 16px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+#docs .docRetry:hover { filter: brightness(1.06); }

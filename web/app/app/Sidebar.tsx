@@ -20,7 +20,7 @@ const NAV = [
 ] as const;
 
 const EXTERNAL = [
-  { href: "https://github.com/Jagadeeshftw/ballast/tree/main/docs", label: "Docs", icon: <IconFileText size={18} stroke={1.6} /> },
+  { href: "/docs", label: "Docs", icon: <IconFileText size={18} stroke={1.6} /> },
   { href: "https://github.com/Jagadeeshftw/ballast", label: "Repo", icon: <IconBrandGithub size={18} stroke={1.6} /> },
   { href: "/", label: "ballast.0xo.in", icon: <IconWorld size={18} stroke={1.6} /> },
 ] as const;

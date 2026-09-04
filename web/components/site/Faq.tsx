@@ -26,7 +26,7 @@ export default function Faq({
         <span className="font-mono text-lost">{n2(at(0.5))}</span>. That is basis risk working
         against you, and it is the trade parametric cover makes. If you want deeper cover you
         set a deeper make-whole point and pay more premium per window for it.
-      </>,
+      {" "}<a href="/docs/what-it-pays">The full payoff, with the three regions →</a></>,
     ],
     [
       "Do I pay every window?",
@@ -38,7 +38,7 @@ export default function Faq({
         hundreds of percent a year — which is why the product defaults to the four-hour and
         twenty-four-hour windows. The sixty-second series exists here because it is what makes
         the same-block behaviour visible in a demo, not because it is what you should buy.
-      </>,
+      {" "}<a href="/docs/economics">What the roll frequency costs →</a></>,
     ],
     [
       "Where does the payout come from?",
@@ -48,7 +48,7 @@ export default function Faq({
         redeems them and credits the proceeds straight to your vault balance. There is no
         counterparty of ours, no pool of ours, and nothing to be solvent. A losing redeem
         returns zero rather than failing, which is a normal outcome, not an error.
-      </>,
+      {" "}<a href="/docs/how-it-works">The contracts and the on-chain path →</a></>,
     ],
     [
       "Why is the engine not running right now?",
@@ -60,7 +60,7 @@ export default function Faq({
         0.5 a day. The fix is a subscription parameter rather than a new contract, but applying
         it needs 32 STT held at creation. <span className="font-mono text-ink">topUp()</span>{" "}
         is payable and permissionless, so anyone can restart it.
-      </>,
+      {" "}<a href="/docs/findings#billing">The measurement behind it →</a></>,
     ],
     [
       "Is my collateral locked?",
@@ -69,7 +69,7 @@ export default function Faq({
         delay it. Only collateral committed to cover that is currently open is reserved, and
         that releases automatically when the window settles. Revoking the policy stops new
         cover immediately; cover already open runs to settlement and pays out to you as normal.
-      </>,
+      {" "}<a href="/docs/custody">Custody, consent and revocation →</a></>,
     ],
     [
       "What does it do when it cannot price the book?",
@@ -78,7 +78,7 @@ export default function Faq({
         size diverges, or the affordable size rounds below the venue&rsquo;s minimum lot, the
         window is skipped with that reason written to the chain. It never guesses a price, and
         it never reports a position as covered before the fill is confirmed.
-      </>,
+      {" "}<a href="/docs/refusals#unpriceable">Every refusal reason →</a></>,
     ],
   ];
 

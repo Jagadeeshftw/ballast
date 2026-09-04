@@ -19,10 +19,15 @@ const Q = 0.494;
 const n2 = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default async function WhatItIs() {
-  const { vault, eth } = await loadPreview();
+  /* A prose page must not 500 because the testnet RPC blipped. Only the worked example needs
+     the chain; everything else on this page is text. On a failed read the example renders its
+     "cannot price this" branch, which already exists for a one-sided book. */
+  const live = await loadPreview().then((d) => d).catch(() => null);
+  const vault = live?.vault ?? null;
+  const eth = live?.eth ?? null;
   const ethPx = eth?.ok && eth.price ? eth.price : null;
   const exposure = ethPx ? ethPx * 2 : null;          // the demonstration account holds 2 WETH
-  const xstar = Number(vault.policy[1]) / 10_000;      // live policy, not a constant
+  const xstar = vault ? Number(vault.policy[1]) / 10_000 : 0.025; // live policy when readable
   const qty = exposure ? (exposure * xstar) / (1 - Q) : null;
   const premium = qty ? qty * Q : null;
   const coverNet = qty && premium ? qty - premium : null;

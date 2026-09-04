@@ -11,6 +11,7 @@ const LINKS = [
   { name: "How it works", link: "#how" },
   { name: "The numbers", link: "#numbers" },
   { name: "Questions", link: "#faq" },
+  { name: "Docs", link: "/docs" },
 ];
 
 /** The Plimsoll load line: a circle with a bar through it. */
