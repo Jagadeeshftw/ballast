@@ -43,13 +43,21 @@ export default async function Overview() {
       )}
 
       <LeadPanel
-        eyebrow={policyActive ? "Cover in force" : "No cover in force"}
+        owner={
+          <p className="mt-5 text-[13px] leading-relaxed text-muted">
+            This is the position and policy of the demonstration account{" "}
+            <a className="mono" href={`${EXPLORER}/address/${ADDR.demoUser}`}>{ADDR.demoUser.slice(0, 10)}…</a>{" "}
+            — not of any wallet you connect. A wallet you connect starts with no position, no
+            policy and no history.
+          </p>
+        }
+        eyebrow={policyActive ? "Cover in force · demonstration account" : "No cover in force · demonstration account"}
         aside={
           <div className="grid grid-cols-2 gap-6">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Open cover</div>
               <div className="mt-1 font-mono text-[22px] font-medium tabular-nums text-ink">{t.open}</div>
-              <div className="text-[12px] text-muted">to settle</div>
+              <div className="text-[12px] text-muted">to settle · demo</div>
             </div>
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Next window</div>

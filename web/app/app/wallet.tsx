@@ -55,6 +55,17 @@ export function useWallet() {
   return c;
 }
 
+/* Remembering an explicit disconnect. localStorage rather than state because the whole point
+   is surviving a reload, and it is read only inside effects and handlers — never during
+   render — so the server-rendered shell and the no-JS render are untouched. Every access is
+   guarded: a private window can throw on access alone. */
+const DISCONNECTED = "ballast.wallet.disconnected";
+const userDisconnected = () => {
+  try { return localStorage.getItem(DISCONNECTED) === "1"; } catch { return false; }
+};
+const markDisconnected = () => { try { localStorage.setItem(DISCONNECTED, "1"); } catch { /* private mode */ } };
+const clearDisconnected = () => { try { localStorage.removeItem(DISCONNECTED); } catch { /* private mode */ } };
+
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
@@ -72,9 +83,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setProvider(p);
     setReady(true);
     if (!p) return;
-    // Reconnect silently if the wallet already has this site authorised, so moving between
-    // views — or reloading — does not demand another prompt.
+    /* Reconnect silently if the wallet already has this site authorised, so moving between
+       views does not demand another prompt — UNLESS the reader disconnected on purpose.
+       MetaMask keeps the site authorised at the wallet level and a page cannot revoke that,
+       so `eth_accounts` keeps returning the address after a disconnect. Without remembering
+       the intent, an explicit user action was silently undone on the next reload. */
     (async () => {
+      if (userDisconnected()) return;
       try {
         const accs = (await p.request({ method: "eth_accounts" })) as Address[];
         if (accs?.[0]) {
@@ -84,7 +99,11 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
         }
       } catch { /* not authorised yet */ }
     })();
-    const onAccounts = (a: unknown) => setAccount(((a as string[])[0] as Address) ?? null);
+    /* The wallet switching accounts must not resurrect a session the reader ended either. */
+    const onAccounts = (a: unknown) => {
+      if (userDisconnected()) return;
+      setAccount(((a as string[])[0] as Address) ?? null);
+    };
     const onChain = (c: unknown) => setChainOk(parseInt(c as string, 16) === somniaTestnet.id);
     p.on?.("accountsChanged", onAccounts);
     p.on?.("chainChanged", onChain);
@@ -142,13 +161,18 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       const cid = (await provider.request({ method: "eth_chainId" })) as string;
       if (parseInt(cid, 16) !== somniaTestnet.id) { setChainOk(false); await switchChain(); }
       else setChainOk(true);
+      clearDisconnected();   // connecting is the deliberate act that undoes a disconnect
       setAccount(accs[0]);
     } catch (e) { setErr(explain(e)); }
     finally { setConnecting(false); }
   }, [provider, switchChain]);
 
-  /** Local only: EIP-1193 has no disconnect. Returns the page to its public view. */
-  const disconnect = useCallback(() => { setAccount(null); setS(null); setErr(null); setTx(null); }, []);
+  /** Local only: EIP-1193 has no disconnect, so the intent is recorded here and honoured by
+   *  the silent-reconnect path above. Returns the page to its public view. */
+  const disconnect = useCallback(() => {
+    markDisconnected();
+    setAccount(null); setS(null); setErr(null); setTx(null);
+  }, []);
 
   /**
    * The one funnel every write in the dashboard goes through.

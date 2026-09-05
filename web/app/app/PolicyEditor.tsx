@@ -7,7 +7,7 @@ import { ADDR } from "@/lib/chain";
 import { size } from "@/lib/sizing";
 import { useWallet } from "./wallet";
 import TxStatus from "./TxStatus";
-import { GAS, vaultAbi } from "./onchain";
+import { GAS, vaultAbi, engineAbi } from "./onchain";
 
 const DAY = 86_400;
 const usd = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -155,6 +155,12 @@ export default function PolicyEditor({
           it runs to settlement and pays out to you as normal, and your collateral stays
           withdrawable throughout. This is not a withdrawal and it does not close positions.
         </p>
+        <p className="why">
+          It also does not remove you from the cursor set. <code>revoke()</code> clears the
+          policy, which is what stops the buying — the engine finds no consent and skips. Leaving
+          the set is a second transaction, <code>withdrawEnrolment()</code>, and it is below.
+          Neither is a prerequisite for the other and neither can be blocked.
+        </p>
         <button type="button" className="btn ghost" disabled={!canWrite || !!busy || !s?.policy?.[0]}
           onClick={() => send("Revoke", (w) => (w as never as { writeContract: Function }).writeContract({
             address: ADDR.vault as Address, abi: vaultAbi, functionName: "revoke",
@@ -162,6 +168,16 @@ export default function PolicyEditor({
           }))}>
           {busy === "Revoke" ? "Confirming…" : "Revoke the policy"}
         </button>
+        {s?.enrolled && (
+          <button type="button" className="btn ghost" style={{ marginLeft: 8 }}
+            disabled={!canWrite || !!busy}
+            onClick={() => send("Leave the cursor set", (w) => (w as never as { writeContract: Function }).writeContract({
+              address: ADDR.engine as Address, abi: engineAbi, functionName: "withdrawEnrolment",
+              args: [], gas: GAS.enrol, chain: somniaTestnet, account: account!,
+            }))}>
+            {busy === "Leave the cursor set" ? "Confirming…" : "Leave the cursor set"}
+          </button>
+        )}
       </div>
     </>
   );

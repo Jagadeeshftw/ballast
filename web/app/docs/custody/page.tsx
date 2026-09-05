@@ -57,6 +57,14 @@ export default function Custody() {
         of unreserved collateral is equally unconditional. Both are reachable in one action
         from <a href="/app/policy">Policy</a> and <a href="/app/funds">Funds</a>.
       </div>
+      <p>
+        <strong>Revoking does not remove you from the cursor set.</strong> It clears the policy,
+        which is what stops the buying — the engine finds no consent and skips the account.
+        Leaving the set is a second transaction, <code>withdrawEnrolment()</code>, and it is
+        also permissionless and also one action. Neither is a prerequisite for the other. This
+        is stated because the two are easy to conflate: a reader who revokes has stopped the
+        cover, but is still in the set the engine iterates until they leave it.
+      </p>
 
       <H2 id="owner">What the owner cannot do</H2>
       <p>

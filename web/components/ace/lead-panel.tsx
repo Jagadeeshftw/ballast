@@ -13,9 +13,10 @@ import { cn } from "@/lib/cn";
  * read is motion for its own sake — and it is invisible to anyone arriving without a mouse.
  */
 export function LeadPanel({
-  eyebrow, children, aside, className,
+  eyebrow, children, aside, owner, className,
 }: {
-  eyebrow: React.ReactNode; children: React.ReactNode; aside?: React.ReactNode; className?: string;
+  eyebrow: React.ReactNode; children: React.ReactNode; aside?: React.ReactNode;
+  owner?: React.ReactNode; className?: string;
 }) {
   return (
     <div className={cn("relative overflow-hidden rounded-2xl border border-rule bg-raised", className)}>
@@ -33,6 +34,7 @@ export function LeadPanel({
         <div className="min-w-0">
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">{eyebrow}</div>
           {children}
+          {owner}
         </div>
         {aside && (
           <div className="self-center border-t border-rule pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">

@@ -59,11 +59,13 @@ export default function TopBar({
           ever unread, and all 44 are settlements from a run that finished -- a counter that
           can never decrement is theatre, and it linked to a view about something else. It is
           now what it actually is: a labelled count of settlements, pointing at them. */}
+      {/* Sat beside the connected address with no owner named, so a reader took it for their
+          own history. It is the demonstration account's, and it says so. */}
       <a className="chip bell" href="/app/activity?show=cover"
-        title="Every cover that has settled, on Activity">
+        title="Settled cover on the demonstration account — not on any wallet you connect">
         <i aria-hidden="true">◔</i>
         <b>{unread}</b>
-        <span className="bellWord">settled</span>
+        <span className="bellWord">settled · demo</span>
       </a>
 
       {!ready ? (
