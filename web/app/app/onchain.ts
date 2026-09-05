@@ -11,18 +11,22 @@ export const WETH: Address = "0x4d8E02BBfCf205828A8352Af4376b165E123D7b0";
    measured cold path. A transaction that dies at the signature prompt is the most damaging
    thing that can happen in a demo. */
 export const GAS = {
-  /* Every limit is at least TWICE the cost measured from a genuinely COLD account — one that
-     has never touched these contracts, where every storage slot it writes is a first touch.
-     That is the account that matters: a judge's brand-new wallet, not ours.
-     Measuring warm is how `approve` shipped at 600,000 against a cold cost of 1,389,617 and
-     ran out of gas on a first-time wallet, using 600,000 of 600,000. `setPolicy` (1,719,403
-     cold, provisioned 700,000) and `revoke` (1,056,163 cold, provisioned 400,000) were short
-     by the same margin and had not been hit yet.
-     Cold estimates, 2026-09-05: approve 1,389,617 · setPolicy 1,719,403 · revoke 1,056,163 ·
-     faucet 1,379,707 · topUp 70,704. The rest are held at or above their previous
-     provisioning, which already exceeded 2x their warm cost.
-     Over-provisioning costs a fraction of a cent; under-provisioning costs a judge's first
-     impression. */
+  /* Every limit here clears 2,000,000, and the reason is not the cost of the work.
+     A first-time `approve` shipped at 600,000 and failed on a real wallet having consumed all
+     600,000. The obvious reading was cold-storage cost, and it was wrong: measured from a
+     brand-new account the same call uses only 259,745.
+     What actually happens is Somnia's gas-REMAINING floor. A write that touches a new
+     non-zero storage slot requires roughly 1,000,000 gas still available at that point, and
+     the check is against what is LEFT, not what is used. Under that limit the transaction can
+     never pass however cheap it is -- it burns the entire limit and reports `reverted`.
+     Proven with two fresh wallets making the identical call:
+         limit   900,000 -> reverted, used 900,000  (the whole limit)
+         limit 1,100,000 -> success,  used 259,745
+     So the rule is a FLOOR on the limit, not a multiple of usage. Anything that may write a
+     new slot is provisioned well above 1,000,000. Cold-walk usage, measured 2026-09-05:
+     faucet 253,138 · approve 259,745 · deposit 299,517 · setPolicy 479,602 · enrol 454,094 ·
+     revoke 37,442 · withdraw 90,440 · withdrawEnrolment 46,100.
+     Over-provisioning costs a fraction of a cent. Under-provisioning cost a judge a deposit. */
   faucet: 2_800_000n, mint: 2_800_000n, approve: 2_800_000n, deposit: 3_200_000n,
   setPolicy: 3_500_000n, enrol: 2_800_000n, revoke: 2_200_000n, withdraw: 2_000_000n,
   // settle() estimates 2,053,708 to 2,796,559 across the live backlog, so 2,400,000 -- which

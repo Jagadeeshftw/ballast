@@ -132,6 +132,33 @@ the user's vault balance while a different, live engine was taking enrolments:
 
 Every redeploy recovered its runway first: 45.38, 43.05 and 39.14 STT swept back.
 
+## A gas limit below ~1,000,000 cannot write a new storage slot, whatever the work costs
+
+Somnia enforces a **gas-remaining** floor: a write that touches a new non-zero storage slot
+requires roughly 1,000,000 gas still *available* at that point. The check is against what is
+left, not what is used — so under that limit the transaction can never pass however cheap it
+actually is. It burns the entire limit, and **the receipt reports `status: reverted`**, so it
+looks like a revert rather than an out-of-gas.
+
+Proven with two brand-new wallets making an identical `approve`:
+
+| Gas limit | Result | Gas used |
+| --- | --- | --- |
+| 900,000 | reverted | **900,000** — the whole limit |
+| 1,100,000 | success | **259,745** |
+
+The call needs 259,745. It fails at 900,000 anyway.
+
+This cost us a real deposit: `approve` was provisioned at 600,000, measured against warm
+accounts where it was never going to be exercised, and a first-time wallet's approval consumed
+all 600,000 and failed. Two more writes were under the same floor and had simply not been hit.
+
+Two consequences worth carrying: **provision a floor, not a multiple of measured usage** — a
+limit sized from a gas estimate will be far too small if the work is cheap. And **`reverted` is
+ambiguous on this chain**: the only way to distinguish out-of-gas from an actual revert is to
+compare `gasUsed` against the limit sent, which is what this interface now does before telling
+anyone to go looking for a revert reason that does not exist.
+
 ## The record is committed, so most of the site needs no chain read
 
 The engine's whole run is captured as JSON and committed to this repository, so the history it
