@@ -176,9 +176,20 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       setTx({ hash, what });
       const receipt = await pub.waitForTransactionReceipt({ hash });
       if (receipt.status !== "success") {
+        /* A receipt reports `reverted` for an out-of-gas too, so status alone cannot tell them
+           apart -- and they are different failures with different fixes. Sending someone to
+           look for a revert reason that does not exist points them the wrong way. When every
+           unit of the limit was consumed, it ran out; a revert leaves gas on the table. */
+        const sent = await pub.getTransaction({ hash }).catch(() => null);
+        const outOfGas = !!sent && receipt.gasUsed >= sent.gas;
         setErr(
-          `${what} was mined but reverted, so nothing changed on chain. The transaction is on the ` +
-          `explorer with the revert reason; gas for it was still spent.`,
+          outOfGas
+            ? `${what} ran out of gas — it used all ${receipt.gasUsed.toLocaleString("en-GB")} ` +
+              `units it was given, so it was cut off partway rather than rejected. Nothing changed ` +
+              `on chain and there is no revert reason to look up, because it did not revert. This ` +
+              `is a limit we set too low; please report it.`
+            : `${what} was mined but reverted, so nothing changed on chain. The transaction is on ` +
+              `the explorer with the revert reason; gas for it was still spent.`,
         );
         return;
       }

@@ -11,11 +11,23 @@ export const WETH: Address = "0x4d8E02BBfCf205828A8352Af4376b165E123D7b0";
    measured cold path. A transaction that dies at the signature prompt is the most damaging
    thing that can happen in a demo. */
 export const GAS = {
-  faucet: 2_800_000n, mint: 2_800_000n, approve: 600_000n, deposit: 2_600_000n,
-  setPolicy: 700_000n, enrol: 1_400_000n, revoke: 400_000n, withdraw: 500_000n,
-  // Measured, not guessed: settle() estimates 2,053,708 to 2,796,559 across the live
-  // backlog, so 2,400,000 -- which is what this said before the backlog was costed -- would
-  // have run out of gas on the majority of positions. Doubled from the measured maximum.
+  /* Every limit is at least TWICE the cost measured from a genuinely COLD account — one that
+     has never touched these contracts, where every storage slot it writes is a first touch.
+     That is the account that matters: a judge's brand-new wallet, not ours.
+     Measuring warm is how `approve` shipped at 600,000 against a cold cost of 1,389,617 and
+     ran out of gas on a first-time wallet, using 600,000 of 600,000. `setPolicy` (1,719,403
+     cold, provisioned 700,000) and `revoke` (1,056,163 cold, provisioned 400,000) were short
+     by the same margin and had not been hit yet.
+     Cold estimates, 2026-09-05: approve 1,389,617 · setPolicy 1,719,403 · revoke 1,056,163 ·
+     faucet 1,379,707 · topUp 70,704. The rest are held at or above their previous
+     provisioning, which already exceeded 2x their warm cost.
+     Over-provisioning costs a fraction of a cent; under-provisioning costs a judge's first
+     impression. */
+  faucet: 2_800_000n, mint: 2_800_000n, approve: 2_800_000n, deposit: 3_200_000n,
+  setPolicy: 3_500_000n, enrol: 2_800_000n, revoke: 2_200_000n, withdraw: 2_000_000n,
+  // settle() estimates 2,053,708 to 2,796,559 across the live backlog, so 2,400,000 -- which
+  // is what this said before the backlog was costed -- would have run out of gas on the
+  // majority of positions. Doubled from the measured maximum.
   settle: 5_600_000n, settleMany: 8_000_000n, topUp: 400_000n,
 } as const;
 
