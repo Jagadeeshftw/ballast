@@ -588,3 +588,35 @@
 #dir-a .actionPreview li { display: block; padding: 14px 16px; background: var(--hull); }
 #dir-a .actionName { display: block; font-size: 14px; font-weight: 600; color: var(--chart); }
 #dir-a .actionWhy { display: block; margin-top: 3px; font-size: 13px; line-height: 1.5; color: var(--chart); opacity: .8; }
+
+/* ------------------------------------------------------- cover in force */
+/* Answers "what am I covered for", so it is about the VIEWER. The demonstration account
+   appears only inside the disclosure, framed as a worked example. */
+#dir-a .coverPanel {
+  position: relative; overflow: hidden; border: 1px solid var(--rail); border-radius: 16px;
+  background: var(--hull); padding: 26px 28px;
+}
+#dir-a .coverEyebrow {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .16em; color: var(--chart);
+}
+#dir-a .coverBig {
+  margin-top: 12px; font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: clamp(28px, 4vw, 46px); font-weight: 500; line-height: 1;
+  letter-spacing: -.03em; color: var(--bone); font-variant-numeric: tabular-nums;
+}
+#dir-a .coverUnit { margin-left: 12px; font-family: inherit; font-size: 15px; color: var(--chart); font-weight: 400; }
+#dir-a .coverLede { margin-top: 14px; max-width: 62ch; font-size: 15px; line-height: 1.65; color: var(--chart); }
+#dir-a .coverLede strong { color: var(--bone); font-weight: 600; }
+#dir-a .coverPanel .btn { margin-top: 18px; }
+#dir-a .coverNote { margin-top: 14px; font-size: 14px; color: var(--chart); }
+#dir-a .coverDemo { margin-top: 22px; border-top: 1px solid var(--rail); padding-top: 14px; }
+#dir-a .coverDemo summary {
+  cursor: pointer; list-style: none; font-size: 13px; color: var(--chart);
+}
+#dir-a .coverDemo summary::-webkit-details-marker { display: none; }
+#dir-a .coverDemo summary::before { content: "+ "; font-family: var(--font-plex-mono), monospace; }
+#dir-a .coverDemo[open] summary::before { content: "− "; }
+#dir-a .coverDemo summary:hover { color: var(--bone); }
+#dir-a .coverDemo p { margin-top: 10px; font-size: 14px; line-height: 1.65; color: var(--chart); max-width: 68ch; }
+#dir-a .coverDemo p strong { color: var(--bone); }

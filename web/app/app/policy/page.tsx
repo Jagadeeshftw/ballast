@@ -1,4 +1,4 @@
-import { ADDR } from "@/lib/chain";
+import { ADDR, EXPLORER } from "@/lib/chain";
 import { loadPreview, utc } from "../../data";
 import ChainNote from "@/components/site/ChainNote";
 import PolicyEditor from "../PolicyEditor";
@@ -26,11 +26,22 @@ export default async function Policy() {
       {!chainOk && <ChainNote />}
       <h1 className="viewH1">Policy</h1>
       <p className="why" style={{ marginTop: 8 }}>
-        {live
-          ? `Active on ${ADDR.demoUser.slice(0, 10)}… — make whole a fall of ${(current.makeWholeBps / 100).toFixed(2)}%, paying at most ${(current.premiumBps / 100).toFixed(2)}% of the position per window, until ${utc(current.expiry)}.`
-          : "No active policy on the demonstration account. Without one the engine can do nothing, which is the point: consent is a contract state, not a setting in our database."}
-        {" "}Priced against{" "}
+        A policy is consent with limits: how deep a fall you want made whole, the most you will
+        pay per window, and when it expires. Without one the engine can do nothing — consent is
+        a contract state, not a setting in our database. Priced against{" "}
         {shown ? `the live ${shown.asset} · ${shown.intervalLabel} window` : "the most recent window"}.
+      </p>
+      {/* The demonstration account's policy is shown as an example and attributed. The editor
+          below reads the CONNECTED wallet's own policy, which is a different thing and used to
+          be conflated with this one. */}
+      <p className="why">
+        {live
+          ? <>For reference, the demonstration account{" "}
+              <a className="mono" href={`${EXPLORER}/address/${ADDR.demoUser}`}>{ADDR.demoUser.slice(0, 10)}…</a>{" "}
+              runs {(current.makeWholeBps / 100).toFixed(2)}% made whole, at most{" "}
+              {(current.premiumBps / 100).toFixed(2)}% per window, until {utc(current.expiry)}.{" "}
+              <strong>That is not your policy</strong> — yours is below.</>
+          : <>The demonstration account has no active policy either.</>}
       </p>
 
       <section>

@@ -7,6 +7,7 @@ export const dynamic = "force-static";
 const HEADINGS: Heading[] = [
   { id: "contracts", text: "Contracts" },
   { id: "chain", text: "Chain and RPC" },
+  { id: "bounds", text: "Policy bounds" },
   { id: "engines", text: "The engine set" },
   { id: "sources", text: "Source documents" },
   { id: "glossary", text: "Glossary" },
@@ -83,6 +84,46 @@ export default function Reference() {
         <code>testnet.somniascan.io</code> appears in some hackathon material and does not
         resolve — a DNS failure rather than a 404. The explorer above is the working one.
       </div>
+
+      <H2 id="bounds">Policy bounds</H2>
+      <p>
+        The load-line slider on <a href="/app/policy">Policy</a> offers 0.50% to 5.00%.{" "}
+        <strong>That range is a convention of the interface, not a guarantee of the
+        contract.</strong> Anything calling <code>setPolicy</code> directly is bound only by
+        what the vault enforces, which is wider:
+      </p>
+      <div className="docTableWrap">
+        <table className="docTable">
+          <thead><tr><th>Parameter</th><th>Enforced on chain</th><th>Offered by the slider</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Make-whole point</strong></td>
+              <td>1 – 10,000 bps (0.01% – 100%). <strong>Zero reverts</strong> with{" "}
+                <code>MakeWholeOutOfRange</code> — a zero dial is not a paused policy, and{" "}
+                <code>revoke()</code> is how you pause.</td>
+              <td>50 – 500 bps</td>
+            </tr>
+            <tr>
+              <td><strong>Premium ceiling</strong></td>
+              <td>0 – 10,000 bps. Zero is legal and means no cover will ever clear the check.</td>
+              <td>Free entry</td>
+            </tr>
+            <tr>
+              <td><strong>Expiry</strong></td>
+              <td>At least <code>MIN_POLICY_DURATION</code> ahead — 60 seconds. Anything sooner
+                reverts with <code>PolicyDurationTooShort</code>.</td>
+              <td>Days ahead</td>
+            </tr>
+            <tr><td><strong>Notional cap</strong></td><td>Any <code>uint256</code>; unbounded.</td><td>Free entry</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The narrower slider range is a judgement about what is useful, not about what is
+        permitted: above roughly 5% the premium required to make a position whole grows faster
+        than most books can fill. The contract does not stop you, and this page says so rather
+        than implying a protection that is not there.
+      </p>
 
       <H2 id="engines">The engine set</H2>
       <p>

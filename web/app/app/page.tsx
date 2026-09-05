@@ -5,7 +5,8 @@ import { notificationsFor } from "./notifications";
 import Checklist from "./Checklist";
 import { StatGrid } from "@/components/ace/stat-grid";
 import ChainNote from "@/components/site/ChainNote";
-import { LeadPanel, StateBanner } from "@/components/ace/lead-panel";
+import { StateBanner } from "@/components/ace/lead-panel";
+import CoverInForce from "./CoverInForce";
 import { IconChartLine, IconTargetArrow, IconShieldHalf, IconClockPlay, IconBolt } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
@@ -42,71 +43,13 @@ export default async function Overview() {
         </StateBanner>
       )}
 
-      <LeadPanel
-        owner={
-          <p className="mt-5 text-[13px] leading-relaxed text-muted">
-            This is the position and policy of the demonstration account{" "}
-            <a className="mono" href={`${EXPLORER}/address/${ADDR.demoUser}`}>{ADDR.demoUser.slice(0, 10)}…</a>{" "}
-            — not of any wallet you connect. A wallet you connect starts with no position, no
-            policy and no history.
-          </p>
-        }
-        eyebrow={policyActive ? "Cover in force · demonstration account" : "No cover in force · demonstration account"}
-        aside={
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Open cover</div>
-              <div className="mt-1 font-mono text-[22px] font-medium tabular-nums text-ink">{t.open}</div>
-              <div className="text-[12px] text-muted">to settle · demo</div>
-            </div>
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Next window</div>
-              <div className="mt-1 font-mono text-[22px] font-medium tabular-nums text-ink">
-                {shown ? `${shown.asset} \u00b7 ${shown.intervalLabel}` : "None"}
-              </div>
-              <div className="text-[12px] text-muted">
-                {shown ? (shown.secondsLeft > 0 ? `closes in ${shown.secondsLeft}s` : "settling") : "none queued"}
-              </div>
-            </div>
-          </div>
-        }
-      >
-        {exposure === null ? (
-          <>
-            <div className="mt-3 font-mono text-[clamp(30px,4.4vw,52px)] font-medium leading-none tracking-tight text-ink">
-              Unpriceable
-            </div>
-            <p className="mt-4 max-w-[52ch] text-[14px] leading-relaxed text-muted">
-              The book is one-sided, so the exposure cannot be measured against it. Ballast only
-              ever covers what it can price — it declines rather than guess.
-            </p>
-          </>
-        ) : (
-          <>
-            <div className="mt-3 font-mono text-[clamp(30px,4.4vw,52px)] font-medium leading-none tracking-tight tabular-nums text-ink">
-              {usd(exposure)}
-              <span className="ml-3 align-baseline font-sans text-[15px] font-normal text-muted">tUSDC of ETH</span>
-            </div>
-            {policyActive ? (
-              <p className="mt-4 max-w-[56ch] text-[15px] leading-relaxed text-muted">
-                Made whole on a fall of{" "}
-                <strong className="font-mono font-medium text-ink">{(makeWhole * 100).toFixed(2)}%</strong>
-                {" "}— which on this position pays{" "}
-                <strong className="font-mono font-medium text-paid">{usd(madeWhole!)}</strong> tUSDC,
-                for at most {vault ? (Number(vault.policy[2]) / 100).toFixed(2) : "—"}% of it per window. Exact at
-                that depth and imperfect either side of it, which is what parametric cover is.
-                Runs to {vault ? utc(vault.policy[3]).slice(0, 10) : "—"}.
-              </p>
-            ) : (
-              <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-muted">
-                There is no active policy on this account, so the engine can do nothing here.
-                Consent is a contract state, not a setting in our database.{" "}
-                <a href="/app/policy">Set a load line</a>.
-              </p>
-            )}
-          </>
-        )}
-      </LeadPanel>
+      <CoverInForce
+        demoExposure={exposure}
+        demoMakeWhole={makeWhole}
+        demoPremiumCap={vault ? (Number(vault.policy[2]) / 100).toFixed(2) : "—"}
+        demoExpiry={vault ? utc(vault.policy[3]).slice(0, 10) : "—"}
+        demoOpen={t.open}
+      />
 
       <section>
         <h2 className="viewH2">Your setup</h2>

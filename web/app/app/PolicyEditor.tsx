@@ -29,15 +29,24 @@ export default function PolicyEditor({
 }) {
   const { account, chainOk, busy, err, tx, send, s } = useWallet();
 
-  const [bps, setBps] = useState(current.makeWholeBps || 250);
-  const [ceil, setCeil] = useState(current.premiumBps || 300);
-  const [cap, setCap] = useState(current.notionalCap || 2000);
+  /* `current` arrives from the server as the DEMONSTRATION account's policy. Once a wallet is
+     connected, the policy being edited is that wallet's own -- reading the demo's as "current"
+     showed a connected reader someone else's settings as theirs, and made the diff below
+     compare against a policy they had never set. */
+  const mine = account && s?.policy
+    ? { active: s.policy[0], makeWholeBps: Number(s.policy[1]), premiumBps: Number(s.policy[2]),
+        expiry: Number(s.policy[3]), notionalCap: Number(s.policy[4]) / 1e6 }
+    : null;
+  const base = mine ?? current;
+  const [bps, setBps] = useState(base.makeWholeBps || 250);
+  const [ceil, setCeil] = useState(base.premiumBps || 300);
+  const [cap, setCap] = useState(base.notionalCap || 2000);
   // Hold the expiry as a timestamp rather than a day count. Deriving it from "days from now"
   // could never reproduce the existing expiry exactly, so the diff opened showing a change
   // nobody made -- precisely the noise the current-beside-proposed layout exists to remove.
   const [expiry, setExpiry] = useState(() =>
-    current.active && current.expiry > Date.now() / 1000
-      ? current.expiry
+    base.active && base.expiry > Date.now() / 1000
+      ? base.expiry
       : Math.floor(Date.now() / 1000) + 30 * DAY);
   const days = Math.max(1, Math.round((expiry - Date.now() / 1000) / DAY));
 
@@ -46,7 +55,7 @@ export default function PolicyEditor({
     premiumCeilingBps: ceil, notionalCapUsd: cap, bps,
   }), [exposure, book, ceil, cap, bps]);
 
-  const changed = bps !== current.makeWholeBps || ceil !== current.premiumBps || cap !== current.notionalCap || expiry !== current.expiry;
+  const changed = bps !== base.makeWholeBps || ceil !== base.premiumBps || cap !== base.notionalCap || expiry !== base.expiry;
   const canWrite = !!account && chainOk;
 
   return (
@@ -123,7 +132,12 @@ export default function PolicyEditor({
 
       {/* Current beside proposed, so a change reads as a change. */}
       <div className="panel diffPanel">
-        <h3>{current.active ? "What would change" : "What you would set"}</h3>
+        <h3>{base.active ? "What would change" : "What you would set"}</h3>
+        <p className="why" style={{ marginTop: -4 }}>
+          {mine ? "Current is this wallet\u2019s own policy, read from the chain." :
+           account ? "This wallet has no policy yet, so there is nothing to compare against." :
+           "Connect a wallet to compare against your own policy; the current column is the demonstration account\u2019s."}
+        </p>
         <table className="diff">
           <thead><tr><th></th><th>Now</th><th>Proposed</th></tr></thead>
           <tbody>

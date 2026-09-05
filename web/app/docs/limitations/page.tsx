@@ -1,4 +1,4 @@
-import DocShell, { H2, type Heading } from "../DocShell";
+import DocShell, { H2, H3, type Heading } from "../DocShell";
 import { RECORD, recordRange } from "@/lib/record";
 
 export const dynamic = "force-static";
@@ -11,6 +11,7 @@ const HEADINGS: Heading[] = [
   { id: "engine", text: "The engine is not running" },
   { id: "probes", text: "Two probes are pinned to expired markets" },
   { id: "sample", text: "The record is a sample" },
+  { id: "open", text: "Open questions" },
 ];
 
 const settled = RECORD.counts.CoverSettled ?? 0;
@@ -102,6 +103,53 @@ export default function Limitations() {
         favourable run of {settled} does not contradict that. It is what a small sample looks
         like.
       </div>
+      <H2 id="open">Open questions</H2>
+      <p>
+        Three product decisions have not been made. They are written here as questions because
+        that is what they are, and because improvising an answer when asked would be worse than
+        saying the work has not been done.
+      </p>
+
+      <H3 id="open-cadence">Should it buy every available window?</H3>
+      <p>
+        Today it does: enrol, and the engine attempts cover on every window it is woken for.
+        Whether that is the right production strategy is genuinely undecided. The alternative is
+        episodic cover — buying around events, or when a position crosses a size threshold, or
+        on a schedule the holder sets — which costs less in spread but leaves gaps that are
+        uncovered by choice rather than by accident. We have not decided which is right, and{" "}
+        <a href="/docs/economics">the economics</a> only tells us that buying every sixty-second
+        window is not.
+      </p>
+
+      <H3 id="open-filter">There is no expected-value or volatility filter</H3>
+      <p>
+        Every gate the engine applies is <strong>mechanical</strong>: is the book two-sided, is
+        the cover price at or below 0.90, does the premium fit the ceiling and the notional cap,
+        does the size clear the venue&rsquo;s minimum lot. Those are all questions about whether
+        a purchase is <em>possible</em> and <em>within consent</em>.
+      </p>
+      <p>
+        <strong>No view is taken on whether cover is worth buying today.</strong> The engine has
+        no volatility estimate, no expected-value calculation, and no opinion about whether the
+        market&rsquo;s price for the Down side is generous or expensive relative to the risk. It
+        buys because it is permitted to, not because it judged the trade good. Whether it should
+        judge — and on whose model — is open.
+      </p>
+
+      <H3 id="open-topup">Vault top-up is manual, and premium drains it</H3>
+      <p>
+        Premium is paid out of vault collateral every window cover is bought. On four-hour
+        windows that runs at roughly <strong>0.2% to 0.3% of exposure per day</strong> net of
+        spread — see <a href="/docs/economics#frequency">the frequency table</a>. Collateral is
+        therefore consumed steadily by a working policy.
+      </p>
+      <p>
+        There is <strong>no low-balance alert and no automatic refill</strong>. A holder who
+        stops watching will eventually find cover being skipped for want of collateral, and the
+        first they learn of it is a refusal in the activity log. What the right answer is — a
+        notification, a reserve floor, an allowance the vault may pull on — has not been decided.
+      </p>
+
     </DocShell>
   );
 }
