@@ -100,7 +100,11 @@ export default function CoverInForce({
             </button>
           ) : (
             <p className="coverNote">
-              No EVM wallet in this browser. Everything below is readable without one.
+              No EVM wallet in this browser, so there is nothing to connect — everything below
+              is readable without one.{" "}
+              <a href="https://metamask.io/download/" target="_blank" rel="noreferrer">Install one</a>{" "}
+              and point it at Somnia Shannon testnet, chain 50312, or open this on a device
+              where you already have a wallet.
             </p>
           )}
         </>

@@ -16,9 +16,17 @@ export const metadata: Metadata = {
   title,
   description,
   /* Icons are the mark alone, cropped from the full lockup: the wordmark under it is
-     illegible below about 128px, so a favicon carrying it would be mud. The mark's own
-     background is opaque, which is what a favicon wants — it sits on browser chrome of
-     whatever colour, not on the page. */
+     illegible below about 128px, so a favicon carrying it would be mud.
+
+     They used to ship with the lockup's black ground baked in, on the reasoning that a
+     favicon sits on browser chrome rather than on the page. That was wrong in practice: a
+     browser draws the icon on ITS ground, so an opaque black square is a black tile in a
+     light-themed tab strip. The mark now carries its own alpha, taken off the black it was
+     drawn on, and sits on either.
+
+     apple-touch-icon is the deliberate exception. iOS composites a transparent home-screen
+     icon over black, which would reintroduce exactly that tile, so it keeps an opaque
+     ground -- chosen, in the brand's raised colour, with the padding iOS expects. */
   icons: {
     icon: [
       { url: "/icon-16.png", sizes: "16x16", type: "image/png" },

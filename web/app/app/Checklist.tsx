@@ -4,6 +4,7 @@ import type { Address } from "viem";
 import { somniaTestnet } from "viem/chains";
 import { ADDR } from "@/lib/chain";
 import { useWallet } from "./wallet";
+import NoWallet from "./NoWallet";
 import { GAS, WETH, erc20, vaultAbi, engineAbi } from "./onchain";
 import { NoGasBanner } from "./TopBar";
 
@@ -41,11 +42,7 @@ export default function Checklist() {
     return (
       <div className="panel" data-own="">
         <h3>No wallet in this browser</h3>
-        <p className="why">
-          Everything on this dashboard is readable without one — the figures above and the
-          history below are read from the chain at request time. To transact, open this in a
-          browser with an EVM wallet installed.
-        </p>
+        <NoWallet verb="the steps below" />
       </div>
     );
   }

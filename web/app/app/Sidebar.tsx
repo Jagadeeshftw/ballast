@@ -41,7 +41,7 @@ function Links() {
           and the name sits outside the clip rather than showing as a stray "B". */}
       <a href={BASE} onClick={close} title="Ballast"
         className="mb-4 grid h-10 grid-cols-[var(--rail-w,68px)_1fr] items-center text-[17px] font-bold text-ink">
-        <span className="grid place-items-center"><Wordmark size={22} /></span>
+        <span className="grid place-items-center"><Wordmark size={24} /></span>
         <span className="whitespace-nowrap">Ballast</span>
       </a>
 

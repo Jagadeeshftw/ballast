@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
+import Wordmark from "@/app/Wordmark";
 import {
   Navbar, NavBody, NavItems, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle,
 } from "@/components/ace/resizable-navbar";
@@ -14,16 +15,6 @@ const LINKS = [
   { name: "Docs", link: "/docs" },
 ];
 
-/** The Plimsoll load line: a circle with a bar through it. */
-function Mark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" className="shrink-0">
-      <circle cx="11" cy="11" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
-      <line x1="0" y1="11" x2="22" y2="11" stroke="#E0A130" strokeWidth="2.2" />
-    </svg>
-  );
-}
-
 export default function SiteNav() {
   const [open, setOpen] = useState(false);
 
@@ -31,7 +22,7 @@ export default function SiteNav() {
     <Navbar>
       <NavBody>
         <a href="#top" className="relative z-20 flex items-center gap-2.5 px-2 text-ink">
-          <Mark />
+          <Wordmark size={24} />
           <span className="font-bold tracking-tight">Ballast</span>
         </a>
         <NavItems items={LINKS} />
@@ -47,7 +38,7 @@ export default function SiteNav() {
       <MobileNav>
         <MobileNavHeader>
           <a href="#top" className="flex items-center gap-2.5 text-ink">
-            <Mark /><span className="font-bold tracking-tight">Ballast</span>
+            <Wordmark size={24} /><span className="font-bold tracking-tight">Ballast</span>
           </a>
           <div className="flex items-center gap-2">
             <ThemeToggle />

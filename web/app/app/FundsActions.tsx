@@ -9,6 +9,7 @@ import { useWallet } from "./wallet";
 import TxStatus from "./TxStatus";
 import { GAS, WETH, erc20, vaultAbi } from "./onchain";
 import { NoGasBanner } from "./TopBar";
+import NoWallet from "./NoWallet";
 
 const usd = (v: bigint) => (Number(v) / 1e6).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -43,12 +44,14 @@ export default function FundsActions() {
     return (
       <div className="panel" data-own="">
         <h3>{hasProvider ? "Connect to move funds" : "No wallet in this browser"}</h3>
-        <p className="why">
-          The vault figures above are read from the chain and are correct whether or not you
-          connect. {hasProvider
-            ? "Depositing, withdrawing and minting need a wallet."
-            : "To transact, open this in a browser with an EVM wallet installed."}
-        </p>
+        {hasProvider ? (
+          <p className="why">
+            The vault figures above are read from the chain and are correct whether or not you
+            connect. Depositing, withdrawing and minting need a wallet.
+          </p>
+        ) : (
+          <NoWallet verb="depositing, withdrawing and minting" />
+        )}
         {hasProvider && (
           <button type="button" className="btn" onClick={connect}>Connect wallet</button>
         )}
