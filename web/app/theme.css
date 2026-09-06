@@ -316,15 +316,15 @@
 @media (max-width: 639px) {
   /* Sized with headroom rather than to the pixel: at 390x844 the hero has ~10px spare, so a
      font metric shifting slightly does not push the CTA off the first screen. */
-  .site .sbpStage { padding: 6px 12px; }
-  .site .sbpFrame { --sbp-pad-l: 12px; padding: 15px 12px 10px var(--sbp-pad-l); }
+  .site .sbpStage { padding: 4px 12px; }
+  .site .sbpFrame { --sbp-pad-l: 12px; padding: 14px 12px 8px var(--sbp-pad-l); }
   .site .sbpRail  { top: 24px; bottom: 20px; }
   .site .sbpWhat  { margin-top: 0; font-size: 12.5px; }
   .site .sbpHash  { margin-top: 2px; font-size: 11px; }
-  .site .sbpGap   { padding: 6px 0 6px 19px; }
-  .site .sbpGapNum { font-size: 19px; }
-  .site .sbp > p  { padding-top: 10px; padding-bottom: 10px; font-size: 12px; line-height: 1.5; }
-  .site .sbp > div:first-child { padding-top: 8px; padding-bottom: 8px; }
+  .site .sbpGap   { padding: 3px 0 3px 19px; }
+  .site .sbpGapNum { font-size: 17px; }
+  .site .sbp > p  { padding-top: 9px; padding-bottom: 9px; font-size: 11.5px; line-height: 1.45; }
+  .site .sbp > div:first-child { padding-top: 7px; padding-bottom: 7px; }
 }
 @media (min-width: 640px) {
   /* Stacked, not merely un-flexed: the children are spans, so a block parent alone left them
@@ -349,4 +349,8 @@
 :root[data-theme="light"] .site .sbpStep[data-step="2"] .sbpWho { color: #2A6E4C; }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) .site .sbpStep[data-step="2"] .sbpWho { color: #2A6E4C; }
+}
+.site .sbpCode {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: .92em; color: var(--color-ink);
 }

@@ -71,6 +71,16 @@ export default function HowItWorks() {
         binary module. When a window opens, Somnia&rsquo;s reactivity precompile invokes the
         handler as a <strong>synthetic transaction inside the same block as the trigger</strong>.
       </p>
+      <p>
+        What the trigger transaction <em>is</em> matters, because its summary page does not show a
+        market being created. <strong>dreamDEX creates markets from inside a reactive callback of
+        its own</strong>, so the trigger below is dreamDEX&rsquo;s callback and{" "}
+        <code>MarketCreated</code> is emitted by <code>BinaryMarketsModule</code> inside it, at{" "}
+        <strong>log index 75</strong>. Ballast&rsquo;s handler then runs in the same block, on the
+        market that event created — two reactive systems chained inside one block. Open the{" "}
+        <strong>Logs</strong> tab; the summary shows <code>onEvent</code> and two collateral
+        transfers instead.
+      </p>
       <div className="docTableWrap">
         <table className="docTable">
           <thead><tr><th>Transaction</th><th className="num">Block</th><th>What it is</th></tr></thead>
@@ -78,12 +88,19 @@ export default function HowItWorks() {
             <tr>
               <td><a className="mono" href={`${EXPLORER}/tx/${TRIGGER}`}>{TRIGGER.slice(0, 18)}…</a></td>
               <td className="num"><strong>476941284</strong></td>
-              <td>dreamDEX opens a window</td>
+              <td>
+                dreamDEX&rsquo;s own reactive callback. <code>MarketCreated</code> for market{" "}
+                <code>0x…010253</code> is <strong>log 75</strong> inside it — the transaction
+                creates two markets.
+              </td>
             </tr>
             <tr>
               <td><a className="mono" href={`${EXPLORER}/tx/${CALLBACK}`}>{CALLBACK.slice(0, 18)}…</a></td>
               <td className="num"><strong>476941284</strong></td>
-              <td>Ballast&rsquo;s handler runs</td>
+              <td>
+                Ballast&rsquo;s handler, on retired engine <code>0xB095Aacf…</code> — the one live
+                on 1 September. Its <code>CallbackRan</code> names that same market.
+              </td>
             </tr>
           </tbody>
         </table>
@@ -91,6 +108,15 @@ export default function HowItWorks() {
       <p>
         Same block. <strong>Zero blocks of latency</strong>, and no operator anywhere in the
         loop. This is the part of the design that only works on this chain.
+      </p>
+      <p>
+        The two are tied together by the subscription rather than by sharing a block number: the
+        engine&rsquo;s own <code>SubscriptionOpened</code> records emitter{" "}
+        <code>0x3ecC694C…</code> and topic0 <code>0xb5ec75cd…</code>, which is exactly the emitter
+        and topic of log 75. On this particular window the handler <strong>declined</strong> —{" "}
+        <code>CoverSkipped … NoLiquidity</code>, a one-sided Down book at creation, and{" "}
+        <code>CallbackRan</code> reports <code>covered 0</code>. It shows the handler running and
+        refusing, which is the behaviour this project argues for; it bought nothing.
       </p>
       <div className="callout">
         <span className="calloutTitle">A correction we owe the record</span>

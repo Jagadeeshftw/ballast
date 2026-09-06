@@ -75,10 +75,22 @@ the two other latches the sweep found.
 The strongest technical claim the project has, and it is verifiable in two clicks.
 
 ```
-block 476941284   MarketCreated   tx 0x0434d364…      (dreamDEX rolls a new window)
-block 476941284   CallbackRan     tx 0x79bf978b…      (Ballast reacts)
-                  ^^^^^^^^^^^^^^ same block, separate synthetic transaction
+block 476941284  tx 0x0434d364…  dreamDEX's OWN reactive callback
+                   └─ log 75     MarketCreated  (BinaryMarketsModule 0x3ecC694C…)
+                                 market 0x…010253 — the tx creates two
+block 476941284  tx 0x79bf978b…  Ballast's handler
+                   └─ CallbackRan  market 0x…010253 — the same one
+                 ^^^^^^^^^^^^^^ same block, separate synthetic transactions
 ```
+
+Read the trigger's **Logs** tab, not its summary. The summary shows `onEvent` on
+`0xeE3AFf92…` and two tUSDC transfers, because **dreamDEX creates markets from inside a
+reactive callback of its own**; the market creation is an event within that transaction, not
+the transaction itself. So this is two reactive systems chained inside one block.
+
+The link between them is the subscription, not the shared block number: the engine's
+`SubscriptionOpened` records emitter `0x3ecC694C…` and topic0 `0xb5ec75cd…`, which is
+precisely the emitter and topic of log 75.
 
 - trigger: [`0x0434d364…`](https://shannon-explorer.somnia.network/tx/0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4)
 - callback: [`0x79bf978b…`](https://shannon-explorer.somnia.network/tx/0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1)

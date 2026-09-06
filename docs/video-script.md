@@ -24,8 +24,11 @@ minutes is worse than cutting shot 6.
       in the address bar looks unfinished on video.
 - [ ] `scripts/check-deploy.sh` — confirm the deployed commit matches local HEAD.
 - [ ] Browser at 1440×900, no bookmarks bar, no extensions visible, system dark.
-- [ ] Explorer tabs pre-loaded so nothing is waiting on a network round trip on camera:
-      trigger `0x0434d364…`, callback `0x79bf978b…`, settlement `0xdafa9556…`.
+- [ ] Explorer tabs pre-loaded **on the Logs tab, not the summary**, so nothing is waiting on
+      a network round trip on camera: trigger `0x0434d364…` scrolled to `MarketCreated` at
+      **log 75**, callback `0x79bf978b…`, settlement `0xdafa9556…`. The trigger's summary page
+      shows `onEvent` on a contract that is not ours — that view is where a viewer gets lost,
+      so it should not be the one on screen.
 - [ ] Vault holds 8,933.74 tUSDC and the policy runs to 14 October — both already true.
 - [ ] Engine live with runway to finish the shoot. `subscriptionHealth()` should report
       `subscribed` true and `stale` false, and it returns `windowsRemaining` — read the
@@ -42,7 +45,7 @@ minutes is worse than cutting shot 6.
 | --- | --- | --- | --- |
 | 1 | 0:00–0:20 | Hero, full. Headline, then the same-block proof beneath it — block number and both transaction hashes — and the CTA. | "This is Ballast — automated cover for a position, live on Somnia testnet. You hold ETH. It can fall while you sleep. Cover for that exists, but on this venue it expires every window, and nobody sits up all night re-buying it. Ballast does, and the chain itself is what triggers it." |
 | 2 | 0:20–0:39 | Scroll to **How it works**. Let the three rules draw. | "So — how it works. You hold something: Ballast only covers exposure it can measure on chain, never a number you type in. You set a load line, how deep a fall you want made whole. Then it runs every window, no keeper and nothing of ours running." |
-| 3 | 0:39–1:03 | Cut to explorer. Trigger tx, then callback tx. **Highlight the block number on both.** | "That needs seeing, not describing. This is the part that only works here. dreamDEX opens a window — that's the first transaction. Ballast's handler runs — that's the second. Same block. Not a fast bot: Somnia's reactivity precompile executes the handler as a synthetic transaction inside the block that triggered it. Zero blocks of latency, and no operator anywhere in the loop." |
+| 3 | 0:39–1:03 | Cut to explorer, **Logs tab** on both — never the summary. On the trigger: `MarketCreated` from `0x3ecC694C…` at **log 75**. Then the callback tx and its `CallbackRan`, carrying the same market id. **Highlight the block number on both.** | "That needs seeing, not describing. This part only works here. dreamDEX creates a market — the MarketCreated log inside the first transaction. Ballast's handler runs — that's the second. Same block, same market. Not a fast bot: Somnia's reactivity precompile executes the handler as a synthetic transaction inside the block that triggered it. Zero blocks of latency, no operator in the loop." |
 | 4 | 1:03–1:28 | Back to page, **What it actually pays**. Let the curve draw: step, regions, then the two real points. | "What it buys. It is not a hedge. The payout is fixed: exact at one depth, imperfect either side — over-paying on a small fall, under-paying on a large one. That gap is basis risk. It is parametric cover, the same trade flight-delay insurance makes: it pays the same whether you missed a meeting or a wedding. We say where that point is." |
 | 5 | 1:28–1:51 | **It has already done this.** The 45-row positions table on Cover, then the totals row above it. | "Here is the record. Forty-five positions opened, forty-four settled, twenty-seven of them paid. Net, plus seven hundred and seventy tUSDC. A sample, not a result: forty-four one-minute windows on a thin book, and our own economics says rolling cover that fast is ruinous. The seventeen that paid nothing are here too — showing only the winners hides the trade." |
 | 6 | 1:51–2:08 | **And it refuses**, scrolling the reasons. | "And what it refused. No measured exposure. Book one-sided. Size rounds below the venue's minimum lot. Every refusal is on chain with its reason, because a system that only shows you what it did is hiding what it chose not to." |
@@ -57,6 +60,22 @@ minutes is worse than cutting shot 6.
   number: the make-whole point.
 - **Shot 3 is the technical claim.** Slow down. Let the two block numbers sit on screen for a
   full second before speaking over them. If a judge remembers one thing, it is this.
+- **Shot 3 stays on the Logs tab.** The trigger transaction is dreamDEX's own reactive
+  callback — it creates markets from inside one — so its summary page shows `onEvent` on
+  `0xeE3AFf92…` and two collateral transfers, and nothing about a market being created. The
+  evidence is `MarketCreated` at log 75, and the claim is tied to us by the subscription
+  itself: the engine's `SubscriptionOpened` names that emitter and that topic0. Say "creates a
+  market", never "this transaction is the market opening".
+- **Do not ad-lib "and it buys the cover" over this transaction — this one bought nothing.**
+  The exemplar callback declined: `CoverSkipped … NoLiquidity`, a one-sided Down book at
+  creation, and `CallbackRan` reports `covered 0`. Nothing in the script says otherwise, but it
+  is the sort of line that arrives unbidden on the fourth take. It is arguably the better
+  exemplar for exactly that reason — it shows the handler running *and refusing*, which is the
+  behaviour the whole submission argues for.
+- **The callback is on a retired engine, `0xB095Aacf…`.** That is correct and worth saying if
+  asked: it was the live engine on 1 September, and the vault approving an engine *set* rather
+  than one address is precisely why a redeploy strands nothing. A judge cross-referencing the
+  current engine will find that answer already documented.
 - **Shot 7 is not an apology, and it is no longer a confession.** The tone is "we measured
   something nobody had checked, and then we fixed it", because that is what happened. The arc
   is finding, correction, running — do not let the voice fall at the end of it. Delivered

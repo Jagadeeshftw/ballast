@@ -283,10 +283,16 @@ synthetic transaction.
 Measured on the deployed engine over four consecutive windows, all identical:
 
 ```
-trigger   MarketCreated  block 476941284  tx 0x0434d364…
-callback  CallbackRan    block 476941284  tx 0x79bf978b…
-                         ^ same block, separate synthetic tx
+trigger   tx 0x0434d364…  block 476941284  dreamDEX's own reactive callback
+            └─ log 75      MarketCreated   market 0x…010253
+callback  tx 0x79bf978b…  block 476941284  Ballast's handler
+            └─ CallbackRan                 market 0x…010253
+                          ^ same block, separate synthetic tx
 ```
+
+The trigger's summary page shows `onEvent`, not a market creation: dreamDEX creates markets
+from inside a reactive callback of its own, so `MarketCreated` is log 75 within that
+transaction. Open the Logs tab to see it.
 
 This is the strongest technical claim the project has, and it is stronger than what Phase 0
 originally reported.

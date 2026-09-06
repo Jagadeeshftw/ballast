@@ -100,12 +100,33 @@ We did this arithmetic before building the thing, and it is why the premium ceil
 
 Somnia's reactivity precompile at `0x0100` triggers the engine. When dreamDEX emits
 `MarketCreated`, the handler executes as a **separate synthetic transaction in the same
-block**:
+block**.
 
-- trigger [`0x0434d364…`](https://shannon-explorer.somnia.network/tx/0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4)
-- callback [`0x79bf978b…`](https://shannon-explorer.somnia.network/tx/0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1)
+What the trigger transaction actually is matters, because its summary page does not show a
+market being created. **dreamDEX creates markets from inside a reactive callback of its
+own** — so the transaction below is dreamDEX's callback, and `MarketCreated` is emitted by
+`BinaryMarketsModule` ([`0x3ecC694C…`](https://shannon-explorer.somnia.network/address/0x3ecC694Cef705358864a646142ac17A90E29e388))
+*inside* it, at **log index 75**. Ballast's handler then runs in the same block, on the
+market that event created. Two reactive systems chained inside one block.
+
+- trigger [`0x0434d364…`](https://shannon-explorer.somnia.network/tx/0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4) — dreamDEX's own callback; open the **Logs** tab and find
+  `MarketCreated` at log 75 (market `0x…010253`; the transaction creates two)
+- callback [`0x79bf978b…`](https://shannon-explorer.somnia.network/tx/0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1) — Ballast's handler, whose `CallbackRan` carries that same
+  market id
 
 Both in block **476941284**. Zero blocks of latency.
+
+The two are tied together by the subscription itself, not merely by sharing a block: the
+engine's own `SubscriptionOpened` records emitter `0x3ecC694C…` and topic0 `0xb5ec75cd…`,
+which is exactly the emitter and topic of log 75.
+
+Two honest notes on this exemplar. The handler **declined** on this window —
+`CoverSkipped … NoLiquidity`, a one-sided Down book at creation, and `CallbackRan` reports
+`covered 0`. It demonstrates the handler running and refusing, which is the behaviour this
+project argues for, but it bought nothing. And the callback is on
+[`0xB095Aacf…`](https://shannon-explorer.somnia.network/address/0xB095Aacf9D2e3B12717C2a58B4C6b3afdDf053b0),
+which is now a **retired** engine; it was the live one on 1 September, and the vault
+approving an engine *set* is exactly why a redeploy strands nothing.
 
 **Correction to Phase 0.** That investigation recorded ~90 ms of callback latency, and it was
 right about what it measured and wrong to generalise. The two differ by mechanism:

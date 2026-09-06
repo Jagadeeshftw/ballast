@@ -192,6 +192,39 @@ unaffordable.
 
 ---
 
+## 6. Market creation on dreamDEX is nested inside a reactive callback, so its transaction summary shows `onEvent` and token transfers instead
+
+Not a bug — a discoverability trap that will catch anyone integrating against
+`BinaryMarketsModule`.
+
+dreamDEX **creates its markets from inside a reactive callback of its own**. Every
+`MarketCreated` we have looked at is emitted within a transaction whose top-level call is
+`onEvent` (selector `0x53edf33d`) on `0xeE3AFf92812A2cb7bf801B500687BC97B55CaB34`, carrying
+41–44 logs across ~15 contracts. We checked the exemplar plus three further recent ones; all
+have that shape. There appears to be no top-level market-creation transaction on this venue
+at all.
+
+The consequence for an integrator: you subscribe to `MarketCreated`, your handler fires
+correctly, and then you open the triggering transaction in the explorer to show someone —
+and the summary page shows a reactive callback on a contract you have never heard of, plus a
+couple of collateral transfers. Nothing on that page says a market was created. The evidence
+is real but it is in the **Logs** tab, and in our case at **log index 75** of that
+transaction, which also emits a second `MarketCreated` for a different market.
+
+| | |
+| --- | --- |
+| Emitter to subscribe to | `BinaryMarketsModule` `0x3ecC694Cef705358864a646142ac17A90E29e388` |
+| `MarketCreated` topic0 | `0xb5ec75cdb7dbcd28a5f50d152d8833334525a902ef5332ebc19bcf5c0011f8cd` |
+| Transaction you will land on | `onEvent` on `0xeE3AFf92…`, ~44 logs |
+| Where the event actually is | Logs tab; log 75 in our exemplar |
+
+Two things would fix this for everyone: documenting that market creation is itself reactive,
+and publishing the `MarketCreated` ABI so explorers can decode the topic rather than showing
+a bare hash. We resolved the signature through a public signature database and then confirmed
+it by computing the keccak ourselves; an integrator should not have to.
+
+---
+
 ## Smaller notes
 
 - `eth_getLogs` is capped at **1000 blocks** per query. At 100 ms blocks that is ~100
@@ -215,8 +248,11 @@ Event-triggered reactivity fires in the **same block** as the log that triggers 
 handler's `CallbackRan` and the `MarketCreated` that caused it land in block 476941284
 together, as separate transactions:
 
-- trigger `0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4`
-- callback `0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1`
+- trigger `0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4` — dreamDEX's
+  own reactive callback, with `MarketCreated` for market `0x…010253` at log 75 (see finding 6)
+- callback `0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1` — our
+  handler, whose `CallbackRan` names that same market
 
-Worth advertising. It is a genuinely different capability from anything a keeper can do, and
+Which makes the exemplar two reactive systems chained inside a single block, one of them
+ours. Worth advertising. It is a genuinely different capability from anything a keeper can do, and
 "same block" is a much stronger claim than a latency figure in milliseconds.

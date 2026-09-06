@@ -20,6 +20,11 @@ import { EXPLORER } from "@/lib/chain";
  * turned off by `prefers-reduced-motion`, what remains is the complete card rather than a
  * half-drawn one. Nothing is `opacity: 0` waiting to be revealed.
  *
+ * The step labels name what each transaction IS, not what the claim wants it to be: the
+ * trigger is dreamDEX's own reactive callback, and the market creation is an event inside it.
+ * Saying "dreamDEX opens a window" of the transaction sent a reader to a summary page showing
+ * `onEvent` on an unfamiliar contract, with no window creation anywhere on it.
+ *
  * The hashes and the block number are evidence, so nothing animates their opacity or colour
  * below legibility. The moving parts are the rail, the dots and a travelling pulse.
  *
@@ -83,22 +88,22 @@ export default function SameBlockProof() {
             <span className="sbpPulse" />
           </div>
 
-          <Step n={1} who="dreamDEX" label="opens a window" hash={TRIGGER} short="0x0434d364…d075d5fcd4" />
+          <Step n={1} who="dreamDEX" label="creates the market" hash={TRIGGER} short="0x0434d364…d075d5fcd4" />
 
           <div className="sbpGap">
             <span className="sbpGapNum">0</span>
             <span className="sbpGapWord">blocks between</span>
           </div>
 
-          <Step n={2} who="Ballast" label="handler runs" hash={CALLBACK} short="0x79bf978b…ce061eaab74f1" />
+          <Step n={2} who="Ballast" label="handler runs, same market" hash={CALLBACK} short="0x79bf978b…ce061eaab74f1" />
         </div>
       </div>
 
       <p className="border-t border-rule px-4 py-3 text-[12.5px] leading-relaxed text-muted sm:px-5 sm:py-4 sm:text-[13px]">
-        Not a fast bot. Somnia&rsquo;s reactivity precompile executes the handler as a synthetic
-        transaction{" "}
-        <strong className="font-semibold text-paid">inside the block that triggered it</strong> — no
-        keeper, no cron, no operator in the loop.
+        Two reactive systems in one block. dreamDEX creates markets inside a callback of its own —{" "}
+        <code className="sbpCode">MarketCreated</code> is <strong>log 75</strong> here, not the
+        summary — and Somnia&rsquo;s precompile runs the handler{" "}
+        <strong className="font-semibold text-paid">inside the block that triggered it</strong>.
       </p>
     </div>
   );
