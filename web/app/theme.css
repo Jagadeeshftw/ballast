@@ -140,3 +140,213 @@
   flex: none; margin-top: 7px;
 }
 .site .siteChainNote { position: sticky; top: 0; z-index: 60; backdrop-filter: blur(6px); }
+
+/* ── Same-block proof ──────────────────────────────────────────────────────
+   The hero's evidence card. Everything below is written so that the RESTING
+   style is the FINISHED style: dots lit, hashes at full contrast, block
+   number in signal. The keyframes begin dimmed and come back to rest, so a
+   reader with animations disabled, or a browser that never starts them, sees
+   the complete card rather than a half-drawn one. Nothing here is opacity 0
+   waiting to be revealed, and no opacity or colour on the hashes or the block
+   number is animated at all — they are the evidence, not the effect. */
+.site .sbpStage {
+  display: flex; align-items: center;
+  padding: 20px 16px;
+}
+@media (min-width: 640px) { .site .sbpStage { padding: 26px 20px; } }
+
+.site .sbpFrame {
+  /* One padding value drives both the box and the rail's x-position, so the rail cannot
+     drift off the dots when the padding changes at a breakpoint. */
+  --sbp-pad-l: 20px;
+  position: relative; width: 100%;
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  border: 1px solid var(--color-rulehi); border-radius: 12px;
+  padding: 22px 16px 18px var(--sbp-pad-l);
+  background:
+    linear-gradient(to right, var(--hero-grid) 1px, transparent 1px) 0 0 / 22px 22px,
+    color-mix(in srgb, var(--color-raise2) 60%, transparent);
+  animation: sbpFrameOpen 6s ease-in-out infinite;
+}
+@media (min-width: 640px) { .site .sbpFrame { padding: 26px 20px 22px var(--sbp-pad-l); } }
+
+/* The enclosing block's own label, sitting on its edge. */
+.site .sbpFrameLabel {
+  position: absolute; top: -9px; left: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 8px; border-radius: 999px;
+  background: var(--color-raised); border: 1px solid var(--color-rulehi);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px; line-height: 18px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--color-muted); white-space: nowrap;
+}
+.site .sbpFrameDot {
+  width: 5px; height: 5px; border-radius: 999px; background: var(--color-signal);
+  animation: sbpFrameDot 6s ease-in-out infinite;
+}
+
+/* The rail both events sit on. Always drawn; only the pulse moves. */
+/* The rail runs THROUGH the dots, not beside them: the pulse has to be seen travelling from
+   the trigger to the handler, and a line in its own column sat 20px to their left, which read
+   as decoration rather than as the path between the two events. Absolutely positioned on the
+   dot centre -- half a dot in from the padding edge -- and spanning the content box, so it
+   passes behind both. */
+.site .sbpRail {
+  position: absolute; z-index: 0;
+  left: calc(var(--sbp-pad-l) + 4.5px); width: 2px;
+  top: 30px; bottom: 26px;
+  border-radius: 2px; background: var(--color-rulehi);
+  overflow: hidden;
+}
+.site .sbpPulse {
+  position: absolute; left: 0; right: 0; height: 34%;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, transparent, var(--color-signal), transparent);
+  transform: translateY(-120%);
+  animation: sbpPulse 6s ease-in-out infinite;
+}
+
+.site .sbpStep {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+}
+/* The dot sits on the rail, so it needs the card's own ground behind it rather than letting
+   the line show through the middle of it. */
+.site .sbpDot { box-sizing: content-box; border: 3px solid var(--color-raised); margin-left: -3px; }
+
+/* Rest = lit. The keyframes dim and return, never the other way round. */
+.site .sbpDot {
+  width: 11px; height: 11px; margin-top: 3px; border-radius: 999px;
+  background: var(--color-signal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 22%, transparent);
+  flex: none;
+}
+.site .sbpStep[data-step="1"] .sbpDot { animation: sbpDot1 6s ease-in-out infinite; }
+.site .sbpStep[data-step="2"] .sbpDot {
+  background: var(--color-paid);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-paid) 22%, transparent);
+  animation: sbpDot2 6s ease-in-out infinite;
+}
+
+.site .sbpWho {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--color-signal); font-weight: 600;
+}
+.site .sbpStep[data-step="2"] .sbpWho { color: var(--color-paid); }
+.site .sbpWhat { margin-top: 1px; font-size: 13.5px; font-weight: 600; color: var(--color-ink); }
+.site .sbpHash {
+  display: block; margin-top: 4px; overflow-wrap: anywhere;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11.5px; color: var(--color-ink);
+  text-decoration: underline; text-decoration-style: dotted;
+  text-decoration-color: var(--color-rulehi); text-underline-offset: 4px;
+}
+.site .sbpHash:hover { text-decoration-color: var(--color-signal); }
+
+
+/* The zero that carries the claim. */
+.site .sbpGap {
+  position: relative; z-index: 1;
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 12px 0 12px 21px;
+}
+.site .sbpGapNum {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 26px; font-weight: 500; line-height: 1; color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.site .sbpGapWord {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-muted);
+}
+.site .sbpBlockNo { color: var(--color-signal); animation: sbpConfirm 6s ease-in-out infinite; }
+
+@keyframes sbpFrameOpen {
+  0%, 4%   { border-color: var(--color-rule); }
+  12%, 96% { border-color: var(--color-rulehi); }
+  100%     { border-color: var(--color-rule); }
+}
+@keyframes sbpFrameDot {
+  0%, 6%   { opacity: .35; transform: scale(.8); }
+  14%, 96% { opacity: 1; transform: scale(1); }
+  100%     { opacity: .35; transform: scale(.8); }
+}
+/* The trigger lands first. */
+@keyframes sbpDot1 {
+  0%, 12%  { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 40%, transparent); transform: scale(.86); }
+  20%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-signal) 0%, transparent); transform: scale(1.15); }
+  26%, 96% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 22%, transparent); transform: scale(1); }
+  100%     { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 40%, transparent); transform: scale(.86); }
+}
+/* The pulse crosses the gap that is not there. */
+@keyframes sbpPulse {
+  0%, 20%  { transform: translateY(-120%); opacity: 0; }
+  24%      { opacity: 1; }
+  44%      { transform: translateY(320%); opacity: 1; }
+  50%, 100% { transform: translateY(320%); opacity: 0; }
+}
+/* The handler fires, in the same block. */
+@keyframes sbpDot2 {
+  0%, 42%  { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-paid) 40%, transparent); transform: scale(.86); }
+  50%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-paid) 0%, transparent); transform: scale(1.15); }
+  56%, 96% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-paid) 22%, transparent); transform: scale(1); }
+  100%     { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-paid) 40%, transparent); transform: scale(.86); }
+}
+/* The block number confirms both landed in it. Weight and shadow only -- the
+   colour never leaves signal, because this is evidence on camera. */
+@keyframes sbpConfirm {
+  0%, 52%  { text-shadow: none; }
+  60%      { text-shadow: 0 0 12px color-mix(in srgb, var(--color-signal) 70%, transparent); }
+  72%, 100% { text-shadow: none; }
+}
+
+/* Reduced motion gets the finished state, which is already the resting style. */
+@media (prefers-reduced-motion: reduce) {
+  .site .sbpFrame, .site .sbpFrameDot, .site .sbpPulse,
+  .site .sbpDot, .site .sbpBlockNo { animation: none !important; }
+  .site .sbpPulse { opacity: 0; }
+}
+
+/* Mobile compaction. The hero must still fit 100vh at 390x844 with the CTA visible, and the
+   diagram is taller than the static card it replaced, so at narrow widths the actor and the
+   action share a line and the vertical rhythm tightens. Nothing is removed: both hashes, the
+   block number, the zero and the prose are all still there, just closer together. */
+.site .sbpLine { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 639px) {
+  /* Sized with headroom rather than to the pixel: at 390x844 the hero has ~10px spare, so a
+     font metric shifting slightly does not push the CTA off the first screen. */
+  .site .sbpStage { padding: 6px 12px; }
+  .site .sbpFrame { --sbp-pad-l: 12px; padding: 15px 12px 10px var(--sbp-pad-l); }
+  .site .sbpRail  { top: 24px; bottom: 20px; }
+  .site .sbpWhat  { margin-top: 0; font-size: 12.5px; }
+  .site .sbpHash  { margin-top: 2px; font-size: 11px; }
+  .site .sbpGap   { padding: 6px 0 6px 19px; }
+  .site .sbpGapNum { font-size: 19px; }
+  .site .sbp > p  { padding-top: 10px; padding-bottom: 10px; font-size: 12px; line-height: 1.5; }
+  .site .sbp > div:first-child { padding-top: 8px; padding-bottom: 8px; }
+}
+@media (min-width: 640px) {
+  /* Stacked, not merely un-flexed: the children are spans, so a block parent alone left them
+     running together as "dreamDEXopens a window". */
+  .site .sbpLine { display: block; }
+  .site .sbpLine .sbpWho, .site .sbpLine .sbpWhat { display: block; }
+}
+/* Where the card is stretched to the headline's height, the block frame takes that height
+   too, so the enclosure reads as the block containing both events rather than as a small
+   diagram floating in a tall card. */
+@media (min-width: 1024px) {
+  .site .sbpFrame { height: 100%; align-content: center; }
+  .site .sbpGap { padding-top: 20px; padding-bottom: 20px; }
+}
+
+/* The step-2 label sits on the frame's own ground, which is lighter than the page and is
+   crossed by the grid lines, so the auditor's pixel reading (4.32) is stricter than a flat
+   calculation on the surface colour (4.58). At 10px this needs 4.5:1, and the semantic
+   --color-paid -- correct everywhere else -- does not clear it here. This one label takes a
+   darker green in light mode: 5.39:1 on the flat surface, still comfortably clear where a
+   grid line crosses it. The dark theme is unchanged at 6.92:1. */
+:root[data-theme="light"] .site .sbpStep[data-step="2"] .sbpWho { color: #2A6E4C; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .site .sbpStep[data-step="2"] .sbpWho { color: #2A6E4C; }
+}

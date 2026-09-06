@@ -4,6 +4,7 @@ import { positionsFor, totalsFor, cumulativeFor } from "@/lib/portfolio";
 import { RECORD, recordRange } from "@/lib/record";
 import ChainNote, { Live } from "@/components/site/ChainNote";
 import SiteNav from "@/components/site/SiteNav";
+import SameBlockProof from "@/components/site/SameBlockProof";
 import HowTimeline from "@/components/site/HowTimeline";
 import NumbersBento from "@/components/site/NumbersBento";
 import Faq from "@/components/site/Faq";
@@ -69,7 +70,7 @@ export default async function Landing() {
           }}
         />
         <div className="relative mx-auto w-full max-w-7xl px-6 py-8 md:px-10 md:py-14">
-          <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
+          <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-stretch lg:gap-12">
             <div>
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">
                 Parametric cover · Somnia · dreamDEX
@@ -96,41 +97,8 @@ export default async function Landing() {
               </div>
             </div>
 
-            {/* the thesis, as evidence */}
-            <div className="rounded-xl border border-rule bg-raised/70 backdrop-blur-sm">
-              <div className="flex items-baseline justify-between gap-3 border-b border-rule px-4 py-2.5 sm:px-5 sm:py-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                  Same block · zero latency
-                </span>
-                <span className="font-mono text-[11px] font-semibold text-signal">476941284</span>
-              </div>
-              <div className="grid sm:grid-cols-2">
-                <div className="border-b border-rule px-4 py-3 sm:border-b-0 sm:border-r sm:px-5 sm:py-4">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                    dreamDEX opens a window
-                  </div>
-                  <a href={`${EXPLORER}/tx/0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4`}
-                    className="mt-2 block break-all font-mono text-[12px] text-ink underline decoration-rulehi decoration-dotted underline-offset-4 hover:decoration-signal">
-                    0x0434d364…0d075d5fcd4
-                  </a>
-                </div>
-                <div className="px-4 py-3 sm:px-5 sm:py-4">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                    Ballast&rsquo;s handler runs
-                  </div>
-                  <a href={`${EXPLORER}/tx/0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1`}
-                    className="mt-2 block break-all font-mono text-[12px] text-ink underline decoration-rulehi decoration-dotted underline-offset-4 hover:decoration-signal">
-                    0x79bf978b…1bce061eaab74f1
-                  </a>
-                </div>
-              </div>
-              <p className="border-t border-rule px-4 py-3 text-[12.5px] leading-relaxed text-muted sm:px-5 sm:py-4 sm:text-[13px]">
-                Not a fast bot. Somnia&rsquo;s reactivity precompile executes the handler as a
-                synthetic transaction{" "}
-                <strong className="font-semibold text-paid">inside the block that triggered it</strong>{" "}
-                — no keeper, no cron, no operator in the loop.
-              </p>
-            </div>
+            {/* the thesis, as evidence — and as the mechanism, moving */}
+            <SameBlockProof />
           </div>
         </div>
       </section>
