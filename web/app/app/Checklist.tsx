@@ -18,11 +18,28 @@ import { NoGasBanner } from "./TopBar";
  * Blocked rows say WHY they are blocked rather than being greyed out silently.
  */
 export default function Checklist() {
-  const { ready, hasProvider, account, chainOk, connecting, s, busy, err, tx, connect, switchChain, send } = useWallet();
+  const { settled, hasProvider, account, chainOk, connecting, s, busy, err, tx, connect, switchChain, send } = useWallet();
 
-  if (!ready || !hasProvider) {
+  /* Held while the provider is still being asked who is connected. Gated on `hasProvider`
+     and not on `settled` alone: the server has no injected provider, so it never enters
+     this branch and still renders the disconnected state fully populated for a reader
+     without JavaScript. The first client render agrees with it, so nothing flashes on the
+     path that genuinely has no wallet. */
+  if (hasProvider && !settled) {
     return (
-      <div className="panel">
+      <div className="panel" aria-busy="true">
+        <p className="srOnly" role="status">Checking for a connected wallet.</p>
+        <div className="skel skelLine w45" style={{ height: 15, marginTop: 0 }} />
+        <div className="skel skelLine w90" />
+        <div className="skel skelLine w75" />
+        <div className="skel skelBtn" />
+      </div>
+    );
+  }
+
+  if (!hasProvider) {
+    return (
+      <div className="panel" data-own="">
         <h3>No wallet in this browser</h3>
         <p className="why">
           Everything on this dashboard is readable without one — the figures above and the
@@ -35,7 +52,7 @@ export default function Checklist() {
 
   if (!account) {
     return (
-      <div className="panel">
+      <div className="panel" data-own="">
         <h3>Connect to set up your own cover</h3>
         <p className="why">
           Somnia Shannon testnet, chain 50312. If your wallet does not carry the network,

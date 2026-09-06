@@ -14,16 +14,34 @@ const usd = (v: bigint) => (Number(v) / 1e6).toLocaleString("en-GB", { minimumFr
 
 /** Money in, money out, and the two test tokens. */
 export default function FundsActions() {
-  const { ready, hasProvider, account, chainOk, s, busy, err, tx, connect, send } = useWallet();
+  const { settled, hasProvider, account, chainOk, s, busy, err, tx, connect, send } = useWallet();
   const [amount, setAmount] = useState("1000");
 
-  if (!ready || !hasProvider || !account) {
+  /* Held while the provider is still being asked who is connected. Gated on `hasProvider`
+     and not on `settled` alone: the server has no injected provider, so it never enters
+     this branch and still renders the disconnected state fully populated for a reader
+     without JavaScript. The first client render agrees with it, so nothing flashes on the
+     path that genuinely has no wallet. */
+  if (hasProvider && !settled) {
+    return (
+      <div className="panel" aria-busy="true">
+        <p className="srOnly" role="status">Checking for a connected wallet.</p>
+        <div className="skel skelLine w45" style={{ height: 15, marginTop: 0 }} />
+        <div className="skel skelLine w90" />
+        <div className="skel skelLine w75" />
+        <div className="skel skelPanel" />
+        <div className="skel skelPanel" />
+      </div>
+    );
+  }
+
+  if (!hasProvider || !account) {
     /* The disconnected view used to be one short paragraph, which left most of the page empty
        and gave a reader no idea what this surface actually does. It now shows the four actions
        it offers, visibly inert. Nothing here pretends to work: every control is disabled and
        says why, which is the honest version of a preview. */
     return (
-      <div className="panel">
+      <div className="panel" data-own="">
         <h3>{hasProvider ? "Connect to move funds" : "No wallet in this browser"}</h3>
         <p className="why">
           The vault figures above are read from the chain and are correct whether or not you

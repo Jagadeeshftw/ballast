@@ -620,3 +620,74 @@
 #dir-a .coverDemo summary:hover { color: var(--bone); }
 #dir-a .coverDemo p { margin-top: 10px; font-size: 14px; line-height: 1.65; color: var(--chart); max-width: 68ch; }
 #dir-a .coverDemo p strong { color: var(--bone); }
+
+/* ---- Unknown is a third state ---------------------------------------------------------
+   Wallet state is known only once the provider has answered eth_accounts and, for a
+   connected reader, once their first chain read has landed. Until both are true, a panel
+   that answers "what is MINE" must not assert an answer: "you have no cover" is a claim
+   about the reader, and making it while still asking is a claim we cannot support. These
+   are the shapes those panels hold instead -- the panel's own outline, not a spinner and
+   not a sentence.
+
+   None of this is ever server-rendered. The server has no injected provider, so it takes
+   the fully-populated disconnected branch, which is the true answer for a reader with no
+   JavaScript. The first client render matches it exactly, so there is no hydration
+   mismatch and no skeleton flash on the path that never had a wallet. */
+#dir-a .skel {
+  border-radius: 6px; background: var(--rail);
+  position: relative; overflow: hidden;
+}
+#dir-a .skel::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent,
+    color-mix(in srgb, var(--bone) 10%, transparent), transparent);
+  animation: skelSweep 1.5s ease-in-out infinite;
+}
+@keyframes skelSweep { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  #dir-a .skel::after { animation: none; }
+}
+#dir-a .skelEyebrow { height: 10px; width: 88px; }
+#dir-a .skelBig {
+  margin-top: 14px; height: clamp(28px, 4vw, 46px); width: min(320px, 64%);
+  border-radius: 8px;
+}
+#dir-a .skelLine { margin-top: 12px; height: 11px; max-width: 62ch; }
+#dir-a .skelLine.w90 { width: 90%; }
+#dir-a .skelLine.w75 { width: 75%; }
+#dir-a .skelLine.w45 { width: 45%; }
+#dir-a .skelBtn { margin-top: 20px; height: 36px; width: 148px; border-radius: 8px; }
+#dir-a .skelPanel { margin-top: 16px; height: 92px; border-radius: 12px; }
+
+/* Announced to a screen reader, which otherwise gets silence from a box of grey bars. */
+#dir-a .srOnly {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* The pre-paint half of the same rule, driven by the inline script in the dashboard layout.
+   Between the browser painting the server's HTML and React finding the wallet, the document
+   carries data-wpend and these panels hold their shape instead of showing the server's
+   answer -- which, for a reader who does have a wallet, is the wrong one. `visibility`
+   rather than `display` so the panel keeps its height and nothing moves when React swaps
+   its own skeleton in. Never set without JavaScript, so the no-JS render is untouched. */
+html[data-wpend="1"] #dir-a [data-own] { position: relative; }
+html[data-wpend="1"] #dir-a [data-own] > *:not(.skel):not(.srOnly) { visibility: hidden; }
+/* The handover is declarative on purpose. Removing the marker from JavaScript the moment
+   React mounted left a gap of a millisecond or two -- measurably, in the frame recorder --
+   where the marker was gone but React had not yet committed its skeleton, and the server's
+   "you have no cover" was briefly showing again. There is no paint between these two rules:
+   the same commit that introduces React's own skeleton is the one that retires the CSS
+   stand-in, so no frame exists in which neither is holding the panel. */
+html[data-wpend="1"] #dir-a [data-own]:has(> .skel)::after { content: none; }
+html[data-wpend="1"] #dir-a [data-own]::after {
+  content: ""; position: absolute; inset: 26px 28px 26px 28px;
+  /* The same bars the React skeleton draws, so the handover from CSS to React is not a
+     visible change of shape -- only of who is drawing it. */
+  background:
+    linear-gradient(var(--rail), var(--rail)) left top      / 88px 10px           no-repeat,
+    linear-gradient(var(--rail), var(--rail)) left 24px     / min(320px, 64%) 42px no-repeat,
+    linear-gradient(var(--rail), var(--rail)) left 80px     / 90% 11px            no-repeat,
+    linear-gradient(var(--rail), var(--rail)) left 103px    / 75% 11px            no-repeat,
+    linear-gradient(var(--rail), var(--rail)) left 126px    / 45% 11px            no-repeat;
+}

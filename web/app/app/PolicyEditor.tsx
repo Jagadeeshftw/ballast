@@ -20,24 +20,86 @@ const usd = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2,
  * requested one, with the reason whenever a limit binds — a position that quietly delivers
  * less than asked is the failure this product exists to avoid.
  */
-export default function PolicyEditor({
-  book, exposure, current,
-}: {
+type Policy = { active: boolean; makeWholeBps: number; premiumBps: number; expiry: number; notionalCap: number };
+
+type Props = {
   book: { coverPrice: number; bookQty: number; lotSize: number; priceable: boolean };
   exposure: number;
-  current: { active: boolean; makeWholeBps: number; premiumBps: number; expiry: number; notionalCap: number };
-}) {
-  const { account, chainOk, busy, err, tx, send, s } = useWallet();
+  current: Policy;
+};
+
+/**
+ * The shell decides WHOSE policy is being edited before the form exists.
+ *
+ * This split is not cosmetic. The form seeds its sliders with `useState`, which reads its
+ * initial value exactly once, on mount. When the form mounted before the connected wallet's
+ * own policy had been read from the chain, those seeds froze the DEMONSTRATION account's
+ * settings in as the reader's proposed policy -- and, because the seeds never resynced, they
+ * stayed there. The reader was shown someone else's numbers as their own, and the diff
+ * compared against a policy they had never set. Mounting the form only once the base is
+ * settled makes that unrepresentable rather than merely unlikely.
+ *
+ * The `key` finishes the argument: when the underlying policy genuinely changes -- a
+ * different account, or a write of our own landing -- the form remounts and reseeds from the
+ * new truth, instead of holding edits that are no longer relative to anything.
+ */
+export default function PolicyEditor(props: Props) {
+  const { settled, sErr, hasProvider, account, chainOk, s } = useWallet();
+
+  /* Unknown is a third state. Gated on `hasProvider` rather than `settled` alone so the
+     server, which has no injected provider, still renders the real form for a reader with
+     no JavaScript -- seeded from the demonstration account and captioned as such. */
+  const pending = (hasProvider && !settled) || (settled && !!account && chainOk && !s && !sErr);
+  if (pending) {
+    return (
+      <>
+        <p className="srOnly" role="status">Reading this wallet&rsquo;s current policy.</p>
+        <div className="polGrid" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <div className="panel" key={i}>
+              <div className="skel skelLine w45" style={{ height: 15, marginTop: 0 }} />
+              <div className="skel skelLine w90" />
+              <div className="skel skelPanel" />
+            </div>
+          ))}
+        </div>
+        {/* The diff and the revoke panel state things about the reader's own policy too, so
+            they are held as well rather than left showing the demonstration account's. */}
+        <div className="panel diffPanel" aria-busy="true">
+          <div className="skel skelLine w45" style={{ height: 15, marginTop: 0 }} />
+          <div className="skel skelPanel" />
+          <div className="skel skelBtn" />
+        </div>
+        <div className="panel exit" aria-busy="true">
+          <div className="skel skelLine w45" style={{ height: 15, marginTop: 0 }} />
+          <div className="skel skelLine w90" />
+          <div className="skel skelBtn" />
+        </div>
+      </>
+    );
+  }
 
   /* `current` arrives from the server as the DEMONSTRATION account's policy. Once a wallet is
      connected, the policy being edited is that wallet's own -- reading the demo's as "current"
      showed a connected reader someone else's settings as theirs, and made the diff below
      compare against a policy they had never set. */
-  const mine = account && s?.policy
+  const mine: Policy | null = account && s?.policy
     ? { active: s.policy[0], makeWholeBps: Number(s.policy[1]), premiumBps: Number(s.policy[2]),
         expiry: Number(s.policy[3]), notionalCap: Number(s.policy[4]) / 1e6 }
     : null;
-  const base = mine ?? current;
+  const base = mine ?? props.current;
+  const k = `${account ?? "none"}:${base.active}:${base.makeWholeBps}:${base.premiumBps}:${base.notionalCap}:${base.expiry}`;
+
+  return <PolicyForm key={k} book={props.book} exposure={props.exposure} base={base} mine={!!mine} />;
+}
+
+function PolicyForm({
+  book, exposure, base, mine,
+}: {
+  book: Props["book"]; exposure: number; base: Policy; mine: boolean;
+}) {
+  const { account, chainOk, busy, err, tx, send, s } = useWallet();
+
   const [bps, setBps] = useState(base.makeWholeBps || 250);
   const [ceil, setCeil] = useState(base.premiumBps || 300);
   const [cap, setCap] = useState(base.notionalCap || 2000);
@@ -62,7 +124,7 @@ export default function PolicyEditor({
     <>
       <TxStatus />
 
-      <div className="polGrid">
+      <div className="polGrid" data-own="">
         <div className="panel">
           <h3>Make-whole point</h3>
           <p className="why">How deep a fall you want covered in full.</p>
@@ -131,7 +193,7 @@ export default function PolicyEditor({
       </div>
 
       {/* Current beside proposed, so a change reads as a change. */}
-      <div className="panel diffPanel">
+      <div className="panel diffPanel" data-own="">
         <h3>{base.active ? "What would change" : "What you would set"}</h3>
         <p className="why" style={{ marginTop: -4 }}>
           {mine ? "Current is this wallet\u2019s own policy, read from the chain." :
@@ -141,10 +203,10 @@ export default function PolicyEditor({
         <table className="diff">
           <thead><tr><th></th><th>Now</th><th>Proposed</th></tr></thead>
           <tbody>
-            <Diff k="Make whole a fall of" now={current.active ? `${(current.makeWholeBps / 100).toFixed(2)}%` : "—"} next={`${(bps / 100).toFixed(2)}%`} />
-            <Diff k="Premium ceiling" now={current.active ? `${current.premiumBps} bps` : "—"} next={`${ceil} bps`} />
-            <Diff k="Notional cap" now={current.active ? `${usd(current.notionalCap)} tUSDC` : "—"} next={`${usd(cap)} tUSDC`} />
-            <Diff k="Expires" now={current.active ? new Date(current.expiry * 1000).toISOString().slice(0, 10) : "—"}
+            <Diff k="Make whole a fall of" now={base.active ? `${(base.makeWholeBps / 100).toFixed(2)}%` : "—"} next={`${(bps / 100).toFixed(2)}%`} />
+            <Diff k="Premium ceiling" now={base.active ? `${base.premiumBps} bps` : "—"} next={`${ceil} bps`} />
+            <Diff k="Notional cap" now={base.active ? `${usd(base.notionalCap)} tUSDC` : "—"} next={`${usd(cap)} tUSDC`} />
+            <Diff k="Expires" now={base.active ? new Date(base.expiry * 1000).toISOString().slice(0, 10) : "—"}
               next={new Date(expiry * 1000).toISOString().slice(0, 10)} />
           </tbody>
         </table>
@@ -156,12 +218,12 @@ export default function PolicyEditor({
             args: [bps, ceil, BigInt(Math.round(cap * 1e6)), BigInt(expiry)],
             gas: GAS.setPolicy, chain: somniaTestnet, account: account!,
           }))}>
-          {busy === "Set policy" ? "Confirming…" : current.active ? (changed ? "Apply the change" : "Renew unchanged") : "Set the policy"}
+          {busy === "Set policy" ? "Confirming…" : base.active ? (changed ? "Apply the change" : "Renew unchanged") : "Set the policy"}
         </button>
         {!account && <span className="hint">Connect a wallet to change it. Everything here is readable without one.</span>}
       </div>
 
-      <div className="panel exit">
+      <div className="panel exit" data-own="">
         <h3>Revoke</h3>
         <p className="why">
           <strong>One action, immediate, and no operator can block or delay it.</strong> Revoking

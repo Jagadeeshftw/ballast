@@ -16,7 +16,7 @@ import ThemeToggle from "@/components/site/ThemeToggle";
 export default function TopBar({
   engineLive, engineNote, unread,
 }: { engineLive: boolean | null; engineNote: string; unread: number }) {
-  const { ready, hasProvider, account, chainOk, connecting, s, connect, disconnect } = useWallet();
+  const { settled, hasProvider, account, chainOk, connecting, s, connect, disconnect } = useWallet();
   const [menu, setMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const box = useRef<HTMLDivElement | null>(null);
@@ -68,8 +68,11 @@ export default function TopBar({
         <span className="bellWord">settled · demo</span>
       </a>
 
-      {!ready ? (
-        <span className="chip">…</span>
+      {/* `settled`, not `ready`: `ready` only means the provider has been looked for, and it
+          is set before eth_accounts answers -- so a returning connected reader saw "Connect
+          wallet" for a beat before their own address replaced it. */}
+      {!settled ? (
+        <span className="chip" aria-busy="true" title="Checking for a connected wallet">…</span>
       ) : !hasProvider ? (
         <span className="chip" title="No EVM wallet detected in this browser">read-only</span>
       ) : !account ? (

@@ -29,6 +29,27 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div id="dir-a" className="app">
+      {/* Runs during parse, before the panels below are painted -- and it has to, because
+          React cannot fix this. The server has no wallet, so the server-rendered HTML says
+          "you have no cover", and hydration is required to reproduce that exactly or it is
+          not hydration. The effect that finds the provider is a passive one: it runs AFTER
+          the first paint. So a returning connected reader saw the negative for one frame no
+          matter what the components did.
+
+          This marks the document before that paint, and CSS holds the panel's shape until
+          React knows the answer. No DOM the components own is touched, so there is nothing
+          for hydration to mismatch. With JavaScript off it never runs, the attribute is
+          never set, and the disconnected state -- which is then the true one -- shows
+          exactly as it does now. The timeout is a failsafe: if the bundle never arrives,
+          the honest fallback is the server's answer, not a shape that waits forever. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            'try{if(window.ethereum&&localStorage.getItem("ballast.wallet.disconnected")!=="1"){' +
+            'var d=document.documentElement;d.setAttribute("data-wpend","1");' +
+            'setTimeout(function(){d.removeAttribute("data-wpend")},6000)}}catch(e){}',
+        }}
+      />
       <WalletProvider>
         <Sidebar />
         <div className="appMain">

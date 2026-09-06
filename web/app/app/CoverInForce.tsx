@@ -28,9 +28,20 @@ export default function CoverInForce({
   demoExposure: number | null; demoMakeWhole: number; demoPremiumCap: string;
   demoExpiry: string; demoOpen: number;
 }) {
-  const { ready, hasProvider, account, chainOk, s, connect, connecting } = useWallet();
+  const { settled, sErr, hasProvider, account, chainOk, s, refresh, connect, connecting } = useWallet();
 
-  const connected = ready && !!account && chainOk;
+  /* Unknown is a third state, and two separate windows produce it. In both, the honest
+     answer is "not yet known" -- never "you have none", which is an assertion about the
+     reader that may be false at the moment it is painted:
+       1. a provider exists but the initial eth_accounts check has not resolved, so we do
+          not yet know whether anyone is connected. `ready` used to stand in for this and
+          could not: it is set synchronously, before that request comes back.
+       2. a wallet IS connected but its first chain read has not landed, so we know who is
+          asking and nothing whatsoever about their position. Rendering that as "not
+          covered" is the same false assertion wearing different words.
+     Same rule as nulls rather than zeros: absence of an answer is not a negative answer. */
+  const pending = (hasProvider && !settled) || (settled && !!account && chainOk && !s && !sErr);
+  const connected = settled && !!account && chainOk;
   const policy = s?.policy;
   const hasPolicy = !!policy?.[0] && Number(policy[3]) * 1000 > Date.now();
   const exposure = s && s.priceable ? (Number(s.weth) / 1e18) * (Number(s.ethPrice) / 1e18) : null;
@@ -38,8 +49,42 @@ export default function CoverInForce({
   const yourPays = exposure !== null && yourMakeWhole !== null ? exposure * yourMakeWhole : null;
 
   return (
-    <div className="coverPanel">
-      {!connected ? (
+    <div className="coverPanel" data-own="" aria-busy={pending || undefined}>
+      {pending ? (
+        /* ---- state 0: we are still asking. Hold the panel's shape and claim nothing. ---- */
+        <>
+          <p className="srOnly" role="status">Checking your wallet and reading your position.</p>
+          <div className="skel skelEyebrow" />
+          <div className="skel skelBig" />
+          <div className="skel skelLine w90" />
+          <div className="skel skelLine w75" />
+          <div className="skel skelLine w45" />
+        </>
+      ) : connected && sErr && !s ? (
+        /* ---- state 0a: we asked the chain and it did not answer. Not "no cover". ---- */
+        <>
+          <div className="coverEyebrow">Your cover</div>
+          <div className="coverBig">Can&rsquo;t read your position</div>
+          <p className="coverLede">
+            The chain did not answer, so Ballast cannot say what this wallet holds or whether
+            it is covered. Nothing has changed on chain — this is a read failing, not cover
+            lapsing. Whatever is in force stays in force.
+          </p>
+          <button type="button" className="btn" onClick={() => { void refresh(); }}>Try again</button>
+        </>
+      ) : !connected && !!account && !chainOk ? (
+        /* ---- state 0b: connected to the wrong chain. We cannot read their position, so we
+               do not get to say they have no cover -- only that we cannot see it. ---- */
+        <>
+          <div className="coverEyebrow">Your cover</div>
+          <div className="coverBig">Can&rsquo;t read your position</div>
+          <p className="coverLede">
+            This wallet is connected to a different network, so Ballast cannot see what it
+            holds. Switch it to <strong>Somnia Shannon</strong> and this panel will answer for
+            your address. Whether you have cover is unknown until then — not none.
+          </p>
+        </>
+      ) : !connected ? (
         /* ---- state 1: nobody is connected, so there is no cover to describe ---- */
         <>
           <div className="coverEyebrow">Your cover</div>

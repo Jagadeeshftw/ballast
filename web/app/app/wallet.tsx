@@ -31,6 +31,12 @@ export type Snapshot = {
 
 type Ctx = {
   ready: boolean;
+  /** True only once the initial account check has RESOLVED. `ready` says the provider has
+   *  been looked for; this says we actually know whether anyone is connected. */
+  settled: boolean;
+  /** The account read failed. Distinct from "not read yet": we asked and could not find
+   *  out, which is a KNOWN state and must not be rendered as an unresolved one. */
+  sErr: boolean;
   hasProvider: boolean;
   account: Address | null;
   chainOk: boolean;
@@ -69,6 +75,16 @@ const clearDisconnected = () => { try { localStorage.removeItem(DISCONNECTED); }
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [ready, setReady] = useState(false);
+  const [settled, setSettled] = useState(false);
+  const [sErr, setSErr] = useState(false);
+
+  /* Paired with the inline script in the layout: it holds the panels' shape from parse until
+     React can answer, and this releases it. Every path that sets `settled` goes through here
+     so the two can never disagree. */
+  const settle = useCallback(() => {
+    setSettled(true);
+    try { document.documentElement.removeAttribute("data-wpend"); } catch { /* no DOM */ }
+  }, []);
   const [provider, setProvider] = useState<EIP1193Provider | null>(null);
   const [account, setAccount] = useState<Address | null>(null);
   const [chainOk, setChainOk] = useState(true);
@@ -82,14 +98,17 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     const p = (globalThis as { ethereum?: EIP1193Provider }).ethereum ?? null;
     setProvider(p);
     setReady(true);
-    if (!p) return;
+    /* With no provider there is nothing to wait for: the answer is already known. */
+    if (!p) { settle(); return; }
     /* Reconnect silently if the wallet already has this site authorised, so moving between
        views does not demand another prompt — UNLESS the reader disconnected on purpose.
        MetaMask keeps the site authorised at the wallet level and a page cannot revoke that,
        so `eth_accounts` keeps returning the address after a disconnect. Without remembering
        the intent, an explicit user action was silently undone on the next reload. */
     (async () => {
-      if (userDisconnected()) return;
+      /* A reader who deliberately disconnected is a KNOWN state, not an unknown one --
+         settle immediately rather than holding the panels in a skeleton forever. */
+      if (userDisconnected()) { settle(); return; }
       try {
         const accs = (await p.request({ method: "eth_accounts" })) as Address[];
         if (accs?.[0]) {
@@ -98,6 +117,14 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
           setChainOk(parseInt(cid, 16) === somniaTestnet.id);
         }
       } catch { /* not authorised yet */ }
+      finally {
+        /* Only now is the connection status actually known. `setReady(true)` above fires
+           synchronously, before this request resolves -- so anything branching on `ready`
+           alone was rendering "not connected" during the gap and correcting itself a moment
+           later. On the panel whose job is to be accurate about ownership, that meant telling
+           a connected reader they had no cover. */
+        settle();
+      }
     })();
     /* The wallet switching accounts must not resurrect a session the reader ended either. */
     const onAccounts = (a: unknown) => {
@@ -108,7 +135,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     p.on?.("accountsChanged", onAccounts);
     p.on?.("chainChanged", onChain);
     return () => { p.removeListener?.("accountsChanged", onAccounts); p.removeListener?.("chainChanged", onChain); };
-  }, []);
+  }, [settle]);
 
   const read = useCallback(async (who: Address) => {
     const key = await pub.readContract({ address: ADDR.source as Address, abi: sourceAbi, functionName: "assetKeyFor", args: ["ETH"] });
@@ -126,10 +153,21 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     ]);
     setS({ stt, tusdc, weth, allowance, collateral, free, reserved,
       policy: policy as Snapshot["policy"], enrolled, ethPrice: price[0], priceable: price[1] });
+    setSErr(false);
   }, []);
 
   const refresh = useCallback(async () => { if (account) await read(account); }, [account, read]);
-  useEffect(() => { if (account) read(account); else setS(null); }, [account, read]);
+  /* An unhandled rejection here used to leave `s` null forever, which was survivable only
+     because the panels rendered null as a negative. Now that they hold an indeterminate
+     state instead, a failed read has to be reported as a failure -- otherwise an RPC outage
+     turns into a skeleton that never resolves, which is a worse lie than the one it
+     replaced. Asked-and-could-not-find-out is a known state. */
+  useEffect(() => {
+    if (!account) { setS(null); setSErr(false); return; }
+    let live = true;
+    read(account).catch(() => { if (live) setSErr(true); });
+    return () => { live = false; };
+  }, [account, read]);
 
   const switchChain = useCallback(async () => {
     if (!provider) return;
@@ -224,9 +262,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, [provider, account, read, router]);
 
   const value = useMemo<Ctx>(() => ({
-    ready, hasProvider: !!provider, account, chainOk, connecting, s, busy, err, tx,
+    ready, settled, sErr, hasProvider: !!provider, account, chainOk, connecting, s, busy, err, tx,
     connect, disconnect, switchChain, refresh, send, clearTx: () => setTx(null),
-  }), [ready, provider, account, chainOk, connecting, s, busy, err, tx, connect, disconnect, switchChain, refresh, send]);
+  }), [ready, settled, sErr, provider, account, chainOk, connecting, s, busy, err, tx, connect, disconnect, switchChain, refresh, send]);
 
   return <WalletCtx.Provider value={value}>{children}</WalletCtx.Provider>;
 }
