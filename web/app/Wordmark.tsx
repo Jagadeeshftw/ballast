@@ -1,28 +1,25 @@
 /**
- * The Ballast mark.
+ * The Plimsoll load line: a circle with a bar through it, painted on a hull to mark how deep
+ * the ship may safely sit. It is the product, drawn — so it is the mark, and it reads as a
+ * symbol at 24px in a way a gradient gets no chance to.
  *
- * This was a drawn Plimsoll load line -- the right idea, and it stays in the writing -- but
- * it was stroked in two fixed colours, one of them #EAF2F3. On the light theme's #FFFDF7
- * ground that circle was very nearly invisible, so the mark only ever worked on one of the
- * two grounds it had to work on.
+ * The brand mark is reserved for the places that want a picture rather than a symbol: the
+ * favicons and apple-touch-icon, the social preview, and the README.
  *
- * The real mark is used instead, extracted from the lockup in `assets/` and un-premultiplied
- * off the black it was drawn on, so it carries its own alpha and sits on either theme
- * without a tile behind it. Being an image rather than a glyph, it needs no colour token and
- * cannot drift out of contrast: it is the same mark in both themes, as a logo should be.
- *
- * `width`/`height` are set so the slot reserves its space before the file arrives and
- * nothing moves when it does.
+ * Both colours come from the theme rather than being fixed. The earlier version of this
+ * stroked #EAF2F3, which on the light theme's #FFFDF7 ground was very nearly invisible — the
+ * mark only worked on one of the two grounds it had to work on. `currentColor` inherits the
+ * ink of whatever it sits in, and the bar takes the identity accent, which is defined for
+ * both themes and clears contrast on each.
  */
 export default function Wordmark({ size = 34 }: { size?: number }) {
   return (
-    <img
-      src="/logo-mark.png"
-      alt=""
-      aria-hidden="true"
-      width={size}
-      height={size}
-      style={{ width: size, height: size, flex: "none", display: "block" }}
-    />
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      aria-hidden="true" style={{ flex: "none", display: "block" }}
+    >
+      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="1" y1="12" x2="23" y2="12" stroke="var(--color-signal)" strokeWidth="2.2" />
+    </svg>
   );
 }
