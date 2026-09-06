@@ -120,6 +120,20 @@ The two are tied together by the subscription itself, not merely by sharing a bl
 engine's own `SubscriptionOpened` records emitter `0x3ecC694C…` and topic0 `0xb5ec75cd…`,
 which is exactly the emitter and topic of log 75.
 
+**Be warned before you click.** `BinaryMarketsModule` is **unverified** on
+shannon-explorer, so log 75 renders with no event name and no decoded parameters — raw
+topics and about twenty lines of hex. To confirm it yourself, match the log's topic0 against
+
+```
+MarketCreated(bytes32,address,address,uint256,uint32,bytes32,address,address,uint256,uint256,uint64,uint8,uint8,uint64,uint64,uint8,string,uint256,string,bytes)
+keccak256 = 0xb5ec75cdb7dbcd28a5f50d152d8833334525a902ef5332ebc19bcf5c0011f8cd
+```
+
+and topic1, the market id, against the `CallbackRan` in our callback. The **callback**
+transaction reads cleanly on its summary page — our contract, method `onEvent`, block
+476941284 — so that is the one to open. Reported to Somnia as
+[finding 6](docs/somnia-feedback.md).
+
 Two honest notes on this exemplar. The handler **declined** on this window —
 `CoverSkipped … NoLiquidity`, a one-sided Down book at creation, and `CallbackRan` reports
 `covered 0`. It demonstrates the handler running and refusing, which is the behaviour this

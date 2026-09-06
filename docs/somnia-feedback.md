@@ -192,7 +192,7 @@ unaffordable.
 
 ---
 
-## 6. Market creation on dreamDEX is nested inside a reactive callback, so its transaction summary shows `onEvent` and token transfers instead
+## 6. dreamDEX's `MarketCreated` is unreachable in practice: nested inside a reactive callback, and emitted by an unverified contract
 
 Not a bug — a discoverability trap that will catch anyone integrating against
 `BinaryMarketsModule`.
@@ -217,11 +217,32 @@ transaction, which also emits a second `MarketCreated` for a different market.
 | `MarketCreated` topic0 | `0xb5ec75cdb7dbcd28a5f50d152d8833334525a902ef5332ebc19bcf5c0011f8cd` |
 | Transaction you will land on | `onEvent` on `0xeE3AFf92…`, ~44 logs |
 | Where the event actually is | Logs tab; log 75 in our exemplar |
+| Is the emitter verified? | **No** — `is_verified: false` on shannon-explorer |
 
-Two things would fix this for everyone: documenting that market creation is itself reactive,
-and publishing the `MarketCreated` ABI so explorers can decode the topic rather than showing
-a bare hash. We resolved the signature through a public signature database and then confirmed
-it by computing the keccak ourselves; an integrator should not have to.
+### 6a. The second obstacle: the log cannot be read once you find it
+
+Reaching the Logs tab is only half the problem. `BinaryMarketsModule` is **unverified** on
+`shannon-explorer.somnia.network` — the explorer's own API reports `is_verified: false` for
+`0x3ecC694C…` — so the log that carries the proof renders with **no event name and no decoded
+parameters**: raw topics and roughly twenty lines of undifferentiated hex, under a banner
+reading *"To see accurate decoded input data, the contract must be verified."*
+
+So an integrator hits two obstacles in a row. The transaction summary shows `onEvent` on a
+contract they have never heard of, and the log that actually matters cannot be read without
+computing the topic hash themselves and decoding the data by hand. We did both — resolved the
+signature through a public signature database, recomputed the keccak to confirm it, and
+matched it against our own `SubscriptionOpened` record — and it is a lot of work to establish
+that a market was created.
+
+The practical consequence is worth stating plainly: **this evidence cannot be shown to anyone.**
+We had intended to point at that log in a submission video and had to abandon it, because a
+screen of undecoded hex demonstrates nothing to a viewer. The strongest interoperability claim
+on this chain — a handler running in the same block as the event that triggered it — is
+currently unpresentable on the venue's side of the pair.
+
+Either fix resolves it: **verify `BinaryMarketsModule` on the explorer**, or **publish the
+`MarketCreated` ABI** so explorers and integrators can decode the topic. Verification is the
+better one, since it fixes every event on the contract at once and for everybody.
 
 ---
 

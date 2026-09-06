@@ -113,7 +113,12 @@ export default function HowItWorks() {
         The two are tied together by the subscription rather than by sharing a block number: the
         engine&rsquo;s own <code>SubscriptionOpened</code> records emitter{" "}
         <code>0x3ecC694C…</code> and topic0 <code>0xb5ec75cd…</code>, which is exactly the emitter
-        and topic of log 75. On this particular window the handler <strong>declined</strong> —{" "}
+        and topic of log 75. Be warned before clicking: <code>BinaryMarketsModule</code> is{" "}
+        <strong>unverified</strong> on the explorer, so that log renders with no event name and no
+        decoded parameters — raw topics and about twenty lines of hex. Match its topic0 against{" "}
+        <code>keccak256(&quot;MarketCreated(bytes32,address,address,uint256,…)&quot;)</code> ={" "}
+        <code>0xb5ec75cd…</code> to confirm it. The <em>callback</em> transaction reads cleanly on
+        its summary page, so that is the one worth opening. On this particular window the handler <strong>declined</strong> —{" "}
         <code>CoverSkipped … NoLiquidity</code>, a one-sided Down book at creation, and{" "}
         <code>CallbackRan</code> reports <code>covered 0</code>. It shows the handler running and
         refusing, which is the behaviour this project argues for; it bought nothing.

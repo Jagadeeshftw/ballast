@@ -127,6 +127,11 @@
   font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: .89em; background: color-mix(in srgb, var(--bone) 8%, transparent);
   padding: 1px 6px; border-radius: 4px; color: var(--bone);
+  /* Inline code here is addresses, hashes and signatures -- strings with no spaces in them.
+     Default wrapping only breaks at spaces, so a long one ran 159px off a 390px screen. It
+     breaks anywhere now; the <pre> blocks below still scroll rather than wrap, because a
+     wrapped code block is worse than a scrolling one. */
+  overflow-wrap: anywhere;
 }
 #docs .block {
   margin: 20px 0; padding: 18px 20px; overflow-x: auto;

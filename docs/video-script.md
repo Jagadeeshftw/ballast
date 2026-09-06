@@ -24,11 +24,14 @@ minutes is worse than cutting shot 6.
       in the address bar looks unfinished on video.
 - [ ] `scripts/check-deploy.sh` — confirm the deployed commit matches local HEAD.
 - [ ] Browser at 1440×900, no bookmarks bar, no extensions visible, system dark.
-- [ ] Explorer tabs pre-loaded **on the Logs tab, not the summary**, so nothing is waiting on
-      a network round trip on camera: trigger `0x0434d364…` scrolled to `MarketCreated` at
-      **log 75**, callback `0x79bf978b…`, settlement `0xdafa9556…`. The trigger's summary page
-      shows `onEvent` on a contract that is not ours — that view is where a viewer gets lost,
-      so it should not be the one on screen.
+- [ ] Explorer tabs pre-loaded so nothing waits on a network round trip on camera: the
+      callback `0x79bf978b…` and the settlement `0xdafa9556…`, both on **Details**, not Logs.
+- [ ] **Do not open the trigger transaction on camera at all.** `0x0434d364…` is dreamDEX's
+      own reactive callback, so its summary shows `onEvent` on a contract that is not ours;
+      and `BinaryMarketsModule` is **unverified** on the explorer, so the `MarketCreated` log
+      that actually carries the proof renders as raw topics and about twenty lines of hex with
+      no event name and no decoded parameters. Neither view is filmable. The hero card carries
+      that half of the proof in readable English instead.
 - [ ] Vault holds 8,933.74 tUSDC and the policy runs to 14 October — both already true.
 - [ ] Engine live with runway to finish the shoot. `subscriptionHealth()` should report
       `subscribed` true and `stale` false, and it returns `windowsRemaining` — read the
@@ -45,7 +48,7 @@ minutes is worse than cutting shot 6.
 | --- | --- | --- | --- |
 | 1 | 0:00–0:20 | Hero, full. Headline, then the same-block proof beneath it — block number and both transaction hashes — and the CTA. | "This is Ballast — automated cover for a position, live on Somnia testnet. You hold ETH. It can fall while you sleep. Cover for that exists, but on this venue it expires every window, and nobody sits up all night re-buying it. Ballast does, and the chain itself is what triggers it." |
 | 2 | 0:20–0:39 | Scroll to **How it works**. Let the three rules draw. | "So — how it works. You hold something: Ballast only covers exposure it can measure on chain, never a number you type in. You set a load line, how deep a fall you want made whole. Then it runs every window, no keeper and nothing of ours running." |
-| 3 | 0:39–1:03 | Cut to explorer, **Logs tab** on both — never the summary. On the trigger: `MarketCreated` from `0x3ecC694C…` at **log 75**. Then the callback tx and its `CallbackRan`, carrying the same market id. **Highlight the block number on both.** | "That needs seeing, not describing. This part only works here. dreamDEX creates a market — the MarketCreated log inside the first transaction. Ballast's handler runs — that's the second. Same block, same market. Not a fast bot: Somnia's reactivity precompile executes the handler as a synthetic transaction inside the block that triggered it. Zero blocks of latency, no operator in the loop." |
+| 3 | 0:39–1:03 | Hold on the **hero card** while its animation runs — block number, both hashes, the claim in readable English. Then one explorer page: the callback `0x79bf978b…` on **Details**. Our contract, method `onEvent`, **Success**, block **476941284**. **No Logs tab, and never the trigger transaction.** | "That needs seeing, not describing. This part only works here. dreamDEX creates a market; Ballast's handler runs on it. Two transactions, one block — both on the card. Not a fast bot: Somnia's reactivity precompile executes the handler as a synthetic transaction inside the block that triggered it. Zero blocks of latency, no operator in the loop. Here it is on chain." |
 | 4 | 1:03–1:28 | Back to page, **What it actually pays**. Let the curve draw: step, regions, then the two real points. | "What it buys. It is not a hedge. The payout is fixed: exact at one depth, imperfect either side — over-paying on a small fall, under-paying on a large one. That gap is basis risk. It is parametric cover, the same trade flight-delay insurance makes: it pays the same whether you missed a meeting or a wedding. We say where that point is." |
 | 5 | 1:28–1:51 | **It has already done this.** The 45-row positions table on Cover, then the totals row above it. | "Here is the record. Forty-five positions opened, forty-four settled, twenty-seven of them paid. Net, plus seven hundred and seventy tUSDC. A sample, not a result: forty-four one-minute windows on a thin book, and our own economics says rolling cover that fast is ruinous. The seventeen that paid nothing are here too — showing only the winners hides the trade." |
 | 6 | 1:51–2:08 | **And it refuses**, scrolling the reasons. | "And what it refused. No measured exposure. Book one-sided. Size rounds below the venue's minimum lot. Every refusal is on chain with its reason, because a system that only shows you what it did is hiding what it chose not to." |
@@ -60,12 +63,15 @@ minutes is worse than cutting shot 6.
   number: the make-whole point.
 - **Shot 3 is the technical claim.** Slow down. Let the two block numbers sit on screen for a
   full second before speaking over them. If a judge remembers one thing, it is this.
-- **Shot 3 stays on the Logs tab.** The trigger transaction is dreamDEX's own reactive
-  callback — it creates markets from inside one — so its summary page shows `onEvent` on
-  `0xeE3AFf92…` and two collateral transfers, and nothing about a market being created. The
-  evidence is `MarketCreated` at log 75, and the claim is tied to us by the subscription
-  itself: the engine's `SubscriptionOpened` names that emitter and that topic0. Say "creates a
-  market", never "this transaction is the market opening".
+- **Shot 3 never opens the trigger transaction.** Two obstacles sit in front of it, and both
+  are on camera if you try. Its summary shows `onEvent` on `0xeE3AFf92…` and two collateral
+  transfers, because dreamDEX creates markets from inside a reactive callback of its own; and
+  `BinaryMarketsModule` is unverified on the explorer, so the `MarketCreated` log at index 75
+  renders as raw topics and roughly twenty lines of hex with no event name. We checked the log
+  and it is exactly right — address `0x3ecC694C…`, topic0 `0xb5ec75cd…`, market `0x…010253` —
+  but a viewer takes nothing from a hex dump, and so does a judge who follows the link. The
+  card states the same proof in English; the callback page corroborates our half of it. Say
+  "creates a market", never "this transaction is the market opening".
 - **Do not ad-lib "and it buys the cover" over this transaction — this one bought nothing.**
   The exemplar callback declined: `CoverSkipped … NoLiquidity`, a one-sided Down book at
   creation, and `CallbackRan` reports `covered 0`. Nothing in the script says otherwise, but it
