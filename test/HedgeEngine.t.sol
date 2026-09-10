@@ -55,6 +55,7 @@ contract HedgeEngineTest is Test {
         market = new MockBinaryMarket();
         exposure = new MockExposureSource();
         module.register(marketId, address(market), address(pool), 777);
+        pool.setCloseAt(market.expiry());
 
         vm.startPrank(owner);
         vault.setEngineApproval(address(engine), true);
@@ -130,6 +131,7 @@ contract HedgeEngineTest is Test {
         marketId = id;
         market = new MockBinaryMarket();
         module.register(id, address(market), address(pool), 1);
+        pool.setCloseAt(market.expiry());
     }
 
     /// @dev The whole automatic path: created, then covered on the delayed tick.
@@ -688,7 +690,7 @@ contract HedgeEngineTest is Test {
     function test_CoverOneIsNotCallableFromOutside() public {
         vm.prank(alice);
         vm.expectRevert(HedgeEngine.OnlySelf.selector);
-        engine.coverOne(alice, marketId, address(pool));
+        engine.coverOne(alice, marketId, address(pool), uint64(block.timestamp + 60));
     }
 
     function test_EngineCannotMoveUserCollateralToItself() public {
@@ -1478,6 +1480,71 @@ contract HedgeEngineTest is Test {
                     && uint256(logs[i].topics[1]) == id
             ) closed = true;
         }
+    }
+
+    // ------------------------------ the order must not outlive its market: 60 s windows
+
+    /// Pins the mock to the real pool. Probed on shannon 2026-09-11 with a fillable order on a
+    /// live 60 s market: an expiry equal to the close passes the pool's check, and one a
+    /// nanosecond later fails with OrderExpiryBeyondMarket. If the mock drifts back to
+    /// accepting anything, this fails — which is what the rung tests below depend on.
+    function test_MockPoolRejectsAnOrderOutlivingItsMarketExactlyLikeThePool() public {
+        uint64 close = uint64(block.timestamp + 60);
+        pool.setCloseAt(close);
+        usdc.mint(address(this), 1_000 * ONE);
+        usdc.approve(address(pool), type(uint256).max);
+
+        pool.placeBinaryOrder(2, 700_000, 1000, uint64(close) * 1e9, 1, 0, address(0), 0, 0);
+
+        vm.expectRevert(MockBinaryPool.OrderExpiryBeyondMarket.selector);
+        pool.placeBinaryOrder(2, 700_000, 1000, uint64(close) * 1e9 + 1, 1, 0, address(0), 0, 0);
+    }
+
+    function _sixtySecondWindow(bytes32 id) internal returns (uint64 close) {
+        _useWindow(id);
+        close = uint64(block.timestamp + 60);
+        market.setExpiry(close);
+        pool.setCloseAt(close);
+        _enrolAll();
+        _deliverCreated(); // enqueued at the open, opening price captured
+    }
+
+    /// Before the fix every order was `now + 60`, so at any rung of the ladder it outlived a
+    /// 60-second market and the pool refused it. Now it expires at the close.
+    function _assertCoveredAtRung(uint256 rung) internal {
+        uint64 close = _sixtySecondWindow(bytes32(uint256(0x6000 + rung)));
+        uint256 before = pool.placedCount();
+        vm.warp(block.timestamp + rung);
+
+        assertEq(engine.poke(marketId), 3, "every enrolled user covered on a 60 s window");
+        assertEq(pool.placedCount(), before + 3);
+        assertEq(pool.lastExpiry(), uint64(close) * 1e9, "the order expires at the market's close");
+    }
+
+    function test_SixtySecondWindowIsCoveredAtTheFirstRung() public {
+        _assertCoveredAtRung(15);
+    }
+
+    function test_SixtySecondWindowIsCoveredAtTheSecondRung() public {
+        _assertCoveredAtRung(30);
+    }
+
+    function test_SixtySecondWindowIsCoveredAtTheThirdRung() public {
+        _assertCoveredAtRung(45);
+    }
+
+    /// With more than sixty seconds left the horizon is unchanged: now + 60.
+    function test_ALongWindowKeepsTheSixtySecondHorizon() public {
+        _useWindow(bytes32(uint256(0x6300)));
+        uint64 close = uint64(block.timestamp + 300);
+        market.setExpiry(close);
+        pool.setCloseAt(close);
+        _enrolAll();
+        _deliverCreated();
+        vm.warp(block.timestamp + 15);
+
+        assertEq(engine.poke(marketId), 3);
+        assertEq(pool.lastExpiry(), uint64(block.timestamp + 60) * 1e9, "more than 60 s left: now + 60");
     }
 
     /// `pendingList` only shrank when a window was attempted. If ticks stop, it grows

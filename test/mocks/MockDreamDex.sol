@@ -23,6 +23,16 @@ contract MockBinaryPool is IBinaryPool {
     bool public rejectOrders;
     bool public revertOnPlace;
 
+    /// @notice The close of the market this pool trades, in seconds. The real pool knows
+    ///         it and rejects an order whose expiry is beyond it; this mock did not, which is
+    ///         why every engine test passed while every order on a 60-second window failed
+    ///         on chain. Probed on shannon 2026-09-11 with a fillable order on a live 60 s
+    ///         market: expiry == close passes, close + 1 ns reverts OrderExpiryBeyondMarket.
+    uint64 public closeAt;
+    uint64 public lastExpiry;
+
+    error OrderExpiryBeyondMarket();
+
     uint128 public nextOrderId = 1;
 
     struct Placed {
@@ -31,6 +41,7 @@ contract MockBinaryPool is IBinaryPool {
         uint256 price;
         uint256 quantity;
         uint8 orderType;
+        uint64 expiry;
     }
 
     Placed[] public placed;
@@ -39,6 +50,10 @@ contract MockBinaryPool is IBinaryPool {
         TOKEN = token_;
         ONE = 10 ** token_.decimals();
         params = BookParams({tickSize: tickSize, minQuantity: minQuantity, lotSize: lotSize});
+    }
+
+    function setCloseAt(uint64 close) external {
+        closeAt = close;
     }
 
     function setBid(uint256 price, uint256 quantity) external {
@@ -84,6 +99,8 @@ contract MockBinaryPool is IBinaryPool {
     ) external payable returns (bool, uint128) {
         if (revertOnPlace) revert("pool: reverted");
         require(expireTimestampNs > block.timestamp * 1e9, "OrderAlreadyExpired");
+        require(closeAt != 0, "mock pool: closeAt unset -- tell the pool its market's close");
+        if (expireTimestampNs > uint256(closeAt) * 1e9) revert OrderExpiryBeyondMarket();
         require(quantity >= params.minQuantity, "size");
         require(params.lotSize == 0 || quantity % params.lotSize == 0, "lot");
         if (rejectOrders) return (false, 0);
@@ -98,9 +115,11 @@ contract MockBinaryPool is IBinaryPool {
                 kind: kind,
                 price: price,
                 quantity: quantity,
-                orderType: orderType
+                orderType: orderType,
+                expiry: expireTimestampNs
             })
         );
+        lastExpiry = expireTimestampNs;
         return (true, nextOrderId++);
     }
 
@@ -191,6 +210,7 @@ contract MockBinaryMarketsModule is IBinaryMarketsModule {
 
     struct Row {
         uint256 oracleQuestionId;
+        uint64 tradingStart;
         uint32 operatorId;
         bytes32 venueId;
         address market;
@@ -215,6 +235,7 @@ contract MockBinaryMarketsModule is IBinaryMarketsModule {
     {
         rows[marketId] = Row({
             oracleQuestionId: questionId,
+            tradingStart: uint64(block.timestamp),
             operatorId: 4,
             venueId: bytes32(uint256(0xBEE0)),
             market: market,
@@ -249,8 +270,10 @@ contract MockBinaryMarketsModule is IBinaryMarketsModule {
             pool: r.pool,
             yesId: r.yesId,
             noId: r.noId,
-            tradingStart: 0,
-            expiry: 0
+            // The real module reports each market's open and close; this used to return
+            // zeros, so nothing in the engine that reads a close could be tested at all.
+            tradingStart: r.tradingStart,
+            expiry: r.market == address(0) ? 0 : MockBinaryMarket(r.market).expiry()
         });
     }
 

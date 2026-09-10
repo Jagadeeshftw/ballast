@@ -707,7 +707,7 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
 
             address user = enrolled[idx];
             if (VAULT.isCoverable(user)) {
-                try this.coverOne(user, marketId, row.pool) returns (bool ok) {
+                try this.coverOne(user, marketId, row.pool, row.expiry) returns (bool ok) {
                     if (ok) {
                         unchecked {
                             ++covered;
@@ -787,9 +787,12 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
 
     /// @notice One user's cover purchase. External so the callback can `try/catch` it and
     ///         roll back only this user's state on failure. Not callable from outside.
-    function coverOne(address user, bytes32 marketId, address pool) external returns (bool) {
+    function coverOne(address user, bytes32 marketId, address pool, uint64 close)
+        external
+        returns (bool)
+    {
         if (msg.sender != address(this)) revert OnlySelf();
-        return _coverOne(user, marketId, pool);
+        return _coverOne(user, marketId, pool, close);
     }
 
     // -------------------------------------------------------------- internal
@@ -812,7 +815,10 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
         uint16 requestedBps;
     }
 
-    function _coverOne(address user, bytes32 marketId, address pool) internal returns (bool) {
+    function _coverOne(address user, bytes32 marketId, address pool, uint64 close)
+        internal
+        returns (bool)
+    {
         if (coverOf[user][marketId].quantity != 0) {
             emit CoverSkipped(user, marketId, SkipReason.AlreadyCovered);
             return false;
@@ -844,7 +850,7 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
         VAULT.reserve(user, marketId, z.premium, z.exposure);
         VAULT.spendForCover(user, marketId, z.premium);
 
-        _place(pool, z);
+        _place(pool, z, close);
 
         coverOf[user][marketId] = Cover({
             quantity: z.qty,
@@ -983,13 +989,13 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
         return (z, SkipReason.None);
     }
 
-    function _place(address pool, Sizing memory z) internal {
+    function _place(address pool, Sizing memory z, uint64 close) internal {
         COLLATERAL.forceApprove(pool, z.premium);
         (bool ok,) = IBinaryPool(pool).placeBinaryOrder(
             KIND_BUY_NO,
             z.upBid,
             z.qty,
-            _orderExpiry(),
+            _orderExpiry(close),
             ORDER_TYPE_FOK, // fill-or-kill: it either really fills or it reverts
             SELF_MATCH_CANCEL_TAKER,
             address(0),
@@ -1001,10 +1007,17 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
         if (!ok) revert BadParameter();
     }
 
-    function _orderExpiry() internal view returns (uint64) {
-        // Nanoseconds, mandatory, must be in the future. FOK never rests, so a short
-        // horizon is enough and acts as a dead-man's switch.
-        return uint64((block.timestamp + 60) * 1e9);
+    /// @dev Nanoseconds, mandatory, must be in the future. FOK never rests, so a short horizon
+    ///      is enough and acts as a dead-man's switch — but it must not outlive the market.
+    ///      The pool rejects `expiry > close` with OrderExpiryBeyondMarket (probed on shannon
+    ///      with a fillable order: at the close passes, one nanosecond later fails). A flat
+    ///      sixty seconds meant every retry on a 60-second window — 15, 30 or 45 seconds in —
+    ///      produced an order that outlived it, so no engine had ever covered one. A row with
+    ///      no close keeps the old horizon rather than producing an expiry in the past.
+    function _orderExpiry(uint64 close) internal view returns (uint64) {
+        uint256 e = block.timestamp + 60;
+        if (close != 0 && close < e) e = close;
+        return uint64(e * 1e9);
     }
 
     function _eligible(address user) internal view returns (bool) {
