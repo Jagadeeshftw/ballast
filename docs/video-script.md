@@ -2,10 +2,10 @@
 
 Draft for review. **Nothing recorded yet.**
 
-Written assuming **the engine is running** — and as of 2026-09-10 21:06 UTC it is: a redeployed
-engine, [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A),
-subscribed at 10,000,000 gas and a 2 gwei priority fee, that **has opened cover** — four positions
-in its first twelve minutes, the first at 21:04:16 UTC. Before every session, check that `stale`
+Written assuming **the engine is running** — and as of 2026-09-10 21:47 UTC it is: engine
+[`0xFE725050…`](https://shannon-explorer.somnia.network/address/0xFE7250509634ABb94b3cDbd72eb122feCcaC157c),
+subscribed at 10,000,000 gas and a 2 gwei priority fee. It replaces `0x234520a8…`, whose orders
+all expired sixty seconds out and so could never fill a 60-second window. Before every session, check that `stale`
 is false and that `callbackCount` rises between two reads a minute apart.
 
 **Shot 7's narration is out of date and must not be recorded as written.** It says the fix was

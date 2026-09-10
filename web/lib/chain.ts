@@ -7,8 +7,8 @@ export const EXPLORER = "https://shannon-explorer.somnia.network";
 
 export const ADDR = {
   vault: "0x9BC43B97c94E23634A561a02EFce641C9e89fe63",
-  engine: "0x234520a8265CeD9a668874aF8aF4f4897822945A",
-  source: "0xBD305EFF30a379b7B85Dc933A0514Db807dB4969",
+  engine: "0xFE7250509634ABb94b3cDbd72eb122feCcaC157c",
+  source: "0x83923535ff800b60cb892d4EC2AbE8cb0e9C949a",
   binaryModule: "0x3ecC694Cef705358864a646142ac17A90E29e388",
   oracleHub: "0xe40db387cC98601Dd11bd634fF2f3AD5686dE32b",
   tusdc: "0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E",
@@ -25,6 +25,10 @@ export const RETIRED_ENGINES = [
   // pre-fix closeSubscription() could not clear the record, so it could never reopen.
   // Swept to zero on 2026-09-11; replaced by a build whose owner can always recover.
   "0x9026b93dc240244A34B3568aF704a60f4703a115",
+  // Every order it placed expired sixty seconds out, and the pool refuses an order that
+  // outlives its market, so it could never cover a 60-second window. It covered longer
+  // ones. Closed cleanly and swept to zero on 2026-09-10; any cover it holds still settles.
+  "0x234520a8265CeD9a668874aF8aF4f4897822945A",
 ] as const;
 
 export const client = createPublicClient({ transport: http(RPC) });

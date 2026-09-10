@@ -38,7 +38,7 @@ export default function GlobalError({
               padding: "10px 18px", fontSize: 14, fontWeight: 700, cursor: "pointer",
               fontFamily: "inherit",
             }}>Reload</button>
-            <a href="https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A"
+            <a href="https://shannon-explorer.somnia.network/address/0xFE7250509634ABb94b3cDbd72eb122feCcaC157c"
               style={{
                 color: "#F2EEE4", textDecoration: "none", border: "1px solid #45402F",
                 borderRadius: 999, padding: "10px 18px", fontSize: 14, fontWeight: 600,

@@ -16,11 +16,11 @@ Explorer: `https://shannon-explorer.somnia.network`
 | Contract | Address |
 | --- | --- |
 | `BallastVault` | [`0x9BC43B97c94E23634A561a02EFce641C9e89fe63`](https://shannon-explorer.somnia.network/address/0x9BC43B97c94E23634A561a02EFce641C9e89fe63) |
-| `HedgeEngine` | [`0x234520a8265CeD9a668874aF8aF4f4897822945A`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) |
-| `SpotExposureSource` | [`0xBD305EFF30a379b7B85Dc933A0514Db807dB4969`](https://shannon-explorer.somnia.network/address/0xBD305EFF30a379b7B85Dc933A0514Db807dB4969) |
+| `HedgeEngine` | [`0xFE7250509634ABb94b3cDbd72eb122feCcaC157c`](https://shannon-explorer.somnia.network/address/0xFE7250509634ABb94b3cDbd72eb122feCcaC157c) |
+| `SpotExposureSource` | [`0x83923535ff800b60cb892d4EC2AbE8cb0e9C949a`](https://shannon-explorer.somnia.network/address/0x83923535ff800b60cb892d4EC2AbE8cb0e9C949a) |
 
-Reactivity subscription 17940211 opened 2026-09-10 20:55 UTC in
-[`0xe856062d…`](https://shannon-explorer.somnia.network/tx/0xe856062d39840c1b0085e29a992448eae5e261389d289c22b3c53781ac384a78).
+Reactivity subscription 17957899 opened 2026-09-10 21:47 UTC in
+[`0xdf64a720…`](https://shannon-explorer.somnia.network/tx/0xdf64a72093ecdc21610b62253b7b426eb13c0f6e536ffff163284e5df45f3479).
 Filter: `emitter = BinaryMarketsModule`, `topic0 = MarketCreated`, handler = the engine,
 gas limit 10,000,000, priority fee 2 gwei — as recorded by the precompile itself, not only in the
 engine's own storage.
@@ -35,7 +35,8 @@ The vault approves a **set** of engines, not one address, so a redeploy strands 
 | [`0x9cf2fBC0…`](https://shannon-explorer.somnia.network/address/0x9cf2fBC0C2d6Db45799e52f54347ad7B97801581) | retired, swept, unsubscribed | ✅ |
 | [`0x8ff05870…`](https://shannon-explorer.somnia.network/address/0x8ff058704823A6711A456beAfbEd6509F4845f13) | retired — stalled ladder, see below | ✅ |
 | [`0x9026b93d…`](https://shannon-explorer.somnia.network/address/0x9026b93dc240244A34B3568aF704a60f4703a115) | retired, swept — Somnia removed its subscription and the pre-fix `closeSubscription()` could not clear the record, so it could never reopen; see [finding 7](somnia-feedback.md) | ✅ |
-| [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) | **live**, funded, subscribed — the build whose owner can always recover | ✅ |
+| [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) | retired, closed cleanly, swept — every order expired sixty seconds out and the pool refuses one that outlives its market, so it could never cover a 60-second window; it covered longer ones | ✅ |
+| [`0xFE725050…`](https://shannon-explorer.somnia.network/address/0xFE7250509634ABb94b3cDbd72eb122feCcaC157c) | **live**, funded, subscribed — an order expires at the market's close when that is sooner than sixty seconds | ✅ |
 
 **This is not a diagram — it happened.** A retired engine with **zero balance and no
 subscription** settled a cover it had opened before the redeploy, crediting 200.00 tUSDC

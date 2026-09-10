@@ -16,8 +16,8 @@ dashboard **<https://ballast.0xo.in/app>**
 | Contract | Address |
 | --- | --- |
 | BallastVault | [`0x9BC43B97…`](https://shannon-explorer.somnia.network/address/0x9BC43B97c94E23634A561a02EFce641C9e89fe63) |
-| HedgeEngine (live) | [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) |
-| SpotExposureSource | [`0xBD305EFF…`](https://shannon-explorer.somnia.network/address/0xBD305EFF30a379b7B85Dc933A0514Db807dB4969) |
+| HedgeEngine (live) | [`0xFE725050…`](https://shannon-explorer.somnia.network/address/0xFE7250509634ABb94b3cDbd72eb122feCcaC157c) |
+| SpotExposureSource | [`0x83923535…`](https://shannon-explorer.somnia.network/address/0x83923535ff800b60cb892d4EC2AbE8cb0e9C949a) |
 | Collateral (tUSDC, 6dp) | [`0x70a86D88…`](https://shannon-explorer.somnia.network/address/0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E) |
 | dreamDEX binary module | [`0x3ecC694C…`](https://shannon-explorer.somnia.network/address/0x3ecC694Cef705358864a646142ac17A90E29e388) |
 
