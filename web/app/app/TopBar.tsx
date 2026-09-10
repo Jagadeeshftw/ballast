@@ -14,8 +14,8 @@ import ThemeToggle from "@/components/site/ThemeToggle";
  * refused, which is the worst possible place to learn it.
  */
 export default function TopBar({
-  engineLive, engineNote, unread,
-}: { engineLive: boolean | null; engineNote: string; unread: number }) {
+  engineLive, engineStale = false, engineNote, unread,
+}: { engineLive: boolean | null; engineStale?: boolean; engineNote: string; unread: number }) {
   const { settled, hasProvider, account, chainOk, connecting, s, connect, disconnect } = useWallet();
   const [menu, setMenu] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -37,12 +37,13 @@ export default function TopBar({
       <span className="chip">
         <i className="dot live" aria-hidden="true" />Somnia testnet
       </span>
-      {/* Three states, not two. "stopped" and "we could not tell" are different claims, and
+      {/* Four states, not two. "stopped" and "we could not tell" are different claims, and
           showing the first when the second is true is the kind of small lie that costs a
-          reader their trust in every other figure on the page. */}
-      <span className={`chip ${engineLive === null ? "alert" : engineLive ? "" : "warn"}`} title={engineNote}>
+          reader their trust in every other figure on the page. "stalled" is the fourth:
+          subscribed, but not being woken -- which the chip used to report as "live". */}
+      <span className={`chip ${engineLive === null ? "alert" : !engineLive || engineStale ? "warn" : ""}`} title={engineNote}>
         <i aria-hidden="true">⌁</i>
-        {engineLive === null ? "engine unknown" : engineLive ? "engine live" : "engine stopped"}
+        {engineLive === null ? "engine unknown" : !engineLive ? "engine stopped" : engineStale ? "engine stalled" : "engine live"}
       </span>
 
       {noGas && (

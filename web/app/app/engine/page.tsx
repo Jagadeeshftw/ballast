@@ -2,6 +2,7 @@ import { ADDR, EXPLORER } from "@/lib/chain";
 import { getEngineState } from "@/lib/chain";
 import { RECORD, recordRange } from "@/lib/record";
 import RunState from "../../RunState";
+import { utc } from "../../data";
 import { StatGrid } from "@/components/ace/stat-grid";
 import ChainNote from "@/components/site/ChainNote";
 import { Disclosure } from "@/components/ace/disclosure";
@@ -95,9 +96,11 @@ export default async function Engine() {
         cols={5}
         items={[
           { label: "Subscription", icon: <IconPlugConnected size={14} stroke={1.8} />,
-            value: e.subscribed ? "Open" : "Closed",
-            note: e.subscribed ? `id ${n0(e.subId)}` : "no subscription is open",
-            tone: e.subscribed ? "paid" : "lost" },
+            value: !e.subscribed ? "Closed" : e.stale ? "Stalled" : "Open",
+            note: !e.subscribed ? "no subscription is open"
+              : e.stale ? `id ${n0(e.subId)} · no callback since ${utc(e.lastCallbackAt)}`
+              : `id ${n0(e.subId)}`,
+            tone: e.subscribed && !e.stale ? "paid" : "lost" },
           { label: "Engine balance", icon: <IconCoin size={14} stroke={1.8} />,
             value: stt(e.balance), note: "STT" },
           { label: "Cost per callback", icon: <IconReceipt2 size={14} stroke={1.8} />,
@@ -110,6 +113,20 @@ export default async function Engine() {
             tone: e.canSchedule ? "paid" : "lost" },
         ]}
       />
+
+      {/* Only what this page reads: the flag, the id and the last callback. It does not claim
+          why the engine is not being woken, because nothing here measures that. */}
+      {e.subscribed && e.stale && (
+        <div className="panel warn">
+          <h3>Subscribed, but not being woken</h3>
+          <p className="why">
+            The engine still holds subscription <span className="mono">{n0(e.subId)}</span>, but no
+            callback has arrived since <strong>{utc(e.lastCallbackAt)}</strong>. Until one does,
+            nothing here is covering anything. This is the contract&rsquo;s own{" "}
+            <code>stale</code> flag, read when this page was requested — not an inference.
+          </p>
+        </div>
+      )}
 
       {!e.subscribed && (
         <RunState subscribed={e.subscribed} lastCallbackAt={e.lastCallbackAt}

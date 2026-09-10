@@ -5,6 +5,7 @@ import { WalletProvider } from "./wallet";
 import { getEngineState } from "@/lib/chain";
 import { notificationsFor } from "./notifications";
 import { ADDR } from "@/lib/chain";
+import { utc } from "../data";
 
 export const dynamic = "force-dynamic";
 
@@ -53,14 +54,22 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <WalletProvider>
         <Sidebar />
         <div className="appMain">
+          {/* `subscribed` alone is not "live". It stayed true for three days in September
+              while no callback arrived: Somnia went on listing the subscription as ours and
+              delivered nothing to it. The contract's own `stale` flag is what distinguishes
+              the two, and the chip read `subscribed` and ignored it -- so the dashboard told
+              every visitor a stalled engine was live. Both flags are read here now. */}
           <TopBar
             engineLive={engine ? engine.subscribed : null}
+            engineStale={!!engine && engine.subscribed && engine.stale}
             engineNote={
               !engine
                 ? "Could not read the engine — the testnet RPC did not answer. Nothing is wrong with the contract; this page could not reach it."
-                : engine.subscribed
-                  ? "Subscribed and watching every window"
-                  : "Subscription closed — out of gas. See Engine."
+                : !engine.subscribed
+                  ? "Subscription closed — out of gas. See Engine."
+                  : engine.stale
+                    ? `Subscribed, but no callback has arrived since ${utc(engine.lastCallbackAt)} — the engine is not being woken. See Engine.`
+                    : "Subscribed and watching every window"
             }
             unread={unread}
           />

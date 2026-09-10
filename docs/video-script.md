@@ -2,14 +2,25 @@
 
 Draft for review. **Nothing recorded yet.**
 
-Written assuming **the engine is running**, because it is: the subscription reopened at the
-corrected 4,000,000 gas limit and has been buying cover since. The recorded run still carries
-shots 5 and 6 — it is the complete frozen history, and the script says so out loud rather
-than passing it off as live.
+Written assuming **the engine is running** — which, as of 2026-09-10, it is **not**. Check
+before every session rather than trusting this paragraph.
 
-If the engine stops before recording it will be because the balance ran out, which closes the
-subscription. `topUp` is permissionless, so restore it rather than rewriting anything:
-**not one word of narration below changes either way.**
+What happened, read from chain. The subscription reopened on 5 September at the 4,000,000
+limit and ran, but **bought no cover**: every attempt was refused — mostly `NoExposure` on BTC
+windows and `NoLiquidity`, with some `CoverTooExpensive` and pool rejections — so
+`coversOpened` is still the 42 from 1 September. At about 18:35 UTC on 6 September the balance
+fell below **32 STT**, the floor for scheduling, and the retry ladder stopped. The subscription
+went on paying for window registrations it could no longer act on until the balance reached
+0.02 STT; the last callback arrived at **2026-09-07 15:15 UTC**. Three top-ups since have
+**not** brought it back. Somnia still lists the subscription as ours and delivers nothing to
+it, and the engine's own `stale` flag is true.
+
+So a top-up is not a restart. `topUp` is permissionless and **keeps** a live engine alive; it
+does not revive one that went dry. Reopening means `closeSubscription()` then
+`openSubscription()`, and both are **owner-only** — that is the fix to try, and it has not been
+tried yet. The recorded run still carries shots 5 and 6: it is the complete frozen history, and
+the script says so out loud rather than passing it off as live. **Not one word of narration
+below changes once the engine is live again.**
 
 Target **2:55**; the list below runs **2:54**. 434 spoken words at ~150 wpm, and every shot
 is timed to sit between 145 and 156 wpm so none of them has to be rushed. Going over three
@@ -33,12 +44,15 @@ minutes is worse than cutting shot 6.
       no event name and no decoded parameters. Neither view is filmable. The hero card carries
       that half of the proof in readable English instead.
 - [ ] Vault holds 8,933.74 tUSDC and the policy runs to 14 October — both already true.
-- [ ] Engine live with runway to finish the shoot. `subscriptionHealth()` should report
-      `subscribed` true and `stale` false, and it returns `windowsRemaining` — read the
-      runway from the contract rather than estimating it. Measured burn has been about
-      **3 STT an hour**, so keep the balance above **10 STT**: it closes its own
-      subscription when it runs dry, and that is the one failure that would make shot 7
-      false mid-take. `topUp` is permissionless, so top it up rather than re-record.
+- [ ] **Engine actually being woken — not just subscribed.** `subscriptionHealth()` must report
+      `stale` **false**, and `callbackCount` must rise between two reads a minute apart.
+      `subscribed: true` on its own proves nothing: it stayed true for three days while no
+      callback arrived. The dashboard chip says **engine stalled** in that state, and it must
+      say **engine live** before shot 7 is filmed.
+- [ ] Balance comfortably above **32 STT** — not 10, which is what this line used to say. Below
+      32 the retry ladder cannot schedule a buy, so the engine goes on paying for callbacks that
+      can never lead to cover. If it runs fully dry a top-up does not bring it back (see the
+      note at the top).
 
 ---
 

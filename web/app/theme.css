@@ -166,7 +166,6 @@
   background:
     linear-gradient(to right, var(--hero-grid) 1px, transparent 1px) 0 0 / 22px 22px,
     color-mix(in srgb, var(--color-raise2) 60%, transparent);
-  animation: sbpFrameOpen 6s ease-in-out infinite;
 }
 @media (min-width: 640px) { .site .sbpFrame { padding: 26px 20px 22px var(--sbp-pad-l); } }
 
@@ -182,7 +181,6 @@
 }
 .site .sbpFrameDot {
   width: 5px; height: 5px; border-radius: 999px; background: var(--color-signal);
-  animation: sbpFrameDot 6s ease-in-out infinite;
 }
 
 /* The rail both events sit on. Always drawn; only the pulse moves. */
@@ -203,7 +201,6 @@
   border-radius: 2px;
   background: linear-gradient(to bottom, transparent, var(--color-signal), transparent);
   transform: translateY(-120%);
-  animation: sbpPulse 6s ease-in-out infinite;
 }
 
 .site .sbpStep {
@@ -221,11 +218,9 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 22%, transparent);
   flex: none;
 }
-.site .sbpStep[data-step="1"] .sbpDot { animation: sbpDot1 6s ease-in-out infinite; }
 .site .sbpStep[data-step="2"] .sbpDot {
   background: var(--color-paid);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-paid) 22%, transparent);
-  animation: sbpDot2 6s ease-in-out infinite;
 }
 
 .site .sbpWho {
@@ -260,52 +255,209 @@
   font-family: var(--font-plex-mono), ui-monospace, monospace;
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-muted);
 }
-.site .sbpBlockNo { color: var(--color-signal); animation: sbpConfirm 6s ease-in-out infinite; }
+.site .sbpBlockNo { color: var(--color-signal); }
 
-@keyframes sbpFrameOpen {
-  0%, 4%   { border-color: var(--color-rule); }
-  12%, 96% { border-color: var(--color-rulehi); }
-  100%     { border-color: var(--color-rule); }
+/* ── The sequence ──────────────────────────────────────────────────────────
+   Seven beats on a 6.5s loop, told in order rather than all at once:
+
+     0.0s  the block arrives       frame settles in, its label slides onto the edge
+     0.7s  dreamDEX lands          impact on the rail, line and hash settle, a read-scan
+     1.5s  the pulse travels       a comet down the rail from one event to the other
+     2.3s  zero                    the "0 blocks between" figure takes its moment
+     3.0s  Ballast lands           the second impact, same rail, same block
+     3.9s  confirm                 both dots beat together, the rail lights end to end,
+                                   the block number flares — one block, both events
+     5.0s  hold                    everything at rest and legible, then a soft re-arm
+
+   Two rules hold in every frame. CONTENT — both hashes, the block number, the zero, the
+   labels — rests at full contrast and is never faded in: it moves by position or scale, and
+   changes only between colours that are each legible. There is no glow behind any text, because
+   a glow behind a glyph is a change of background and lowers its contrast; the glows belong to
+   the decorations. Only the
+   pure decorations (impact rings, the comet, the sweep bars) rest invisible, because they
+   carry no information.
+
+   And the whole sequence is gated below on `scripting: enabled` and
+   `prefers-reduced-motion: no-preference`. With JavaScript off, or motion reduced, no
+   animation is attached at all and the card is simply its finished self: rail lit, both
+   events present, block number in signal. A browser that does not understand the gate
+   gets the same finished card, which is the safe way for it to fail. */
+
+.site .sbpDot { position: relative; }
+.site .sbpDot::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 999px;
+  border: 2px solid var(--color-signal); opacity: 0; pointer-events: none;
 }
-@keyframes sbpFrameDot {
-  0%, 6%   { opacity: .35; transform: scale(.8); }
-  14%, 96% { opacity: 1; transform: scale(1); }
-  100%     { opacity: .35; transform: scale(.8); }
+.site .sbpStep[data-step="2"] .sbpDot::after { border-color: var(--color-paid); }
+
+/* The zero grows away from the words beside it — origin on its right edge — into the empty
+   space by the rail. No halo: this row is about 30px from rail to text, so any ring large
+   enough to read collided with "BLOCKS". Scale, colour and a bar under the phrase carry it. */
+.site .sbp { --sbp-zero-scale: 1.5; }
+.site .sbpGapNum { position: relative; display: inline-block; transform-origin: 100% 60%; }
+.site .sbpGapWord {
+  background-image: linear-gradient(90deg, transparent, var(--color-signal), transparent);
+  background-size: 60% 2px; background-repeat: no-repeat; background-position: 250% 100%;
+  padding-bottom: 3px; margin-bottom: -3px;
 }
-/* The trigger lands first. */
+
+/* At rest the rail is LIT, trigger colour into handler colour: the finished picture is one
+   line joining both events. The sequence starts it grey and lights it on the confirm beat. */
+.site .sbpRail::after {
+  content: ""; position: absolute; inset: 0; border-radius: 2px;
+  background: linear-gradient(to bottom, var(--color-signal), var(--color-paid));
+  opacity: .85;
+}
+.site .sbpPulse { z-index: 1; opacity: 0; }
+
+/* The read-scan: a faint band the width of a few characters, painted as the link's own
+   background so the text sits on top of it. It rests off the right edge. */
+.site .sbpHash {
+  background-image: linear-gradient(90deg, transparent,
+    color-mix(in srgb, var(--color-signal) 20%, transparent), transparent);
+  background-size: 45% 100%; background-repeat: no-repeat; background-position: 200% 0;
+}
+.site .sbpStep[data-step="2"] .sbpHash {
+  background-image: linear-gradient(90deg, transparent,
+    color-mix(in srgb, var(--color-paid) 20%, transparent), transparent);
+}
+/* The block number's sweep is a 2px bar UNDER the digits, not a band behind them. Signal text
+   over a signal-tinted band computes to about 4.2:1 in the light theme at the band's peak, and
+   this number is the evidence on camera. A bar beneath the glyphs cannot touch their contrast. */
+.site .sbpBlockNo {
+  background-image: linear-gradient(90deg, transparent, var(--color-signal), transparent);
+  background-size: 60% 2px; background-repeat: no-repeat; background-position: 250% 100%;
+  padding-bottom: 3px; margin-bottom: -3px;
+}
+
+/* Beat 1 — the block arrives. */
+@keyframes sbpFrameIn {
+  0%        { transform: scale(.985); border-color: var(--color-rule); }
+  8%        { transform: scale(1);    border-color: var(--color-signal); }
+  18%, 58%  { border-color: var(--color-rulehi); }
+  66%       { border-color: var(--color-signal); }
+  80%, 94%  { transform: scale(1);    border-color: var(--color-rulehi); }
+  100%      { transform: scale(.985); border-color: var(--color-rule); }
+}
+@keyframes sbpLabelIn {
+  0%        { transform: translateX(-10px); }
+  9%, 94%   { transform: translateX(0); }
+  100%      { transform: translateX(-10px); }
+}
+@keyframes sbpLabelDot {
+  0%, 5%    { transform: scale(.6);  box-shadow: none; }
+  9%        { transform: scale(1.4); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 30%, transparent); }
+  14%, 62%  { transform: scale(1);   box-shadow: none; }
+  67%       { transform: scale(1.4); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 30%, transparent); }
+  74%, 94%  { transform: scale(1);   box-shadow: none; }
+  100%      { transform: scale(.6);  box-shadow: none; }
+}
+
+/* Beat 2 — dreamDEX lands. */
 @keyframes sbpDot1 {
-  0%, 12%  { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 40%, transparent); transform: scale(.86); }
-  20%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-signal) 0%, transparent); transform: scale(1.15); }
-  26%, 96% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 22%, transparent); transform: scale(1); }
-  100%     { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 40%, transparent); transform: scale(.86); }
+  0%, 10%   { transform: scale(.5); }
+  13%       { transform: scale(1.3); }
+  18%, 62%  { transform: scale(1); }
+  66%       { transform: scale(1.22); }
+  71%, 94%  { transform: scale(1); }
+  100%      { transform: scale(.5); }
 }
-/* The pulse crosses the gap that is not there. */
-@keyframes sbpPulse {
-  0%, 20%  { transform: translateY(-120%); opacity: 0; }
-  24%      { opacity: 1; }
-  44%      { transform: translateY(320%); opacity: 1; }
-  50%, 100% { transform: translateY(320%); opacity: 0; }
+@keyframes sbpRing1 {
+  0%, 11%   { transform: scale(.5); opacity: 0; }
+  13%       { transform: scale(.8); opacity: .9; }
+  27%, 100% { transform: scale(2.6); opacity: 0; }
 }
-/* The handler fires, in the same block. */
-@keyframes sbpDot2 {
-  0%, 42%  { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-paid) 40%, transparent); transform: scale(.86); }
-  50%      { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-paid) 0%, transparent); transform: scale(1.15); }
-  56%, 96% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-paid) 22%, transparent); transform: scale(1); }
-  100%     { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-paid) 40%, transparent); transform: scale(.86); }
+@keyframes sbpLine1 {
+  0%, 10%   { transform: translateY(6px); }
+  18%, 94%  { transform: translateY(0); }
+  100%      { transform: translateY(6px); }
 }
-/* The block number confirms both landed in it. Weight and shadow only -- the
-   colour never leaves signal, because this is evidence on camera. */
-@keyframes sbpConfirm {
-  0%, 52%  { text-shadow: none; }
-  60%      { text-shadow: 0 0 12px color-mix(in srgb, var(--color-signal) 70%, transparent); }
-  72%, 100% { text-shadow: none; }
+/* The band runs -100% -> 200% once and stays off the right edge; the loop's jump back to
+   -100% happens off the left edge, so the scan is never seen running backwards. */
+@keyframes sbpHash1 {
+  0%, 12%   { transform: translateY(5px); background-position: -100% 0; }
+  19%       { transform: translateY(0); }
+  28%, 94%  { transform: translateY(0); background-position: 200% 0; }
+  100%      { transform: translateY(5px); background-position: 200% 0; }
 }
 
-/* Reduced motion gets the finished state, which is already the resting style. */
-@media (prefers-reduced-motion: reduce) {
-  .site .sbpFrame, .site .sbpFrameDot, .site .sbpPulse,
-  .site .sbpDot, .site .sbpBlockNo { animation: none !important; }
-  .site .sbpPulse { opacity: 0; }
+/* Beat 3 — the pulse travels, over a rail that is grey until the confirm beat. */
+@keyframes sbpPulse {
+  0%, 22%   { transform: translateY(-120%); opacity: 0; }
+  25%       { opacity: 1; }
+  45%       { transform: translateY(320%); opacity: 1; }
+  48%, 100% { transform: translateY(320%); opacity: 0; }
+}
+@keyframes sbpRailFill {
+  0%, 57%   { opacity: 0; }
+  66%, 94%  { opacity: .85; }
+  100%      { opacity: 0; }
+}
+
+/* Beat 4 — zero. Its colour goes from ink to signal and back: legible at both ends. */
+@keyframes sbpZero {
+  0%, 30%   { transform: scale(1); color: var(--color-ink); }
+  36%       { transform: scale(var(--sbp-zero-scale)); color: var(--color-signal); }
+  44%       { transform: scale(1); color: var(--color-signal); }
+  62%, 100% { transform: scale(1); color: var(--color-ink); }
+}
+@keyframes sbpZeroWord {
+  0%, 31%   { color: var(--color-muted); background-position: -150% 100%; }
+  38%, 50%  { color: var(--color-ink); }
+  48%       { background-position: 250% 100%; }
+  62%, 100% { color: var(--color-muted); background-position: 250% 100%; }
+}
+
+/* Beat 5 — Ballast lands, on the same rail. */
+@keyframes sbpDot2 {
+  0%, 45%   { transform: scale(.5); }
+  48%       { transform: scale(1.3); }
+  53%, 62%  { transform: scale(1); }
+  66%       { transform: scale(1.22); }
+  71%, 94%  { transform: scale(1); }
+  100%      { transform: scale(.5); }
+}
+@keyframes sbpRing2 {
+  0%, 46%   { transform: scale(.5); opacity: 0; }
+  48%       { transform: scale(.8); opacity: .9; }
+  62%, 100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes sbpLine2 {
+  0%, 45%   { transform: translateY(6px); }
+  53%, 94%  { transform: translateY(0); }
+  100%      { transform: translateY(6px); }
+}
+@keyframes sbpHash2 {
+  0%, 47%   { transform: translateY(5px); background-position: -100% 0; }
+  54%       { transform: translateY(0); }
+  63%, 94%  { transform: translateY(0); background-position: 200% 0; }
+  100%      { transform: translateY(5px); background-position: 200% 0; }
+}
+
+/* Beat 6 — confirm. The number never leaves signal; it gains a flare and a sweep. */
+@keyframes sbpConfirm {
+  0%, 60%   { background-position: -150% 100%; }
+  74%, 100% { background-position: 250% 100%; }
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .site .sbp { --sbp-t: 6.5s; --sbp-e: cubic-bezier(.45, 0, .2, 1); }
+  .site .sbpFrame                              { animation: sbpFrameIn  var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpFrameLabel                         { animation: sbpLabelIn  var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpFrameDot                           { animation: sbpLabelDot var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="1"] .sbpDot        { animation: sbpDot1     var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="1"] .sbpDot::after { animation: sbpRing1    var(--sbp-t) ease-out     infinite; }
+  .site .sbpStep[data-step="1"] .sbpLine       { animation: sbpLine1    var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="1"] .sbpHash       { animation: sbpHash1    var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpPulse                              { animation: sbpPulse    var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpRail::after                        { animation: sbpRailFill var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpGapNum                             { animation: sbpZero     var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpGapWord                            { animation: sbpZeroWord var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="2"] .sbpDot        { animation: sbpDot2     var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="2"] .sbpDot::after { animation: sbpRing2    var(--sbp-t) ease-out     infinite; }
+  .site .sbpStep[data-step="2"] .sbpLine       { animation: sbpLine2    var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpStep[data-step="2"] .sbpHash       { animation: sbpHash2    var(--sbp-t) var(--sbp-e) infinite; }
+  .site .sbpBlockNo                            { animation: sbpConfirm  var(--sbp-t) var(--sbp-e) infinite; }
 }
 
 /* Mobile compaction. The hero must still fit 100vh at 390x844 with the CTA visible, and the
@@ -323,6 +475,7 @@
   .site .sbpHash  { margin-top: 2px; font-size: 11px; }
   .site .sbpGap   { padding: 3px 0 3px 19px; }
   .site .sbpGapNum { font-size: 17px; }
+  .site .sbp { --sbp-zero-scale: 1.3; }
   .site .sbp > p  { padding-top: 9px; padding-bottom: 9px; font-size: 11.5px; line-height: 1.45; }
   .site .sbp > div:first-child { padding-top: 7px; padding-bottom: 7px; }
 }

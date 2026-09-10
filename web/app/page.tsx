@@ -248,9 +248,11 @@ export default async function Landing() {
             <div>
               <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">Current state</p>
               <h2 className="max-w-[20ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
-                {engine?.subscribed
+                {engine?.subscribed && !engine.stale
                   ? "Running, and watching every window."
-                  : "It is stopped, and the reason is worth reading."}
+                  : engine?.subscribed
+                    ? "Subscribed, but it has stopped being woken."
+                    : "It is stopped, and the reason is worth reading."}
               </h2>
               <p className="mt-5 max-w-[54ch] leading-relaxed text-muted">
                 Somnia bills a reactive callback at its{" "}
@@ -274,8 +276,9 @@ export default async function Landing() {
             <dl className="rounded-xl border border-rule bg-raised p-6 font-mono text-[13px]">
               {[
                 ["Engine balance", engine ? `${(Number(engine.balance) / 1e18).toFixed(6)} STT` : "—"],
-                ["Subscribed", engine ? String(engine.subscribed) : "—"],
+                ["Subscribed", engine ? (engine.subscribed && engine.stale ? "true — but stale" : String(engine.subscribed)) : "—"],
                 ["Callbacks delivered", engine ? n0(Number(engine.callbackCount)) : "—"],
+                ["Last callback", engine ? utc(engine.lastCallbackAt) : "—"],
                 ["Vault balance", vault ? `${n2(Number(vault.collateral) / 1e6)} tUSDC` : "—"],
                 ["Withdrawable now", vault ? `${n2(Number(vault.free) / 1e6)} tUSDC` : "—"],
                 ["ETH spot", ethPx ? n2(ethPx) : "unpriceable — book one-sided"],
