@@ -8,7 +8,7 @@ import { IconHistory, IconAlertTriangle, IconTool, IconPlayerPlay } from "@table
  * A product that explains its own dead state is more convincing than one that pretends. This
  * is not an error panel: nothing is broken, the subscription ran out of gas, and the reason
  * is a measured property of the venue rather than a fault in the engine. Everything it did is
- * permanent and still on chain, and anyone at all can restart it.
+ * permanent and still on chain. Anyone can fund it; only the owner can reopen the subscription.
  */
 export default function RunState({
   subscribed, lastCallbackAt, balance, nowSec,
@@ -66,17 +66,19 @@ export default function RunState({
         <div>
           <dt><IconTool size={16} stroke={1.7} aria-hidden="true" />What fixes it</dt>
           <dd>
-            A gas limit of 4,000,000 — twice the worst path we measured — cuts the cost 2.5×.
-            It is a subscription parameter, so it needs no new contract. Reopening requires the
-            engine to hold 32 STT, a floor checked once at creation and never spent.
+            A limit sized to the work cuts the cost — but it has to cover a purchase, not just a
+            registration. We cut it to 4,000,000 against the registration path, and that was
+            wrong: purchases used 2.75M–8.92M, and at 4M the engine opened no cover at all.
+            Reopening also requires the engine to hold 32 STT, checked once at creation.
           </dd>
         </div>
         <div>
-          <dt><IconPlayerPlay size={16} stroke={1.7} aria-hidden="true" />Restarting it</dt>
+          <dt><IconPlayerPlay size={16} stroke={1.7} aria-hidden="true" />Funding it, and reopening it</dt>
           <dd>
             <code>topUp()</code> on the engine is <strong>payable and permissionless</strong> —
             anyone can fund it, including you, and no permission of ours is involved. It holds{" "}
-            {bal.toFixed(2)} STT now.
+            {bal.toFixed(2)} STT now. Reopening the subscription is different:{" "}
+            <code>openSubscription()</code> is owner-only, and a top-up alone never reopens one.
           </dd>
         </div>
       </dl>

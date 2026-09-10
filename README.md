@@ -242,8 +242,9 @@ engine to hold **32 STT** — a floor checked once at creation, never escrowed a
 consumed. It holds 12.77. So the subscription was closed deliberately to preserve that
 against the floor rather than spend it on an hour nobody would watch.
 
-**`topUp()` on the engine is `payable` and permissionless.** Anyone can restart it; no
-permission of ours is involved.
+**`topUp()` on the engine is `payable` and permissionless**, so anyone can fund it — no
+permission of ours is involved. Reopening a closed subscription is not: `openSubscription()` is
+owner-only, and a top-up alone never reopens one.
 
 Narrowing the subscription instead is not available: `eventTopics` is a `bytes32[4]` so the
 precompile does match beyond topic0, but `MarketCreated` indexes `marketId`, `market` and
@@ -262,13 +263,23 @@ every piece of state was swept with the same two questions:
 
 > What clears this, and what happens if that thing never comes?
 
-Three needed fixing, all now with a timeout or a permissionless escape:
+Three needed fixing. Two now have a timeout or a permissionless escape that works; the third's
+escape turned out not to cover the case it was written for, as the note under the table says:
 
 | State | Failure | Fix |
 | --- | --- | --- |
 | `pendingTickAt` | stalled the ladder forever | expires after `tickGraceSeconds`, emits `TickExpired` |
-| `activeSubscriptionId` | the protocol drops subscriptions on its own; the flag kept reporting `subscribed = true` | permissionless `reconcileSubscription()` |
+| `activeSubscriptionId` | the protocol drops subscriptions on its own; the flag kept reporting `subscribed = true` | permissionless `reconcileSubscription()` — **which does not clear it**; see below |
 | `pendingList` | grew without limit; 218 dead entries | permissionless `prunePending(max)` |
+
+**Correction, 2026-09-11.** `reconcileSubscription()` assumed the precompile would report a
+removed subscription as belonging to someone else. It does not: `getSubscriptionInfo` on a removed
+id **reverts**, and reconcile deliberately treats a failed read as "cannot tell" and keeps the
+flag. So when Somnia removed subscription 16123715 on 2026-09-07 (`SubscriptionRemoved`, in the same
+block as the last callback), the flag stayed set, `closeSubscription()` reverted with
+`UnsubscribeFailed` — twice, on chain — and `openSubscription()` refuses while the flag is set.
+That engine cannot be reopened by anyone, the owner included.
+[Finding 7](docs/somnia-feedback.md) has the evidence.
 
 One is **documented rather than fixed**. `vault.reservedOf` has no user-side escape: if an
 engine reserved and then stopped, collateral would be locked. It is currently unreachable —

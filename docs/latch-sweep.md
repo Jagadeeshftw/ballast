@@ -67,6 +67,15 @@ if the precompile cannot be read it leaves the flag alone rather than guessing. 
 mattered because `subscribed` is surfaced in the interface, and a flag that says "covered"
 when nothing is covered is the R4 failure in its worst form.
 
+**Correction, 2026-09-11 — this escape does not cover the case it was written for.** It
+assumed the precompile would report a removed subscription as belonging to someone else. It
+does not: `getSubscriptionInfo` on a removed id reverts, and the guard above keeps the flag on
+a failed read. When Somnia removed subscription 16123715 on 2026-09-07 the flag stayed set,
+`closeSubscription()` reverted with `UnsubscribeFailed` on chain, and `openSubscription()`
+refuses while the flag is set — so that engine cannot be reopened by anyone. The latch this
+section set out to remove is still there on exactly this path. Evidence in
+[somnia-feedback.md, finding 7](somnia-feedback.md).
+
 **3. `prunePending(max)` — permissionless and bounded.** Drops queued windows the module
 says are no longer `Trading`. Read-gated, so it can never remove a window still worth
 covering. `poke()` already cleared one window at a time but needed its `marketId`; this

@@ -59,7 +59,7 @@ export default function Faq({
         0.010. At roughly 147 windows an hour that is 12.8 STT an hour, against a faucet paying
         0.5 a day. The fix is a subscription parameter rather than a new contract, but applying
         it needs 32 STT held at creation. <span className="font-mono text-ink">topUp()</span>{" "}
-        is payable and permissionless, so anyone can restart it.
+        is payable and permissionless, so anyone can fund it; reopening the subscription is owner-only.
       {" "}<a href="/docs/findings#billing">The measurement behind it →</a></>,
     ],
     [

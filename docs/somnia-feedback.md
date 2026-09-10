@@ -246,6 +246,37 @@ better one, since it fixes every event on the contract at once and for everybody
 
 ---
 
+## 7. A subscription whose owner runs dry is removed without notice — the removal cannot be detected on chain, and cleaning it up burns the whole gas limit
+
+When our engine's balance could no longer cover a wake, Somnia **removed its subscription**:
+`SubscriptionRemoved(16123715, 0x9026b93d…)` at 2026-09-07 15:15:00 UTC, block 482209278, in a
+transaction attributed to the owner and sent to `0x0100` — the same block as the last callback.
+The owner contract is not called or told. Everything below was checked on chain.
+
+| | |
+| --- | --- |
+| The removal | `SubscriptionRemoved`: topic0 matches `keccak256("SubscriptionRemoved(uint256,address)")`, and the owner topic is the engine |
+| Reading a removed id | `getSubscriptionInfo(16123715)` **reverts** — no empty record, no zero owner. A live id (17918951) reads normally through the same `eth_call`, so this is not the precompile being unreadable |
+| Unsubscribing a removed id | reverts, and **consumes 63/64 of the transaction's gas limit**: 1,477,024 of 1,500,000, then 7,875,461 of 8,000,000. Raising the limit 5.3× changed nothing but the bill |
+| Topping up | +150 STT over three days, and no delivery. Expected once it is removed — but nothing says it was removed |
+
+**Why it matters.** A contract cannot tell "my subscription was removed" from "the precompile
+could not be read", because both arrive as a revert. Ours was written to be careful about exactly
+that ambiguity — `reconcileSubscription()` keeps its flag when the read fails rather than
+guessing — and that care is what latched it. The flag still names the removed id,
+`closeSubscription()` cannot unsubscribe something that no longer exists, and
+`openSubscription()` refuses while the flag is set. That engine cannot be reopened by anyone,
+the owner included; only a redeploy gets back. The latch is our design, and we say so. But no
+design can recover from a state it has no way to detect.
+
+**Asks.** Return an empty record, or a zero owner, from `getSubscriptionInfo` for a removed id —
+or expose an existence check. Make `unsubscribe` of an unknown id fail cheaply instead of
+consuming all the gas forwarded to it. And document that a live subscription is **deleted, not
+paused,** when its owner cannot cover a wake, and at what balance: the 32 STT figure in the docs is
+a creation-time check, and nothing says what happens to a running subscription below it.
+
+---
+
 ## Smaller notes
 
 - `eth_getLogs` is capped at **1000 blocks** per query. At 100 ms blocks that is ~100

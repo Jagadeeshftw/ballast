@@ -66,7 +66,8 @@ delivery is best-effort, and we learned that on chain rather than assuming other
 The fix, plus a sweep of every other latch of the same shape, is in
 [`latch-sweep.md`](latch-sweep.md). A tick now expires after `tickGraceSeconds` and emits
 `TickExpired`; `reconcileSubscription()` and `prunePending()` are permissionless escapes for
-the two other latches the sweep found.
+the two other latches the sweep found. (`reconcileSubscription()` turned out not to clear a subscription Somnia had removed —
+see [finding 7](somnia-feedback.md).)
 
 ---
 

@@ -12,13 +12,17 @@ windows and `NoLiquidity`, with some `CoverTooExpensive` and pool rejections —
 fell below **32 STT**, the floor for scheduling, and the retry ladder stopped. The subscription
 went on paying for window registrations it could no longer act on until the balance reached
 0.02 STT; the last callback arrived at **2026-09-07 15:15 UTC**. Three top-ups since have
-**not** brought it back. Somnia still lists the subscription as ours and delivers nothing to
-it, and the engine's own `stale` flag is true.
+**not** brought it back, because there is nothing to bring back: Somnia **removed** the
+subscription (`SubscriptionRemoved`, in the same block as the last callback). The engine's flag
+still names the removed id, so its own `stale` flag is true and it cannot reopen:
+`closeSubscription()` reverted with `UnsubscribeFailed` on chain — twice, at 1.5M and 8M gas —
+and `openSubscription()` refuses while the flag is set. (An earlier version of this note said
+Somnia still listed the subscription as ours. That was wrong: the reading it rested on came from
+a fallback that reports "still live" whenever the precompile cannot be read.)
 
 So a top-up is not a restart. `topUp` is permissionless and **keeps** a live engine alive; it
-does not revive one that went dry. Reopening means `closeSubscription()` then
-`openSubscription()`, and both are **owner-only** — that is the fix to try, and it has not been
-tried yet. The recorded run still carries shots 5 and 6: it is the complete frozen history, and
+does not revive one that went dry. For this engine not even the owner can reopen it — a
+redeploy is the only way back, and until then shot 7 cannot be filmed. The recorded run still carries shots 5 and 6: it is the complete frozen history, and
 the script says so out loud rather than passing it off as live. **Not one word of narration
 below changes once the engine is live again.**
 

@@ -269,7 +269,7 @@ export default async function Landing() {
                 <strong className="font-medium text-ink">32 STT</strong>, a floor checked once at
                 creation and never spent. It holds {engine ? (Number(engine.balance) / 1e18).toFixed(2) : "an amount we could not read"}.{" "}
                 <strong className="font-medium text-ink">topUp() is payable and permissionless</strong>,
-                so anyone can restart it.
+                so anyone can fund it — but reopening a closed subscription is owner-only.
               </p>
             </div>
 
