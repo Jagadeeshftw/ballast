@@ -19,7 +19,7 @@ import { NoGasBanner } from "./TopBar";
  * Blocked rows say WHY they are blocked rather than being greyed out silently.
  */
 export default function Checklist() {
-  const { settled, hasProvider, account, chainOk, connecting, s, busy, err, tx, connect, switchChain, send } = useWallet();
+  const { settled, hasProvider, account, chainOk, s, busy, err, tx, switchChain, send } = useWallet();
 
   /* Held while the provider is still being asked who is connected. Gated on `hasProvider`
      and not on `settled` alone: the server has no injected provider, so it never enters
@@ -51,13 +51,14 @@ export default function Checklist() {
     return (
       <div className="panel" data-own="">
         <h3>Connect to set up your own cover</h3>
+        {/* No button of its own. The overview already offers "Connect" in the top bar and in
+            the cover panel directly above this card; a third copy of the same button made the
+            page read as three separate requests rather than one. */}
         <p className="why">
-          Somnia Shannon testnet, chain 50312. If your wallet does not carry the network,
-          connecting offers to add it. Everything below stays readable either way.
+          Connect from the cover panel above or the top bar. Somnia Shannon testnet, chain
+          50312 — if your wallet does not carry the network, connecting offers to add it.
+          Everything below stays readable either way.
         </p>
-        <button type="button" className="btn" onClick={connect} disabled={connecting}>
-          {connecting ? "Connecting…" : "Connect wallet"}
-        </button>
         {err && <p className="err">{err}</p>}
       </div>
     );

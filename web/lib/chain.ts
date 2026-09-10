@@ -7,8 +7,8 @@ export const EXPLORER = "https://shannon-explorer.somnia.network";
 
 export const ADDR = {
   vault: "0x9BC43B97c94E23634A561a02EFce641C9e89fe63",
-  engine: "0x9026b93dc240244A34B3568aF704a60f4703a115",
-  source: "0x7fE8B80FE1C798c48bB6968e478e321d4A4873cb",
+  engine: "0x234520a8265CeD9a668874aF8aF4f4897822945A",
+  source: "0xBD305EFF30a379b7B85Dc933A0514Db807dB4969",
   binaryModule: "0x3ecC694Cef705358864a646142ac17A90E29e388",
   oracleHub: "0xe40db387cC98601Dd11bd634fF2f3AD5686dE32b",
   tusdc: "0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E",
@@ -21,6 +21,10 @@ export const RETIRED_ENGINES = [
   "0x8ff058704823A6711A456beAfbEd6509F4845f13",
   "0x9cf2fBC0C2d6Db45799e52f54347ad7B97801581",
   "0xB095Aacf9D2e3B12717C2a58B4C6b3afdDf053b0",
+  // Somnia removed its subscription on 2026-09-07 when the balance ran dry, and the
+  // pre-fix closeSubscription() could not clear the record, so it could never reopen.
+  // Swept to zero on 2026-09-11; replaced by a build whose owner can always recover.
+  "0x9026b93dc240244A34B3568aF704a60f4703a115",
 ] as const;
 
 export const client = createPublicClient({ transport: http(RPC) });

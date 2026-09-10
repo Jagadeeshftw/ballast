@@ -16,8 +16,8 @@ dashboard **<https://ballast.0xo.in/app>**
 | Contract | Address |
 | --- | --- |
 | BallastVault | [`0x9BC43B97…`](https://shannon-explorer.somnia.network/address/0x9BC43B97c94E23634A561a02EFce641C9e89fe63) |
-| HedgeEngine (live) | [`0x9026b93d…`](https://shannon-explorer.somnia.network/address/0x9026b93dc240244A34B3568aF704a60f4703a115) |
-| SpotExposureSource | [`0x7fE8B80F…`](https://shannon-explorer.somnia.network/address/0x7fE8B80FE1C798c48bB6968e478e321d4A4873cb) |
+| HedgeEngine (live) | [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) |
+| SpotExposureSource | [`0xBD305EFF…`](https://shannon-explorer.somnia.network/address/0xBD305EFF30a379b7B85Dc933A0514Db807dB4969) |
 | Collateral (tUSDC, 6dp) | [`0x70a86D88…`](https://shannon-explorer.somnia.network/address/0x70a86D8842FB63C4Ad2b7cdddF530eBf1BB25d8E) |
 | dreamDEX binary module | [`0x3ecC694C…`](https://shannon-explorer.somnia.network/address/0x3ecC694Cef705358864a646142ac17A90E29e388) |
 
@@ -311,7 +311,7 @@ source returns zero for it rather than guessing, and the UI says the window was 
 
 ```bash
 forge build           # via_ir = true, optimizer_runs = 200
-forge test            # 164 tests
+forge test            # 168 tests
 cd probes && forge test   # 23 Phase 0 probes against live testnet state (see note)
 cd web && npm i && npm run dev
 ```

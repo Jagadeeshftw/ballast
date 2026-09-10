@@ -10,18 +10,20 @@ Explorer: `https://shannon-explorer.somnia.network`
 
 ## Deployment
 
-**These are the live addresses. Everything below happened on them.**
+**These are the live addresses.** The lifecycle below was recorded on the engines listed under
+*Retired engines*; the vault is the same one throughout, which is why a redeploy strands nothing.
 
 | Contract | Address |
 | --- | --- |
 | `BallastVault` | [`0x9BC43B97c94E23634A561a02EFce641C9e89fe63`](https://shannon-explorer.somnia.network/address/0x9BC43B97c94E23634A561a02EFce641C9e89fe63) |
-| `HedgeEngine` | [`0x9026b93dc240244A34B3568aF704a60f4703a115`](https://shannon-explorer.somnia.network/address/0x9026b93dc240244A34B3568aF704a60f4703a115) |
-| `SpotExposureSource` | [`0x7fE8B80FE1C798c48bB6968e478e321d4A4873cb`](https://shannon-explorer.somnia.network/address/0x7fE8B80FE1C798c48bB6968e478e321d4A4873cb) |
+| `HedgeEngine` | [`0x234520a8265CeD9a668874aF8aF4f4897822945A`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) |
+| `SpotExposureSource` | [`0xBD305EFF30a379b7B85Dc933A0514Db807dB4969`](https://shannon-explorer.somnia.network/address/0xBD305EFF30a379b7B85Dc933A0514Db807dB4969) |
 
-Reactivity subscription opened in
-[`0xd9fe22a0…`](https://shannon-explorer.somnia.network/tx/0xd9fe22a0f5416ec41214fc5b1691ed8466f86fd6e656c09b94bdd73b1b63f0aa).
+Reactivity subscription 17940211 opened 2026-09-10 20:55 UTC in
+[`0xe856062d…`](https://shannon-explorer.somnia.network/tx/0xe856062d39840c1b0085e29a992448eae5e261389d289c22b3c53781ac384a78).
 Filter: `emitter = BinaryMarketsModule`, `topic0 = MarketCreated`, handler = the engine,
-gas limit 10,000,000, priority fee 1 gwei.
+gas limit 10,000,000, priority fee 2 gwei — as recorded by the precompile itself, not only in the
+engine's own storage.
 
 ### Retired engines, still settling their own cover
 
@@ -32,7 +34,8 @@ The vault approves a **set** of engines, not one address, so a redeploy strands 
 | [`0xB095Aacf…`](https://shannon-explorer.somnia.network/address/0xB095Aacf9D2e3B12717C2a58B4C6b3afdDf053b0) | retired, swept, unsubscribed | ✅ |
 | [`0x9cf2fBC0…`](https://shannon-explorer.somnia.network/address/0x9cf2fBC0C2d6Db45799e52f54347ad7B97801581) | retired, swept, unsubscribed | ✅ |
 | [`0x8ff05870…`](https://shannon-explorer.somnia.network/address/0x8ff058704823A6711A456beAfbEd6509F4845f13) | retired — stalled ladder, see below | ✅ |
-| [`0x9026b93d…`](https://shannon-explorer.somnia.network/address/0x9026b93dc240244A34B3568aF704a60f4703a115) | **live**, funded, subscribed | ✅ |
+| [`0x9026b93d…`](https://shannon-explorer.somnia.network/address/0x9026b93dc240244A34B3568aF704a60f4703a115) | retired, swept — Somnia removed its subscription and the pre-fix `closeSubscription()` could not clear the record, so it could never reopen; see [finding 7](somnia-feedback.md) | ✅ |
+| [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A) | **live**, funded, subscribed — the build whose owner can always recover | ✅ |
 
 **This is not a diagram — it happened.** A retired engine with **zero balance and no
 subscription** settled a cover it had opened before the redeploy, crediting 200.00 tUSDC

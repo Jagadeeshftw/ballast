@@ -2,27 +2,31 @@
 
 Draft for review. **Nothing recorded yet.**
 
-Written assuming **the engine is running** — which, as of 2026-09-10, it is **not**. Check
-before every session rather than trusting this paragraph.
+Written assuming **the engine is running** — and as of 2026-09-10 21:06 UTC it is: a redeployed
+engine, [`0x234520a8…`](https://shannon-explorer.somnia.network/address/0x234520a8265CeD9a668874aF8aF4f4897822945A),
+subscribed at 10,000,000 gas and a 2 gwei priority fee, that **has opened cover** — four positions
+in its first twelve minutes, the first at 21:04:16 UTC. Before every session, check that `stale`
+is false and that `callbackCount` rises between two reads a minute apart.
 
-What happened, read from chain. The subscription reopened on 5 September at the 4,000,000
-limit and ran, but **bought no cover**: every attempt was refused — mostly `NoExposure` on BTC
-windows and `NoLiquidity`, with some `CoverTooExpensive` and pool rejections — so
-`coversOpened` is still the 42 from 1 September. At about 18:35 UTC on 6 September the balance
-fell below **32 STT**, the floor for scheduling, and the retry ladder stopped. The subscription
-went on paying for window registrations it could no longer act on until the balance reached
-0.02 STT; the last callback arrived at **2026-09-07 15:15 UTC**. Three top-ups since have
-**not** brought it back, because there is nothing to bring back: Somnia **removed** the
-subscription (`SubscriptionRemoved`, in the same block as the last callback). The engine's flag
-still names the removed id, so its own `stale` flag is true and it cannot reopen:
-`closeSubscription()` reverted with `UnsubscribeFailed` on chain — twice, at 1.5M and 8M gas —
-and `openSubscription()` refuses while the flag is set. (An earlier version of this note said
-Somnia still listed the subscription as ours. That was wrong: the reading it rested on came from
-a fallback that reports "still live" whenever the precompile cannot be read.)
+**Shot 7's narration is out of date and must not be recorded as written.** It says the fix was
+"four million instead of ten" and needed "no new contract". Both are now false: four million was
+too small — the first purchase on the new engine used 8,492,392 gas — and getting back required a
+new contract. It needs rewriting before it is recorded.
 
-So a top-up is not a restart. `topUp` is permissionless and **keeps** a live engine alive; it
-does not revive one that went dry. For this engine not even the owner can reopen it — a
-redeploy is the only way back, and until then shot 7 cannot be filmed. The recorded run still carries shots 5 and 6: it is the complete frozen history, and
+What happened before it, read from chain. The previous engine reopened on 5 September at the
+4,000,000 limit and bought no cover. At about 18:35 UTC on 6 September its balance fell below
+**32 STT**, the floor for scheduling, and the retry ladder stopped; it went on paying for window
+registrations until the balance reached 0.02 STT, and the last callback arrived at
+**2026-09-07 15:15 UTC**. Somnia then **removed** the subscription (`SubscriptionRemoved`, same
+block), and that engine's `closeSubscription()` insisted on an unsubscribe that can never succeed
+for a removed id, so not even its owner could reopen it — the fourth latch. The redeployed build
+clears the record whatever the unsubscribe says, behind a gas floor, and its tests fail against
+the old code. (An earlier version of this note said Somnia still listed the old subscription as
+ours. That was wrong: the reading came from a fallback that reports "still live" whenever the
+precompile cannot be read.)
+
+A top-up is not a restart. `topUp` is permissionless and **keeps** a live engine alive; it does
+not revive one that went dry — reopening is owner-only. The recorded run still carries shots 5 and 6: it is the complete frozen history, and
 the script says so out loud rather than passing it off as live. **Not one word of narration
 below changes once the engine is live again.**
 
