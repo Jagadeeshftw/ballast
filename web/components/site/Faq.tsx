@@ -51,14 +51,14 @@ export default function Faq({
       {" "}<a href="/docs/how-it-works">The contracts and the on-chain path →</a></>,
     ],
     [
-      "Why is the engine not running right now?",
+      "Why did the engine stop in September?",
       <>
-        It ran out of gas, and the reason is a measured property of the venue rather than a
-        fault. Somnia bills a reactive callback at its gas <em>limit</em> — ours was
+        It ran out of gas, and the reason was a measured property of the venue rather than a
+        fault. Somnia billed a reactive callback at its gas <em>limit</em> — ours was
         provisioned 10,000,000 and used about 1,490,000, so each wake cost 0.07 STT instead of
-        0.010. At roughly 147 windows an hour that is 12.8 STT an hour, against a faucet paying
-        0.5 a day. The fix is a subscription parameter rather than a new contract, but applying
-        it needs 32 STT held at creation. <span className="font-mono text-ink">topUp()</span>{" "}
+        0.010. At roughly 147 windows an hour that was 12.8 STT an hour, against a faucet paying
+        0.5 a day. Restarting took a new contract in the end — the old one&rsquo;s orders
+        outlived sixty-second markets — and opening a subscription needs 32 STT held. <span className="font-mono text-ink">topUp()</span>{" "}
         is payable and permissionless, so anyone can fund it; reopening the subscription is owner-only.
       {" "}<a href="/docs/findings#billing">The measurement behind it →</a></>,
     ],

@@ -45,7 +45,7 @@ type RawEvent = {
 const rec = raw as unknown as {
   engine: string; fromBlock: number; toBlock: number; capturedAt: string;
   firstEventAt: string | null; lastEventAt: string | null;
-  counts: Record<string, number>; events: RawEvent[];
+  counts: Record<string, number>; skipReasons: Record<string, number>; events: RawEvent[];
 };
 
 /** Same phrasing as the live tape, so a reader cannot tell the two apart on wording alone. */
@@ -120,6 +120,11 @@ export const RECORD = {
   firstDay: dayOf(rec.firstEventAt),
   lastDay: dayOf(rec.lastEventAt),
   counts: rec.counts,
+  /** Refusals per reason over the whole run, in the page's wording. Not from `declined`,
+      which is the display slice and holds only the most recent refusals. */
+  skipReasons: Object.fromEntries(
+    Object.entries(rec.skipReasons).map(([k, n]) => [REASON_TEXT[k] ?? k, n]),
+  ) as Record<string, number>,
   total: items.length,
   items,
   excerpt: excerptAroundCover(12),

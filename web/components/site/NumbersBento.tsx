@@ -105,10 +105,11 @@ export default function NumbersBento({
         <Key>How to read this</Key>
         <p className="text-[13px] leading-relaxed text-muted">
           <strong className="font-medium text-ink">Read this as a sample, not a result.</strong>{" "}
-          These are {settled} one-minute windows on a thin testnet book. Our own economics says
-          rolling cover every sixty seconds is ruinous over any real horizon — at that frequency
-          the spread alone runs to hundreds of percent a year, which is why the product defaults
-          to the four-hour and twenty-four-hour windows. A favourable run of {settled} does not
+          These are {settled} short windows on a thin testnet book — five-minute, fifteen-minute
+          and one-hour, none of them one-minute. Our own economics says rolling cover that often
+          is ruinous over any real horizon — at those intervals the spread alone runs to thousands
+          of percent a year, which is why the product defaults to the four-hour and
+          twenty-four-hour windows. A favourable run of {settled} does not
           contradict that. It is what a small sample looks like.
         </p>
       </Card>

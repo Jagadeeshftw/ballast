@@ -92,10 +92,12 @@ export default function Economics() {
       </p>
       <div className="callout">
         <span className="calloutTitle">A sample, not a result</span>
-        Those {settled} positions are <strong>one-minute windows on a thin testnet book</strong>
+        Those {settled} positions are <strong>short windows on a thin testnet book</strong> —
+        thirty-five five-minute, seven fifteen-minute and two one-hour, none of them one-minute
         {range ? `, recorded over ${range}` : ""}. The economics on this page say plainly that
-        rolling cover every sixty seconds is ruinous over any real horizon — at that frequency
-        the spread alone runs to hundreds of percent a year, which is why the product defaults
+        rolling cover that often is ruinous over any real horizon — the table above puts the
+        spread alone at thousands of percent a year for fifteen-minute and one-hour windows,
+        which is why the product defaults
         to four-hour and twenty-four-hour windows. A favourable run of {settled} does not
         contradict that. It is what a small sample looks like, and reading it as a return would
         be reading it wrong.

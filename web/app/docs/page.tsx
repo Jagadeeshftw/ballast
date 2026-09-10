@@ -34,8 +34,8 @@ export default function DocsIndex() {
           about the difference. The payout is fixed, so it is exact at one depth of fall and
           wrong on both sides of it. That gap is basis risk, it cannot be engineered away on
           this instrument, and the pages below give it more room than the marketing would.
-          The engine is not currently running; that has a measured reason, and it is written
-          up rather than hidden.
+          The engine has stopped before, for days at a time; each stop has a measured reason,
+          and they are written up rather than hidden.
         </p>
 
         {DOC_GROUPS.map((g) => (

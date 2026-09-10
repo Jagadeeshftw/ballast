@@ -76,8 +76,9 @@ export default async function Cover({
           DO NOT TRIM THE PARAGRAPH BELOW THE CHART. It reads as padding when the page feels
           long, and it is the opposite: +770 on a 61% hit rate is exactly the kind of number a
           trading-literate reader distrusts on sight. The caveat is what makes it credible
-          rather than suspicious -- it says the sample is 44 one-minute windows on a thin
-          testnet book, and that our own economics calls rolling at that frequency ruinous. A
+          rather than suspicious -- it says the sample is 44 short windows on a thin testnet
+          book (35 five-minute, 7 fifteen-minute, 2 one-hour; not one of them one-minute, whatever
+          earlier copy said), and that our own economics calls rolling at that frequency ruinous. A
           judge who does that arithmetic and finds we did it first reads everything else here
           differently. Cut the chart before cutting the caveat. */}
       <section>
@@ -93,9 +94,10 @@ export default async function Cover({
                 them, so interpolating would draw a trend that did not happen. Each dot is one
                 settled position, green where the cover paid.{" "}
                 <strong>Read this as a sample, not as a result.</strong> These are{" "}
-                {t.settled} one-minute windows on a thin testnet book, and our own economics
-                says rolling cover every sixty seconds is ruinous over any real horizon — the
-                spread alone runs to hundreds of percent a year at that frequency. A favourable
+                {t.settled} short windows on a thin testnet book — thirty-five five-minute,
+                seven fifteen-minute and two one-hour, none of them one-minute — and our own
+                economics says rolling cover that often is ruinous over any real horizon: at
+                those intervals the spread alone runs to thousands of percent a year. A favourable
                 run of {t.settled} windows does not contradict that; it is what a small sample
                 looks like.
               </>

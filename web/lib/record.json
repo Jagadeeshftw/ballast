@@ -21,6 +21,14 @@
   "TickExpired": 1,
   "SubscriptionClosed": 1
  },
+ "skipReasons": {
+  "NoExposure": 640,
+  "PlacementFailed": 225,
+  "BelowMinimumLot": 153,
+  "NoLiquidity": 58,
+  "CoverTooExpensive": 58,
+  "WouldMisrepresent": 20
+ },
  "totalEvents": 6748,
  "events": [
   {

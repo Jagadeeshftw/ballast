@@ -264,8 +264,10 @@ export default async function Landing() {
                 0.5 a day.
               </p>
               <p className="mt-4 max-w-[54ch] leading-relaxed text-muted">
-                The fix needs no new contract — the limit is a subscription parameter — but applying
-                it means reopening the subscription, and that requires the engine to hold{" "}
+                Cutting the limit was the first fix tried, and it was wrong: a callback that buys
+                cover has used up to 9,064,459 gas, so the limit stays at 10,000,000. Restarting
+                took a new contract in the end, because every order the old one placed outlived a
+                sixty-second market. Opening a subscription requires the engine to hold{" "}
                 <strong className="font-medium text-ink">32 STT</strong>, a floor checked once at
                 creation and never spent. It holds {engine ? (Number(engine.balance) / 1e18).toFixed(2) : "an amount we could not read"}.{" "}
                 <strong className="font-medium text-ink">topUp() is payable and permissionless</strong>,

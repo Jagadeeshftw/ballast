@@ -10,11 +10,11 @@ const HEADINGS: Heading[] = [
   { id: "unpriceable", text: "Unpriceable exposure" },
 ];
 
-/* Reasons and counts both read from the frozen record, so the table cannot drift from the
-   Activity view, which reads the same source. */
-const skips = RECORD.declined;
-const counts: Record<string, number> = {};
-for (const i of skips) counts[i.headline] = (counts[i.headline] ?? 0) + 1;
+/* Counts over the whole run, from the record's header. They used to be counted from
+   RECORD.declined -- the display slice, which keeps only the most recent refusals -- so this
+   table said "No exposure 47" for a run that refused 640 times for that reason, and listed the
+   slice's 40 give-ups beside the run's 386. */
+const counts = RECORD.skipReasons;
 const gaveUp = RECORD.counts.WindowGaveUp ?? 0;
 const totalSkips = RECORD.counts.CoverSkipped ?? 0;
 const opened = RECORD.counts.CoverOpened ?? 0;

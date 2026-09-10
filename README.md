@@ -165,7 +165,7 @@ the user's vault balance while a different, live engine was taking enrolments:
 [`0xdafa9556…`](https://shannon-explorer.somnia.network/tx/0xdafa9556f7f474c089b57293c2db3a62b426560a54bdcbb8e4b518e1a489d4c9)
 — vault `4,677.40 → 4,877.40 tUSDC`.
 
-Every redeploy recovered its runway first: 45.38, 43.05 and 39.14 STT swept back.
+Every redeploy recovered its runway first: 45.38, 43.05, 39.14, 150.02 and 136.53 STT swept back.
 
 ## A gas limit below ~1,000,000 cannot write a new storage slot, whatever the work costs
 
@@ -210,10 +210,10 @@ server-side with its full content, and `/app/cover` and `/app/activity` were com
 nothing missing and no notice at all, because neither needs a network. The three live figures
 show an em dash and say what could not be read, rather than a zero nobody measured.
 
-## Why it is not running right now
+## Why it stopped in September
 
-The engine is stopped, deliberately, and the reason is a measured property of the venue
-rather than a fault. Stating it plainly because it is the most interesting number we found.
+The engine stopped, and the reason was a measured property of the venue rather than a fault.
+Stating it plainly because it is the most interesting number we found.
 
 **Somnia bills a reactive callback at its gas *limit*, not at its usage.** Twenty callback
 receipts: limit **10,000,000**, actually used **1,479,630 – 1,497,350**, at 7 gwei. That is
@@ -231,15 +231,16 @@ that actually scan the book and buy cover, handling about 2.8 markets each. Ever
 2,715 cost the same 0.07 STT. The 6.7× is the overpay on an average wake; this is the reason
 there is no average wake. Total for the run: **~190 STT**.
 
-The fix needs no new contract — `setSubscriptionFees` already sets the limit, and 4,000,000
-is twice the worst path measured (`poke()` on a live window estimates 1,936,405). That cuts
-the cost 2.5×, not the 10–20× first guessed: a discard-path callback genuinely costs ~1.5M
-gas, because Somnia charges 200k per new non-zero SSTORE and the engine writes state on every
+The first fix tried needed no new contract — `setSubscriptionFees` sets the limit — and cut
+it to 4,000,000 on the strength of `poke()` estimating 1,936,405 on a live window. That was
+wrong: `poke()` is not the worst path. A callback that buys cover has since used between
+2,391,400 and 9,064,459 gas, so at 4,000,000 the engine bought nothing, and the limit is back
+at 10,000,000. A discard-path callback genuinely costs ~1.5M gas, because Somnia charges 200k per new non-zero SSTORE and the engine writes state on every
 wake. That is the engine remembering what it did, not waste.
 
-Applying it means closing and reopening the subscription, and `openSubscription` requires the
+Applying it meant closing and reopening the subscription, and `openSubscription` requires the
 engine to hold **32 STT** — a floor checked once at creation, never escrowed and never
-consumed. It holds 12.77. So the subscription was closed deliberately to preserve that
+consumed. On 2 September it held 12.77, so the subscription was closed deliberately to preserve that
 against the floor rather than spend it on an hour nobody would watch.
 
 **`topUp()` on the engine is `payable` and permissionless**, so anyone can fund it — no
@@ -311,20 +312,21 @@ source returns zero for it rather than guessing, and the UI says the window was 
 
 ```bash
 forge build           # via_ir = true, optimizer_runs = 200
-forge test            # 168 tests
+forge test            # 173 tests
 cd probes && forge test   # 23 Phase 0 probes against live testnet state (see note)
 cd web && npm i && npm run dev
 ```
 
 **Note on the probes.** 21 of 23 pass. Two — `test_ContractCanPlaceRestingBid` and
 `test_ContractCanMintCompleteSet` — are pinned to a specific BTC 24 h market that expired at
-2026-09-02 00:00 UTC, and now revert with `TradingNotActive()` and `OrderAlreadyExpired()`.
+2026-09-02 00:00 UTC, and now revert with `OrderAlreadyExpired()` and `TradingNotActive()`
+respectively.
 That is a time-pinned probe decaying, not a product regression: the same assertions passed
 against that market while it was live, and the write path they exercise is the one the engine
 still uses. They would need repointing at a live market to run green again.
 
-**`via_ir = true` at `optimizer_runs = 200` is required, not optional.** The engine is 24,162
-bytes against the EIP-170 limit of 24,576; the legacy pipeline produces 24,902 and will not
+**`via_ir = true` at `optimizer_runs = 200` is required, not optional.** The engine is 24,316
+bytes against the EIP-170 limit of 24,576; the legacy pipeline produces 24,954 and will not
 deploy. A rebuild with the default profile produces a different artifact.
 
 ## Documents

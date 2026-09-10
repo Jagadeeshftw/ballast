@@ -58,6 +58,11 @@ for (const e of [...rec.events, ...added]) {
 const all = [...byKey.values()].sort((a, b) => a.block - b.block);
 const counts = {};
 for (const e of all) counts[e.name] = (counts[e.name] ?? 0) + 1;
+// Refusals by reason over the WHOLE run. The display slice keeps only the last 80 refusals,
+// so a table counted from the slice reported "No exposure 47" for a run that refused 640
+// times for that reason. Anything that states a per-reason total must read this instead.
+const skipReasons = {};
+for (const e of all) if (e.name === "CoverSkipped") skipReasons[e.reason] = (skipReasons[e.reason] ?? 0) + 1;
 const withTs = all.filter((e) => e.ts);
 
 const full = {
@@ -106,7 +111,7 @@ const events = [...picked].sort((a, b) => a.block - b.block);
 const slim = {
   engine: full.engine, chainId: full.chainId, fromBlock: full.fromBlock, toBlock: full.toBlock,
   capturedAt: full.capturedAt, firstEventAt: full.firstEventAt, lastEventAt: full.lastEventAt,
-  counts, totalEvents: all.length, events,
+  counts, skipReasons, totalEvents: all.length, events,
 };
 writeFileSync(new URL("../lib/record.json", import.meta.url), JSON.stringify(slim, null, 1));
 

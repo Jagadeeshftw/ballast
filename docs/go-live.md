@@ -57,7 +57,7 @@ export OWNER=0x...                # optional, defaults to the deployer
 | --- | --- | --- | --- |
 | Chain is right | `cast chain-id --rpc-url $SOMNIA_RPC` | `50312` | anything else — wrong RPC |
 | Deployer has gas | `cast balance $(cast wallet address --private-key $PRIVATE_KEY) --rpc-url $SOMNIA_RPC` | `> 0.05 ether` | zero — deploy will revert immediately |
-| Tests green | `forge test` | **140 passed, 0 failed** | any failure — do not deploy |
+| Tests green | `forge test` | **173 passed, 0 failed** | any failure — do not deploy |
 | No warnings | `forge build --force` | no `warning`/`note` lines | any — fix before deploying |
 
 ---

@@ -45,8 +45,8 @@ straight into the user's vault balance, while the live engine was taking new enr
 [`0xdafa9556…`](https://shannon-explorer.somnia.network/tx/0xdafa9556f7f474c089b57293c2db3a62b426560a54bdcbb8e4b518e1a489d4c9)
 — `settle()` on `0x9cf2fBC0…`, vault `4,677.40 → 4,877.40 tUSDC`.
 
-Every redeploy in this session recovered its runway first: **45.38**, **43.05** and
-**39.14 STT** swept back, nothing stranded.
+Every redeploy in this session recovered its runway first: **45.38**, **43.05**, **39.14**,
+**150.02** and **136.53 STT** swept back, nothing stranded.
 
 ### Why `0x8ff05870…` was retired: a latch that deadlocked
 

@@ -8,7 +8,7 @@ const HEADINGS: Heading[] = [
   { id: "void", text: "A void has never happened" },
   { id: "poke", text: "poke() is untested at scale" },
   { id: "reserved", text: "A reservation has no user-side escape" },
-  { id: "engine", text: "The engine is not running" },
+  { id: "engine", text: "The engine has stopped before" },
   { id: "probes", text: "Two probes are pinned to expired markets" },
   { id: "sample", text: "The record is a sample" },
   { id: "open", text: "Open questions" },
@@ -60,18 +60,20 @@ export default function Limitations() {
         oversight.
       </div>
 
-      <H2 id="engine">The engine is not currently running</H2>
+      <H2 id="engine">The engine has stopped before</H2>
       <p>
-        Its subscription is closed, so no new cover is being bought. Everything it did is
-        settled and on chain, and the vault is withdrawable as normal — the stop affects future
-        purchases only.
+        Between 2 and 10 September it bought no cover. Its subscription was first closed to
+        preserve runway, then reopened at a gas limit too small for a purchase, then removed by
+        Somnia when the balance ran dry. What it had already done stayed on chain and the vault
+        stayed withdrawable throughout — a stop affects future purchases only.
       </p>
       <p>
-        The reason is measured rather than mysterious, and it is on{" "}
-        <a href="/docs/findings#billing">Findings</a>: callbacks billed at the configured gas
-        limit rather than at usage. Restarting needs a subscription parameter change, not a new
-        contract, and <code>topUp()</code> is payable and permissionless so anyone can fund it.
-        The live state is on <a href="/app/engine">the Engine view</a>.
+        The measurements are on <a href="/docs/findings#billing">Findings</a>. Restarting took a
+        new contract, not only a parameter change: the build it replaced gave every order a
+        sixty-second expiry, which the pool refuses on a market that closes sooner, so it could
+        never cover a one-minute window. <code>topUp()</code> is payable and permissionless, so
+        anyone can fund a running engine; reopening a subscription is owner-only. The live
+        state is on <a href="/app/engine">the Engine view</a>.
       </p>
 
       <H2 id="probes">Two probes are pinned to expired markets</H2>
@@ -95,10 +97,11 @@ export default function Limitations() {
       </p>
       <div className="callout">
         <span className="calloutTitle">Read it as a sample</span>
-        Those {settled} positions are one-minute windows on a thin testnet book
+        Those {settled} positions are short windows on a thin testnet book — thirty-five
+        five-minute, seven fifteen-minute and two one-hour, none of them one-minute
         {range ? `, recorded over ${range}` : ""}. Our own{" "}
-        <a href="/docs/economics">economics</a> says rolling cover every sixty seconds is
-        ruinous over any real horizon — the spread alone runs to hundreds of percent a year,
+        <a href="/docs/economics">economics</a> says rolling cover that often is ruinous over
+        any real horizon — the spread alone runs to thousands of percent a year,
         which is why the product defaults to four-hour and twenty-four-hour windows. A
         favourable run of {settled} does not contradict that. It is what a small sample looks
         like.
