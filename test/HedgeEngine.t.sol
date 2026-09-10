@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
+import {Vm} from "forge-std/Vm.sol";
 import {Test, Vm} from "forge-std/Test.sol";
 import {BallastVault} from "../src/BallastVault.sol";
 import {HedgeEngine} from "../src/HedgeEngine.sol";
@@ -1378,23 +1379,24 @@ contract HedgeEngineTest is Test {
 
     // ------------------------------------ permissionless escapes from the sweep
 
-    /// `activeSubscriptionId` is set by the owner and cleared by the owner — but the
-    /// PROTOCOL removes a subscription on its own when the balance cannot cover a
-    /// callback. Without reconciliation the engine keeps reporting `subscribed: true`.
-    function test_ReconcileClearsASubscriptionTheProtocolRemoved() public {
-        assertGt(engine.activeSubscriptionId(), 0);
-        (,,, bool subscribedBefore,) = engine.subscriptionHealth();
-        assertTrue(subscribedBefore);
+    /// The PROTOCOL removes a subscription on its own when the owner cannot pay for a wake.
+    /// This test used to assert that `reconcileSubscription` then clears the flag, and it
+    /// passed — because the mock answered a removed id with an empty record. Somnia reverts
+    /// instead. Against a faithful mock the flag stays set and `openSubscription` refuses:
+    /// the latch that bricked the engine at 0x9026…a115 on 2026-09-07, now visible here.
+    function test_ReconcileCannotSeeASubscriptionTheProtocolRemoved() public {
+        uint256 id = engine.activeSubscriptionId();
+        assertGt(id, 0);
 
-        // The protocol drops it from under us. No owner action, no notification.
-        MockPrecompile(PRECOMPILE).protocolRemove(engine.activeSubscriptionId());
+        MockPrecompile(PRECOMPILE).protocolRemove(id);
 
         bool live = engine.reconcileSubscription();
-        assertFalse(live, "reconcile reports it is gone");
-        assertEq(engine.activeSubscriptionId(), 0, "and the flag is corrected");
+        assertTrue(live, "a reverting read is 'cannot tell', so reconcile keeps the flag");
+        assertEq(engine.activeSubscriptionId(), id, "the flag still names the removed id");
 
-        (,,, bool subscribedAfter,) = engine.subscriptionHealth();
-        assertFalse(subscribedAfter, "health stops claiming a subscription that is gone");
+        vm.prank(owner);
+        vm.expectRevert(HedgeEngine.SubscriptionAlreadyOpen.selector);
+        engine.openSubscription();
     }
 
     function test_ReconcileIsPermissionlessAndLeavesALiveSubscriptionAlone() public {
@@ -1403,6 +1405,79 @@ contract HedgeEngineTest is Test {
         bool live = engine.reconcileSubscription();
         assertTrue(live);
         assertEq(engine.activeSubscriptionId(), id, "a live subscription is untouched");
+    }
+
+    // ------------------------------------------ the owner's way back: closeSubscription
+
+    /// The recovery path. `closeSubscription` used to insist on an unsubscribe that can never
+    /// succeed for a removed id, so not even the owner could clear the record.
+    function test_CloseRecoversASubscriptionTheProtocolRemoved() public {
+        uint256 id = engine.activeSubscriptionId();
+        MockPrecompile(PRECOMPILE).protocolRemove(id);
+
+        vm.recordLogs();
+        vm.prank(owner);
+        engine.closeSubscription();
+
+        assertEq(engine.activeSubscriptionId(), 0, "the record is cleared");
+        (bool reconciled, bool closed) = _closeEvents(id);
+        assertTrue(reconciled, "and it says there was nothing left to unsubscribe");
+        assertTrue(closed);
+
+        vm.prank(owner);
+        uint256 fresh = engine.openSubscription();
+        assertGt(fresh, id, "and the owner can open a new one");
+        (,,, bool subscribed,) = engine.subscriptionHealth();
+        assertTrue(subscribed);
+    }
+
+    function test_CloseOfALiveSubscriptionUnsubscribes() public {
+        uint256 id = engine.activeSubscriptionId();
+        assertEq(MockPrecompile(PRECOMPILE).owners(id), address(engine));
+
+        vm.recordLogs();
+        vm.prank(owner);
+        engine.closeSubscription();
+
+        assertEq(engine.activeSubscriptionId(), 0);
+        assertEq(MockPrecompile(PRECOMPILE).owners(id), address(0), "unsubscribed at the precompile");
+        (bool reconciled, bool closed) = _closeEvents(id);
+        assertFalse(reconciled, "a live close is not reported as a removal");
+        assertTrue(closed);
+    }
+
+    /// A failing precompile call consumes the gas forwarded to it, so a close sent short of
+    /// gas could fail to unsubscribe a LIVE subscription and still clear the record — leaving
+    /// it waking, and billing, an engine that now ignores it. The floor refuses first.
+    function test_CloseShortOfGasRevertsAndKeepsTheRecord() public {
+        uint256 id = engine.activeSubscriptionId();
+        vm.prank(owner);
+        vm.expectRevert(HedgeEngine.BadParameter.selector);
+        engine.closeSubscription{gas: 900_000}();
+        assertEq(engine.activeSubscriptionId(), id, "record untouched");
+        assertEq(MockPrecompile(PRECOMPILE).owners(id), address(engine), "subscription untouched");
+    }
+
+    function test_CloseIsOwnerOnly() public {
+        address stranger = makeAddr("stranger");
+        vm.prank(stranger);
+        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", stranger));
+        engine.closeSubscription();
+    }
+
+    function _closeEvents(uint256 id) internal returns (bool reconciled, bool closed) {
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        for (uint256 i; i < logs.length; ++i) {
+            if (logs[i].emitter != address(engine)) continue;
+            if (
+                logs[i].topics[0] == keccak256("SubscriptionReconciled(uint256)")
+                    && abi.decode(logs[i].data, (uint256)) == id
+            ) reconciled = true;
+            if (
+                logs[i].topics[0] == keccak256("SubscriptionClosed(uint256)")
+                    && uint256(logs[i].topics[1]) == id
+            ) closed = true;
+        }
     }
 
     /// `pendingList` only shrank when a window was attempted. If ticks stop, it grows

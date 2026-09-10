@@ -76,6 +76,21 @@ refuses while the flag is set — so that engine cannot be reopened by anyone. T
 section set out to remove is still there on exactly this path. Evidence in
 [somnia-feedback.md, finding 7](somnia-feedback.md).
 
+**A health check that cannot tell "fine" from "cannot tell" is worse than none.** Asked whether
+the subscription still existed, `reconcileSubscription()` answered "still live" — which is what
+it answers whenever the precompile read fails — so the function meant to detect the problem
+reported the problem's own symptom as health, and a simulation of it was taken as proof the
+subscription had survived. The test suite agreed, because its mock precompile answered a removed
+id with an empty record where Somnia reverts. This is the third verification tool in this build
+that turned out to be the broken thing, after the contrast auditor's vacuous pass and the
+focus-ring check. The mock now reverts as Somnia does, and that test now asserts the latch.
+
+**The owner's way back is `closeSubscription()`.** It now clears the local record even when the
+unsubscribe is refused — owner-only, behind a 1,000,000-gas floor so that a refusal means "already
+gone" rather than "starved" (a failing precompile call consumes every unit forwarded to it). Four
+tests cover it: recovery after a protocol removal, a normal close, a close sent short of gas, and
+owner-only. The first two were run against the old code as well, and fail there.
+
 **3. `prunePending(max)` — permissionless and bounded.** Drops queued windows the module
 says are no longer `Trading`. Read-gated, so it can never remove a window still worth
 covering. `poke()` already cleared one window at a time but needed its `marketId`; this

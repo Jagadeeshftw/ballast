@@ -356,11 +356,16 @@ contract MockPrecompile {
         _data[id] = d;
     }
 
+    /// @dev Reverts for an id that does not exist or was removed — because Somnia does
+    ///      (observed on shannon, 2026-09-10). This mock used to answer a removed id with an
+    ///      empty record, which is the one behaviour that let `reconcileSubscription` look
+    ///      like an escape from the latch in tests while being none on chain.
     function getSubscriptionInfo(uint256 id)
         external
         view
         returns (SubscriptionData memory, address)
     {
+        require(owners[id] != address(0), "no such subscription");
         return (_data[id], owners[id]);
     }
 

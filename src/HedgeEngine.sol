@@ -388,11 +388,26 @@ contract HedgeEngine is SomniaEventHandler, Ownable2Step {
 
     /// @notice Close the subscription. All cover goes inert immediately; the UI must show
     ///         that rather than a confident "covered".
+    /// @dev    Clears the local record EVEN WHEN the unsubscribe is refused, and that is the
+    ///         point. Somnia deletes a subscription on its own when the owner cannot pay for a
+    ///         wake, and tells nobody; after that, `unsubscribe` of the id is refused forever.
+    ///         Insisting on it here left the owner no way to clear the record, and
+    ///         `openSubscription` refuses while the record is set — the engine at 0x9026…a115
+    ///         bricked itself exactly that way on 2026-09-07. Owner-only, so it cannot take a
+    ///         live subscription out of anyone else's hands.
+    ///
+    ///         The gas floor is what makes a refusal mean "already gone" rather than
+    ///         "starved": a failing precompile call consumes every unit forwarded to it, so a
+    ///         close sent short of gas would otherwise clear the record while the subscription
+    ///         lived on, still waking — and billing — an engine that now ignores it.
+    ///         `SubscriptionReconciled` marks the case where there was nothing to unsubscribe.
     function closeSubscription() external onlyOwner {
         uint256 id = activeSubscriptionId;
         if (id == 0) revert NoSubscription();
+        if (gasleft() < 1_000_000) revert BadParameter();
         activeSubscriptionId = 0; // cleared first: _onEvent is inert from this point
-        SomniaExtensions.unsubscribe(id);
+        (bool ok,) = PRECOMPILE.call(abi.encodeWithSignature("unsubscribe(uint256)", id));
+        if (!ok) emit SubscriptionReconciled(id);
         emit SubscriptionClosed(id);
     }
 
