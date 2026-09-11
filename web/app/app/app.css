@@ -691,3 +691,38 @@ html[data-wpend="1"] #dir-a [data-own]::after {
     linear-gradient(var(--rail), var(--rail)) left 103px    / 75% 11px            no-repeat,
     linear-gradient(var(--rail), var(--rail)) left 126px    / 45% 11px            no-repeat;
 }
+
+/* ── Live window (Overview) ────────────────────────────────────────────────
+   The first thing on the dashboard. The number is the only large element; the state lines
+   under it carry the story. No transitions anywhere: the bar steps once a second and the
+   number simply changes, and with reduced motion the bar is not drawn at all. */
+#dir-a .winWatch {
+  border: 1px solid var(--rail); border-radius: 12px; padding: 18px 20px 16px;
+  background: var(--color-raised); margin: 4px 0 26px;
+}
+#dir-a .wwHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+#dir-a .wwEyebrow { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--beacon); margin: 0; }
+#dir-a .wwSeries { font-size: 13px; color: var(--chart); }
+#dir-a .wwClock { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-top: 8px; }
+#dir-a .wwCount {
+  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(40px, 6vw, 56px); font-weight: 600; line-height: 1; color: var(--color-ink);
+  font-variant-numeric: tabular-nums; min-width: 4ch;
+}
+#dir-a .wwCount.wwWait { font-size: 20px; font-weight: 500; color: var(--chart); min-width: 0; }
+#dir-a .wwClose { font-size: 13px; color: var(--chart); font-variant-numeric: tabular-nums; }
+#dir-a .wwBar { height: 3px; background: var(--rail); border-radius: 2px; margin: 12px 0 2px; overflow: hidden; }
+#dir-a .wwBar > span { display: block; height: 100%; background: var(--beacon); }
+@media (prefers-reduced-motion: reduce) { #dir-a .wwBar { display: none; } }
+/* Proportional figures here: tabular-nums gives this face's comma and full stop figure width,
+   which opened visible gaps in a running sentence. Tabular figures stay on the countdown and
+   the timestamps, where digits change in place. */
+#dir-a .wwPrice { font-size: 14px; color: var(--chart); margin: 10px 0 0; }
+#dir-a .wwPrice strong { color: var(--color-ink); font-weight: 600; }
+#dir-a .wwState { margin-top: 12px; display: grid; gap: 8px; }
+#dir-a .wwLine { font-size: 15px; line-height: 1.55; color: var(--color-ink); margin: 0; max-width: 80ch; }
+#dir-a .wwLine a, #dir-a .wwNote a { font-size: 13px; }
+#dir-a .wwNote { font-size: 14px; color: var(--chart); margin: 0; max-width: 80ch; }
+#dir-a .wwLast { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rail); display: grid; gap: 4px; }
+#dir-a .wwLastK { font-size: 12px; color: var(--chart); font-variant-numeric: tabular-nums; }
+#dir-a .wwLine .tag { vertical-align: 1px; }

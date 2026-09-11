@@ -7,6 +7,10 @@ import { StatGrid } from "@/components/ace/stat-grid";
 import ChainNote from "@/components/site/ChainNote";
 import { StateBanner } from "@/components/ace/lead-panel";
 import CoverInForce from "./CoverInForce";
+import WindowWatch from "./WindowWatch";
+import { client } from "@/lib/chain";
+import { currentWindow } from "@/lib/window";
+import type { PublicClient } from "viem";
 import { IconChartLine, IconTargetArrow, IconShieldHalf, IconClockPlay, IconBolt } from "@tabler/icons-react";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +19,12 @@ const usd = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2,
 
 /** Overview: what is my situation, in one screen. */
 export default async function Overview() {
-  const { vault, engine, shown, eth, tape, chainOk } = await loadPreview();
+  /* The live window is read alongside the rest, not after it, and a failure costs only the
+     panel's server-rendered state -- the browser keeps looking. */
+  const [{ vault, engine, shown, eth, tape, chainOk }, live] = await Promise.all([
+    loadPreview(),
+    currentWindow(client as unknown as PublicClient).catch(() => ({ win: null, chainNow: Math.floor(Date.now() / 1000) })),
+  ]);
   const rows = positionsFor(ADDR.demoUser);
   const t = totalsFor(rows);
   const notes = notificationsFor(ADDR.demoUser).slice(0, 5);
@@ -34,6 +43,8 @@ export default async function Overview() {
     <>
       {!chainOk && <ChainNote />}
       <h1 className="viewH1">Overview</h1>
+
+      <WindowWatch initial={live.win} serverNow={live.chainNow} />
 
       {/* The one place the graduation field appears. */}
       {engine && !engine.subscribed && (
