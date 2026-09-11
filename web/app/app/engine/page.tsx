@@ -103,10 +103,10 @@ export default async function Engine() {
             tone: e.subscribed && !e.stale ? "paid" : "lost" },
           { label: "Engine balance", icon: <IconCoin size={14} stroke={1.8} />,
             value: stt(e.balance), note: "STT" },
-          { label: "Cost per callback", icon: <IconReceipt2 size={14} stroke={1.8} />,
-            value: stt(e.costPerCallback), note: "STT, as this contract computes it" },
+          { label: "Worst case per callback", icon: <IconReceipt2 size={14} stroke={1.8} />,
+            value: stt(e.costPerCallback), note: "STT, gas limit × fee — Somnia bills gas used, far less" },
           { label: "Callbacks left", icon: <IconRepeat size={14} stroke={1.8} />,
-            value: n0(e.callbacksLeft), note: "at the current balance and that figure" },
+            value: n0(e.callbacksLeft), note: "a floor: at the current balance and that worst case" },
           { label: "Can schedule", icon: <IconCalendarEvent size={14} stroke={1.8} />,
             value: e.canSchedule ? "Yes" : "No",
             note: e.canSchedule ? "a wake can be booked now" : "no wake can be booked",
@@ -200,7 +200,7 @@ export default async function Engine() {
               <Kv k="Callbacks per window" v={(Number(e.ratioX100) / 100).toFixed(2)}
                 note="measured, not configured — how many wakes each window costs" />
               <Kv k="Windows remaining" v={n0(e.windowsRemaining)}
-                note="at the current balance and this contract's own cost estimate" />
+                note="a floor: this contract's worst-case estimate, not what Somnia charges" />
               <Kv k="Health reading" v={e.stale ? "Stale" : "Fresh"}
                 note={e.stale ? "the engine has not been woken recently" : "recently woken"} />
             </dl>

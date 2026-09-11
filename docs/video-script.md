@@ -8,10 +8,10 @@ subscribed at 10,000,000 gas and a 2 gwei priority fee. It replaces `0x234520a8�
 all expired sixty seconds out and so could never fill a 60-second window. Before every session, check that `stale`
 is false and that `callbackCount` rises between two reads a minute apart.
 
-**Shot 7's narration is out of date and must not be recorded as written.** It says the fix was
-"four million instead of ten" and needed "no new contract". Both are now false: four million was
-too small — the first purchase on the new engine used 8,492,392 gas — and getting back required a
-new contract. It needs rewriting before it is recorded.
+**Shot 7 was rewritten on 11 September, after the billing finding was checked and retracted.**
+Somnia bills a reactive callback at gas used, and always did: 255 charges matched to their
+receipts across six engines, every one at gas used, none at the limit. The narration now says
+so. Review it before recording.
 
 What happened before it, read from chain. The previous engine reopened on 5 September at the
 4,000,000 limit and bought no cover. At about 18:35 UTC on 6 September its balance fell below
@@ -30,7 +30,7 @@ not revive one that went dry — reopening is owner-only. The recorded run still
 the script says so out loud rather than passing it off as live. **Not one word of narration
 below changes once the engine is live again.**
 
-Target **2:55**; the list below runs **2:54**. 434 spoken words at ~150 wpm, and every shot
+Target **2:55**; the list below runs **2:54**. 436 spoken words at ~150 wpm, and every shot
 is timed to sit between 145 and 156 wpm so none of them has to be rushed. Going over three
 minutes is worse than cutting shot 6.
 
@@ -74,7 +74,7 @@ minutes is worse than cutting shot 6.
 | 4 | 1:03–1:28 | Back to page, **What it actually pays**. Let the curve draw: step, regions, then the two real points. | "What it buys. It is not a hedge. The payout is fixed: exact at one depth, imperfect either side — over-paying on a small fall, under-paying on a large one. That gap is basis risk. It is parametric cover, the same trade flight-delay insurance makes: it pays the same whether you missed a meeting or a wedding. We say where that point is." |
 | 5 | 1:28–1:51 | **It has already done this.** The 45-row positions table on Cover, then the totals row above it. | "Here is the record. Forty-five positions opened, forty-four settled, twenty-seven of them paid. Net, plus seven hundred and seventy tUSDC. A sample, not a result: forty-four short windows on a thin book, and our own economics says rolling cover that often is ruinous. The seventeen that paid nothing are here too — showing only the winners hides the trade." |
 | 6 | 1:51–2:08 | **And it refuses**, scrolling the reasons. | "And what it refused. No measured exposure. Book one-sided. Size rounds below the venue's minimum lot. Every refusal is on chain with its reason, because a system that only shows you what it did is hiding what it chose not to." |
-| 7 | 2:08–2:49 | The **Engine** page, held still long enough to read: subscription open, the corrected limit, the callback count. | "Last thing — the engine itself. It's running. What stopped it is the finding. Somnia bills a reactive callback at its gas limit, not its usage: we provisioned ten million, used one and a half. It's flat per wake — price has nothing to do with work. In the recorded run, eighty-four percent of twenty-seven hundred callbacks just registered a window, one write, and cost what a full-book scan cost. The fix needed no new contract, just a subscription parameter: four million instead of ten, two and a half times cheaper. It reopened on that, and `topUp` is permissionless: anyone can keep it alive." |
+| 7 | 2:08–2:49 | The **Engine** page, held still long enough to read: subscription open, the limit at ten million, the callback count. Then **Findings**, on the retraction table — 255 charges, 255 at gas used, none at the limit. | "Last thing — the engine itself. It's running. And a correction, because this project says its claims can be checked. We reported that Somnia bills a reactive callback at its gas limit. It doesn't, and it never did. We matched every charge to its receipt — six engines, the first of September to today — and each one is gas used times price, to the wei. The number we quoted was our own contract's worst-case estimate, read as a bill. The recorded run cost twenty-seven STT, not a hundred and ninety. We acted on it — cut the limit, and stopped buying cover. It's back at ten million." |
 | 8 | 2:49–2:54 | Addresses and repo URL, held. | "That's Ballast. Contracts, documents and the full run record are in the repo." |
 
 ---
@@ -104,11 +104,10 @@ minutes is worse than cutting shot 6.
   asked: it was the live engine on 1 September, and the vault approving an engine *set* rather
   than one address is precisely why a redeploy strands nothing. A judge cross-referencing the
   current engine will find that answer already documented.
-- **Shot 7 is not an apology, and it is no longer a confession.** The tone is "we measured
-  something nobody had checked, and then we fixed it", because that is what happened. The arc
-  is finding, correction, running — do not let the voice fall at the end of it. Delivered
-  defensively it reads as a project apologising for a bill; delivered flatly it reads as the
-  strongest engineering moment in the submission.
+- **Shot 7 is a correction, delivered flat.** The arc is: running, the claim we made, the check
+  that disproved it, what it cost us. Not an apology and not a flourish — a project whose
+  argument is that its claims can be checked should show one being checked, against itself.
+  Do not let the voice fall at "it never did".
 - No music. No transitions beyond straight cuts. The page has exactly one animation of its
   own and it should be the only motion in the video.
 
@@ -116,5 +115,5 @@ minutes is worse than cutting shot 6.
 
 Cut **shot 6** first — the refusals are visible on the page and in the README. Then compress
 shot 2 to a single sentence. **Never cut shot 3 or shot 7**: shot 3 is the reason the project
-belongs on Somnia, and shot 7 is the only measurement in the submission that nobody else had
-taken, together with the fix it produced.
+belongs on Somnia, and shot 7 is where the submission checks its own claim in
+public and reports the answer.

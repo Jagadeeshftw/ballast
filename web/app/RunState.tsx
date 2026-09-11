@@ -56,20 +56,18 @@ export default function RunState({
         <div>
           <dt><IconAlertTriangle size={16} stroke={1.7} aria-hidden="true" />Why it stopped</dt>
           <dd>
-            Somnia bills a reactive callback at its <strong>gas limit</strong>, not its usage.
-            Ours was provisioned 10,000,000 and uses about 1,490,000 — so every wake cost
-            0.070 STT rather than the 0.010 it burned. dreamDEX rolls about{" "}
-            <strong>147 windows an hour</strong> across every series, and the engine is woken for
-            all of them. That is 12.8 STT an hour on a testnet whose faucet pays 0.5 a day.
+            A subscription can only be opened with <strong>32 STT</strong> held, on a faucet
+            that pays 0.5 a day. We said at the time that Somnia billed each wake at its gas
+            limit, 0.07 STT; it bills gas used, about 0.010. The 0.07 was our own
+            contract&rsquo;s worst-case estimate, read as a bill.
           </dd>
         </div>
         <div>
           <dt><IconTool size={16} stroke={1.7} aria-hidden="true" />What fixes it</dt>
           <dd>
-            A limit sized to the work cuts the cost — but it has to cover a purchase, not just a
-            registration. We cut it to 4,000,000 against the registration path, and that was
-            wrong: purchases used 2.75M–8.92M, and at 4M the engine opened no cover at all.
-            Reopening also requires the engine to hold 32 STT, checked once at creation.
+            Not a lower limit: Somnia charges gas used, so cutting the limit saves nothing, and at
+            4,000,000 no purchase fits — one has used 9,064,459. Reopening requires the engine to
+            hold 32 STT, checked once at creation.
           </dd>
         </div>
         <div>

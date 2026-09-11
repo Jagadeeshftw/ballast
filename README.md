@@ -212,31 +212,37 @@ show an em dash and say what could not be read, rather than a zero nobody measur
 
 ## Why it stopped in September
 
-The engine stopped, and the reason was a measured property of the venue rather than a fault.
-Stating it plainly because it is the most interesting number we found.
+The engine stopped in September, and for nine days this section gave the wrong reason. The
+correction is kept here in full, because it is checkable and because the mistake changed what
+we did.
 
-**Somnia bills a reactive callback at its gas *limit*, not at its usage.** Twenty callback
-receipts: limit **10,000,000**, actually used **1,479,630 – 1,497,350**, at 7 gwei. That is
-0.07 STT per wake — exactly `10,000,000 × 7 gwei` — for work costing about 0.010. A 6.7×
-overpay that nobody had checked.
+**We reported that Somnia bills a reactive callback at its gas *limit*, not its usage. It does
+not, and it never did.** Every charge we could match to its receipts — 255 charged blocks on
+six engines, 1 to 11 September, at limits of 10,000,000 and 4,000,000 and priority fees of 1
+and 2 gwei — equals `gasUsed × effectiveGasPrice` to the wei. Not one equals the limit.
 
-dreamDEX rolls about **147 windows an hour** across every series, and the subscription wakes
-the engine for all of them, including the 60-second ones the economics above say never to
-cover. Measured burn: **12.8 STT/hour, 308/day**. The Somnia faucet pays 0.5 a day.
+The recorded run settles it without sampling. From the subscription opening on 1 September to
+its close on 2 September (12.75 hours), the engine went from 40 STT to 12.77 with no top-ups:
+**27.23 STT for 2,715 callbacks, about 0.010 each**. Billing at the limit would have cost
+190.05 STT, from an engine that only ever held 40.
 
-And because the limit is charged whatever the callback does, the price is decoupled from the
-work entirely. Of the **2,715 wakes** the engine was billed for, **2,281 (84%) were window
-registrations** — one struct write and one price read — and only **434 were the drain wakes**
-that actually scan the book and buy cover, handling about 2.8 markets each. Every one of the
-2,715 cost the same 0.07 STT. The 6.7× is the overpay on an average wake; this is the reason
-there is no average wake. Total for the run: **~190 STT**.
+The 0.07 STT per wake we quoted was never a charge. It is the engine's own `costPerCallback`
+— `callbackGasLimit × (basefee + priority)`, a worst-case bound — and we read it as the bill.
+The twenty receipts showing 1,479,630 – 1,497,350 gas used were real; the 6.7× overpay, the
+12.8 STT an hour and the ~190 STT for the run were that bound multiplied out, not measured.
+The run actually burned 2.14 STT an hour. Charges followed the work: single callbacks in seven
+sampled minutes on 1 September cost between 0.0033 and 0.0101 STT, so the 2,281 registration
+wakes were not billed like the 434 drain wakes.
 
-The first fix tried needed no new contract — `setSubscriptionFees` sets the limit — and cut
-it to 4,000,000 on the strength of `poke()` estimating 1,936,405 on a live window. That was
-wrong: `poke()` is not the worst path. A callback that buys cover has since used between
-2,391,400 and 9,064,459 gas, so at 4,000,000 the engine bought nothing, and the limit is back
-at 10,000,000. A discard-path callback genuinely costs ~1.5M gas, because Somnia charges 200k per new non-zero SSTORE and the engine writes state on every
-wake. That is the engine remembering what it did, not waste.
+What was true: an engine cannot open a subscription without holding 32 STT, and the Somnia
+faucet paid 0.5 a day.
+
+Acting on the wrong number, we cut the limit to 4,000,000 on 5 September — to save money that
+was never being charged — on the strength of `poke()` estimating 1,936,405 on a live window.
+`poke()` is not the worst path. A callback that buys cover has since used between 2,391,400
+and 9,064,459 gas, so at 4,000,000 the engine bought nothing, and the limit is back at
+10,000,000. A discard-path callback genuinely costs ~1.5M gas, because Somnia charges 200k per
+new non-zero SSTORE and the engine writes state on every wake.
 
 Applying it meant closing and reopening the subscription, and `openSubscription` requires the
 engine to hold **32 STT** — a floor checked once at creation, never escrowed and never

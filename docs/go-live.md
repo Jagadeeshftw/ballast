@@ -134,9 +134,11 @@ cast balance $ENGINE --rpc-url $SOMNIA_RPC
 ```
 
 Expect `40000000000000000000`. **Minimum 32; 40 recommended.** At the live 6 gwei basefee
-plus our 1 gwei priority fee, one callback costs `10,000,000 × 7 gwei = 0.07 STT`, so:
+plus our 1 gwei priority fee, one callback costs **at most** `10,000,000 × 7 gwei = 0.07 STT` —
+the engine's own worst-case figure. Somnia bills gas used × price, measured at about 0.010 STT
+a callback, so real runway is several times this table:
 
-| Funding | Windows of runway |
+| Funding | Windows of runway (worst case) |
 | --- | --- |
 | 32 STT (bare floor) | ~457 |
 | **40 STT (recommended)** | **~571** |

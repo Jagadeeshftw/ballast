@@ -4,8 +4,8 @@ import { RECORD } from "@/lib/record";
 export const dynamic = "force-static";
 
 const HEADINGS: Heading[] = [
-  { id: "billing", text: "Callbacks are billed at the gas limit" },
-  { id: "flat", text: "The price has nothing to do with the work" },
+  { id: "billing", text: "Retracted: billing is at gas used" },
+  { id: "flat", text: "Retracted: the price follows the work" },
   { id: "estimate", text: "eth_estimateGas runs ~4x over" },
   { id: "latch", text: "The latch sweep" },
   { id: "bytecode", text: "3,125 gas per byte of bytecode" },
@@ -13,7 +13,6 @@ const HEADINGS: Heading[] = [
 ];
 
 const REPO = "https://github.com/Jagadeeshftw/ballast";
-const scanned = RECORD.counts.CallbackRan ?? 0;
 const windows = RECORD.counts.WindowEnqueued ?? 0;
 
 export default function Findings() {
@@ -24,52 +23,46 @@ export default function Findings() {
       lede="What we measured about Somnia and dreamDEX while building on them. Stated flat, as measurements — no complaint, and no apology for the ones that cost us."
       headings={HEADINGS}
     >
-      <H2 id="billing">Reactive callbacks are billed at the configured gas limit, not gas used</H2>
+      <H2 id="billing">Retracted: callbacks are billed at gas used, not at the limit</H2>
       <p>
-        <strong>The single most expensive thing we found, and nothing in the documentation says
-        it.</strong> A subscription carries a <code>gasLimit</code>, and the reactive
-        transaction it fires is charged against that limit whatever it actually consumes. Ours
-        ran the library default of 10,000,000.
+        <strong>This page said the opposite until 11 September, and it was wrong — never true,
+        rather than true once and since changed.</strong> We reported that a reactive callback is
+        charged against its subscription&rsquo;s gas limit whatever it uses: 0.07 STT a wake, a
+        6.7× overpay. Checked charge by charge, the chain bills gas used.
       </p>
       <div className="docTableWrap">
         <table className="docTable">
-          <thead><tr><th>Measure</th><th className="num">Gas</th></tr></thead>
+          <thead><tr><th>Measure</th><th className="num">Result</th></tr></thead>
           <tbody>
-            <tr><td>Limit provisioned</td><td className="num"><strong>10,000,000</strong></td></tr>
-            <tr><td>Used, across twenty consecutive receipts</td><td className="num"><strong>1,479,630 – 1,497,350</strong></td></tr>
-            <tr><td>Effective price</td><td className="num">7 gwei</td></tr>
-            <tr><td>Charged per callback</td><td className="num"><strong>0.07 STT</strong></td></tr>
+            <tr><td>Charged blocks matched to their receipts, six engines, 1–11 September</td><td className="num"><strong>255</strong></td></tr>
+            <tr><td>Equal to gas used × price, to the wei</td><td className="num"><strong>255</strong></td></tr>
+            <tr><td>Equal to the gas limit × price</td><td className="num"><strong>0</strong></td></tr>
+            <tr><td>Recorded run: 2,715 callbacks over 12.75 hours</td><td className="num"><strong>27.23 STT</strong> burned</td></tr>
+            <tr><td>What billing at the limit would have cost</td><td className="num">190.05 STT</td></tr>
           </tbody>
         </table>
       </div>
       <p>
-        A <strong>6.7× overpay on every wake</strong>. The fix is a one-line
-        <code>setSubscriptionFees</code>, but applying it means closing and reopening the
-        subscription, and opening requires the owner to hold <strong>32 STT</strong> — so an
-        engine that has burned below that floor cannot cheapen its way back out.
+        The 0.07 was our engine&rsquo;s own <code>costPerCallback</code> — the gas limit times
+        the fee, a worst-case bound — read as the bill. The receipts showing 1,479,630 –
+        1,497,350 gas used were real; the charge paired with them was not. Limits of 10,000,000
+        and 4,000,000 and priority fees of 1 and 2 gwei all billed the same way, so our own
+        settings do not explain it either.
+      </p>
+      <p>
+        It mattered. On the strength of it we cut the limit to 4,000,000 to save money that was
+        never being charged, and at that limit no purchase fits: a callback that buys cover has
+        used up to 9,064,459 gas. What stands is the <strong>32 STT</strong> an owner must hold
+        to open a subscription — and changing the limit means closing and reopening, so it needs
+        that 32 STT again.
       </p>
 
-      <H2 id="flat">Because billing is flat, the price has nothing to do with the work</H2>
+      <H2 id="flat">Retracted: the price does follow the work</H2>
       <p>
-        The limit is charged whatever the callback does, and our handler has two paths that are
-        not remotely comparable in cost.
-      </p>
-      <div className="docTableWrap">
-        <table className="docTable">
-          <thead><tr><th>Wakes</th><th className="num">Count</th><th>What that wake did</th></tr></thead>
-          <tbody>
-            <tr><td>Every wake billed</td><td className="num"><strong>2,715</strong></td><td>—</td></tr>
-            <tr><td>Window registrations</td><td className="num"><strong>2,281</strong> (84%)</td><td>One struct write and one price read</td></tr>
-            <tr><td>Drain wakes</td><td className="num"><strong>434</strong> (16%)</td><td>Walk the pending list and the enrolled users; emitted {scanned.toLocaleString("en-GB")} scans</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>
-        Those add up exactly: 2,281 + 434 = 2,715. Every wake did something — but{" "}
-        <strong>84% of them did the cheap thing and were charged for the expensive one.</strong>{" "}
-        The 6.7× above is the overpay on an average wake; this is the observation that there is
-        no average wake, and a project cannot optimise for it because the only lever is a single
-        subscription-wide limit that must be set for the heaviest path.
+        This section argued that billing was flat — that the {windows.toLocaleString("en-GB")}{" "}
+        registration wakes cost the same as a full scan of the book. It followed from the finding
+        above and falls with it: charges vary with the work, and single callbacks in seven
+        sampled minutes on 1 September cost between 0.0033 and 0.0101 STT.
       </p>
 
       <H2 id="estimate">eth_estimateGas runs roughly 4× over actual</H2>
@@ -79,9 +72,9 @@ export default function Findings() {
       </p>
       <p>
         It is safe — a limit set from the estimate always succeeds — but it means the estimate
-        is a <strong>ceiling, not a forecast</strong>. Read with the finding above, a
-        subscription whose limit was set from an estimate pays roughly{" "}
-        <strong>twenty-five times</strong> what the work costs.
+        is a <strong>ceiling, not a forecast</strong>. An earlier version said this compounded with limit billing to about{" "}
+        <strong>twenty-five times</strong> the cost. It does not: billing is at gas used, so a
+        generous limit costs nothing extra.
       </p>
 
       <H2 id="latch">The latch sweep</H2>

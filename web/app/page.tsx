@@ -255,17 +255,17 @@ export default async function Landing() {
                     : "It is stopped, and the reason is worth reading."}
               </h2>
               <p className="mt-5 max-w-[54ch] leading-relaxed text-muted">
-                Somnia bills a reactive callback at its{" "}
-                <strong className="font-medium text-ink">gas limit</strong>, not at its usage. Ours
-                was provisioned 10,000,000 and uses about 1,490,000 across twenty measured
-                receipts, so every wake cost 0.07 STT rather than the 0.010 it burned — a 6.7×
-                overpay. dreamDEX rolls about 147 windows an hour across every series and the engine
-                is woken for all of them, which is 12.8 STT an hour on a testnet whose faucet pays
-                0.5 a day.
+                We said here that Somnia bills a reactive callback at its{" "}
+                <strong className="font-medium text-ink">gas limit</strong>. It does not, and it
+                never did: every charge we could check — 255 blocks on six engines, 1 to 11
+                September — is gas used × price, to the wei. The 0.07 STT a wake we quoted was our
+                own contract&rsquo;s worst-case estimate, read as a bill. The recorded run cost
+                27.23 STT for 2,715 wakes, not the 190 we claimed.
               </p>
               <p className="mt-4 max-w-[54ch] leading-relaxed text-muted">
-                Cutting the limit was the first fix tried, and it was wrong: a callback that buys
-                cover has used up to 9,064,459 gas, so the limit stays at 10,000,000. Restarting
+                Acting on that number, we cut the limit to 4,000,000 to save money that was never
+                being charged, and no purchase fit: a callback that buys cover has used up to
+                9,064,459 gas, so the limit is back at 10,000,000. Restarting
                 took a new contract in the end, because every order the old one placed outlived a
                 sixty-second market. Opening a subscription requires the engine to hold{" "}
                 <strong className="font-medium text-ink">32 STT</strong>, a floor checked once at

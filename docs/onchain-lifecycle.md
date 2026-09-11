@@ -254,7 +254,7 @@ it a WETH position would have been "covered" by a BTC contract.
 | Worst-case cost per callback | 0.07 STT |
 | Observed callbacks per window | **1.62** (measured on chain) |
 | Callbacks remaining | 611 |
-| **Windows remaining** | **376** |
+| **Windows remaining** | **376** — a floor: Somnia bills gas used, not this worst case |
 
 **The fix is live and visibly self-correcting.** Read off the deployed engine:
 

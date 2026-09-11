@@ -110,34 +110,34 @@ as a much smaller ask once it is clear.
 
 ---
 
-## 5. Reactive callbacks are billed at the subscription's gas LIMIT, not at usage
+## 5. Retracted: reactive callbacks are billed at gas used, not at the limit
 
-**This is the single most expensive thing we found, and nothing in the docs says it.**
+**An earlier version of this finding said the opposite. It was wrong — never true, rather than
+true once and since changed — and this correction is kept where the claim was.**
 
-A subscription carries a `gasLimit`. The reactive transaction it fires is charged against
-that limit whatever it actually uses. Ours ran the library default of 10,000,000.
+We reported that a reactive callback is charged against the subscription's `gasLimit` whatever
+it uses: 0.07 STT a wake at 10,000,000 × 7 gwei, a 6.7× overpay. Checked charge by charge:
 
-Twenty consecutive callback receipts from our handler:
-
-| | gas |
+| | |
 | --- | --- |
-| `gasLimit` provisioned | **10,000,000** |
-| `gasUsed`, measured across 20 receipts | **1,479,630 – 1,497,350** |
-| Effective price | 7 gwei (6 base + 1 priority) |
-| Charged per callback | **0.07 STT** — exactly `10,000,000 × 7 gwei` |
+| Charged blocks matched to their callback receipts | **255**, on six engines, 1–11 Sep 2026 |
+| Settings covered | limits of 10,000,000 and 4,000,000; priority fees of 1 and 2 gwei |
+| Charges equal to `gasUsed × effectiveGasPrice` | **255**, to the wei |
+| Charges equal to `gasLimit × effectiveGasPrice` | **0** |
+| The recorded run, whole: 2,715 callbacks over 12.75 h | **27.23 STT** burned (40 → 12.77, no top-ups); the limit model says 190.05 |
 
-A **6.7× overpay on every single wake.** At dreamDEX's roll rate of ~147 windows an hour
-across all series, that is **12.8 STT/hour, 308/day**, against a faucet that pays 0.5 a day.
-It is the reason our engine is not currently running.
+The 0.07 was our own engine's `costPerCallback`, which computes `callbackGasLimit ×
+(basefee + priority)` as a worst-case bound. We read that bound as the bill. The receipts
+showing 1,479,630 – 1,497,350 gas used were real; the charge we paired with them was not.
 
-The fix is a one-line `setSubscriptionFees` — but applying it means closing and reopening the
-subscription, and `openSubscription` requires the owner to hold **32 STT**
-(`SUBSCRIPTION_OWNER_MINIMUM_BALANCE`, checked at creation, never escrowed or consumed). An
-engine that has burned down below that cannot cheapen itself back out of the hole it is in.
+Nothing is needed from Somnia here: billing at usage is what we asked for, and it is what the
+chain does. If this finding reached you in its earlier form, please disregard it.
 
-**Two suggestions.** Bill at usage, or at least document that the limit is what is charged so
-nobody ships the default. And let `gasLimit` be amended on a live subscription, so a project
-that discovers this can fix it without needing 32 STT it no longer has.
+What stands from the original: `openSubscription` requires the owner to hold **32 STT**
+(`SUBSCRIPTION_OWNER_MINIMUM_BALANCE`, checked at creation, never escrowed or consumed), and a
+`gasLimit` cannot be amended on a live subscription — changing it means closing and reopening,
+which needs that 32 STT again. On a faucet paying 0.5 a day, that floor is the real cost of
+changing your mind about a subscription.
 
 ### 5a. `eth_estimateGas` runs ~4× over actual, which compounds the above
 
@@ -155,42 +155,17 @@ is a **ceiling, not a forecast**, and anyone sizing a budget from it will over-p
 fourfold. Worth a line in the gas documentation, because the natural reading of an estimate is
 that it approximates the cost.
 
-Both numbers matter together: usage is over-estimated ~4× *and* billing is at the limit, so a
-subscription whose limit was set from an estimate pays roughly **twenty-five times** what the
-work costs.
+An earlier version said this compounded with finding 5 to about twenty-five times the cost. It
+does not: billing is at usage, so a limit set generously from an estimate costs nothing extra —
+it only has to be high enough.
 
-### 5b. Because billing is flat per wake, the price is fully decoupled from the work
+### 5b. Retracted: billing is not flat per wake
 
-The limit is charged whatever the callback does, so every wake costs the same regardless of
-which path it runs. Our handler has two, and they are not remotely comparable in cost.
-
-Counting the run's own on-chain counters:
-
-| | wakes | what that wake did |
-| --- | --- | --- |
-| `callbackCount` — every wake billed | **2,715** | |
-| of which: window registrations | **2,281** (84%) | one struct write, one `priceOf` read |
-| of which: drain wakes | **434** (16%) | walk the pending list and the enrolled users; emitted 1,196 `CallbackRan`, ~2.8 markets each |
-
-Those add up exactly: 2,281 + 434 = 2,715. Every wake did something — but **84% of them did
-the cheap thing and were charged for the expensive one.** Registering a window is a single
-SSTORE and a single view call. Draining scans the book and prices cover for every enrolled
-account. Both were billed 0.07 STT.
-
-That is the part we would most like changed. The 6.7× in finding 5 is an overpay on the
-average wake; this is the observation that there is no average wake — the work per callback
-varies by an order of magnitude and the price does not move at all. A project cannot optimise
-for it either, because the only lever is a single subscription-wide `gasLimit` that must be
-set high enough for the heaviest path, which then prices every light one at that ceiling.
-
-Total for the run: **2,715 wakes × 0.07 = ~190 STT**, on a faucet that pays 0.5 a day.
-
-**Suggestion.** If billing at usage is not possible, allowing a per-subscription `gasLimit` to
-differ by matched topic would let a handler price its cheap path cheaply. Registering an event
-and acting on a batch are different jobs; charging them identically is what made this run
-unaffordable.
-
----
+This section argued that every wake cost the same 0.07 STT whether it registered a window or
+scanned the book, and called that the part we would most like changed. It followed from
+finding 5 and falls with it. Charges vary with the work — single callbacks in seven sampled
+minutes on 1 September cost between 0.0033 and 0.0101 STT — and the 2,715 wakes of the
+recorded run cost 27.23 STT in total, not the ~190 STT stated here before.
 
 ## 6. dreamDEX's `MarketCreated` is unreachable in practice: nested inside a reactive callback, and emitted by an unverified contract
 
