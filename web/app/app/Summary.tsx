@@ -33,6 +33,7 @@ export default function Summary() {
   else if (!mounted || !current) status = { tone: "", text: "Watching", sub: "waiting for the next window" };
   else if (t.opened) status = { tone: "up", text: "Protected this window", sub: `made whole at ${(t.opened.achievedBps / 100).toFixed(2)}% of a fall` };
   else if (phase === "declined" || phase === "gaveUp") status = { tone: "down", text: "Not protected this window", sub: "declined — the reason is in the live window" };
+  else if (phase === "unscheduled") status = { tone: "down", text: "Not protected this window", sub: "the engine cannot schedule an attempt — below the 32 STT floor" };
   else status = { tone: "", text: "Evaluating", sub: "Ballast is sizing cover for this window" };
 
   return (

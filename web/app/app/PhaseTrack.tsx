@@ -30,6 +30,7 @@ export default function PhaseTrack() {
   if (!closed) {
     if (t.opened) { at = 2; label = "Protected"; tone = "up"; }
     else if (phase === "declined" || phase === "gaveUp") { at = 2; label = phase === "gaveUp" ? "Gave up" : "Declined"; tone = "down"; }
+    else if (phase === "unscheduled") { at = 1; label = "Cannot schedule"; tone = "down"; }
     else if (phase === "evaluating") { at = 1; label = "Evaluating"; }
     else { at = 0; label = "Open"; }
   } else if (t.settled) { at = 5; label = "Settled"; tone = t.settled.proceeds > 0n ? "up" : ""; }

@@ -75,8 +75,14 @@ export type Live = {
   spot: number | null;
   cfg: { first: number; retry: number; max: number } | null;
   readFailed: boolean;
+  /** The engine's own answer to "can a retry tick be booked right now". False when its
+      balance is under Somnia's 32 STT scheduling floor: windows still register, but no
+      attempt is ever made, for anyone. Read every poll, because "evaluating" was being
+      inferred from time-in-window alone while nothing could be scheduled. */
+  canSchedule: boolean | null;
+  engineBalance: bigint | null;
   /** How the engine's decision for the connected wallet stands in the current window. */
-  phase: "none" | "waiting" | "evaluating" | "bought" | "declined" | "gaveUp";
+  phase: "none" | "waiting" | "evaluating" | "bought" | "declined" | "gaveUp" | "unscheduled";
 };
 
 const LiveCtx = createContext<Live | null>(null);
@@ -99,6 +105,8 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
   const [quote, setQuote] = useState<{ marketId: string; q: Quote } | null>(null);
   const [cfg, setCfg] = useState<Live["cfg"]>(null);
   const [readFailed, setReadFailed] = useState(false);
+  const [canSchedule, setCanSchedule] = useState<boolean | null>(null);
+  const [engineBalance, setEngineBalance] = useState<bigint | null>(null);
   const last = useRef<bigint | null>(null);
   const who = useRef<string | null>(null);
 
@@ -181,6 +189,9 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
         .then((o) => setTracks((ts) => { const t = ts[k] ?? blank(); return t.outcome === Number(o) ? ts : { ...ts, [k]: { ...t, outcome: Number(o) } }; }))
         .catch(() => {}));
     }
+    jobs.push(client.readContract({ address: ADDR.engine as Address, abi: [{ type: "function", name: "canSchedule", stateMutability: "view", inputs: [], outputs: [{ type: "bool" }] }] as const, functionName: "canSchedule" })
+      .then((v) => setCanSchedule(v)).catch(() => setCanSchedule(null)));
+    jobs.push(client.getBalance({ address: ADDR.engine as Address }).then(setEngineBalance).catch(() => setEngineBalance(null)));
     jobs.push(client.readContract({ address: ADDR.source as Address, abi: [{ type: "function", name: "priceOf", stateMutability: "view",
       inputs: [{ type: "bytes32" }], outputs: [{ type: "uint256" }, { type: "bool" }] }] as const, functionName: "priceOf",
       args: [ETH_KEY as `0x${string}`] })
@@ -226,13 +237,13 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
   const phase: Live["phase"] = !current || !connected ? "none"
     : tr.opened ? "bought"
     : tr.gaveUp ? "gaveUp"
-    : tr.skips.length > 0 && (cfg ? tr.attempts >= cfg.max : false) ? "declined"
     : tr.skips.length > 0 ? "declined"
+    : canSchedule === false && tr.attempts === 0 ? "unscheduled"
     : cfg && now >= current.start + cfg.first ? "evaluating"
     : "waiting";
 
   return (
-    <LiveCtx.Provider value={{ mounted, now, current, previous, windows: wins, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, phase }}>
+    <LiveCtx.Provider value={{ mounted, now, current, previous, windows: wins, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, canSchedule, engineBalance, phase }}>
       {children}
     </LiveCtx.Provider>
   );

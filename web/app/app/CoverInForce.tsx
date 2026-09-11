@@ -212,6 +212,7 @@ function Cover({ exposure, weth, policy, enrolled }: {
     : o ? ["Protected", "up"]
     : phase === "gaveUp" ? ["Gave up", "down"]
     : phase === "declined" ? ["Declined", "down"]
+    : phase === "unscheduled" ? ["Engine cannot schedule", "down"]
     : phase === "evaluating" ? ["Evaluating", ""]
     : ["Waiting", ""];
 
@@ -238,6 +239,8 @@ function Cover({ exposure, weth, policy, enrolled }: {
         ) : phase === "declined" ? (
           <>Nothing is in force this window yet: declined — <strong>{REASON[t.skips[t.skips.length - 1]?.reason]?.[0] ?? "see the live window"}</strong>
             {cfg && t.attempts < cfg.max ? <>; it will try again</> : null}.</>
+        ) : phase === "unscheduled" ? (
+          <>Nothing is in force: the engine is below the 32 STT scheduling floor, so no attempt can be booked in this window — for any wallet, not only yours.</>
         ) : phase === "evaluating" ? (
           <>Nothing is in force yet: Ballast is evaluating this window now.</>
         ) : (

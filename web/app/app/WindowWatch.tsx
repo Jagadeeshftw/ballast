@@ -30,7 +30,7 @@ const clock = (secs: number) => `${Math.floor(secs / 60)}:${String(secs % 60).pa
 
 export default function WindowWatch() {
   const { settled: walletKnown, hasProvider, account, chainOk, s } = useWallet();
-  const { mounted, now, current, previous, initial, trackOf, quote: q, spot, cfg, readFailed, phase } = useLive();
+  const { mounted, now, current, previous, initial, trackOf, quote: q, spot, cfg, readFailed, phase, canSchedule, engineBalance } = useLive();
   const connected = walletKnown && !!account && chainOk;
   const policy = s?.policy;
   const hasPolicy = !!policy?.[0] && Number(policy[3]) * 1000 > Date.now();
@@ -92,6 +92,15 @@ export default function WindowWatch() {
 
         {/* ------------------------------------------------ this window, for this wallet */}
         <div className="wwState">
+          {mounted && canSchedule === false && (
+            <p className="wwLine">
+              <span className="tag down">Cannot schedule</span>{" "}
+              The engine holds{engineBalance !== null ? <> <strong>{(Number(engineBalance) / 1e18).toFixed(2)} STT</strong>,</> : null} below
+              Somnia&rsquo;s <strong>32 STT</strong> scheduling floor, so it registers each window but cannot book the
+              attempt that buys cover — for any wallet. Anyone can fund it with <code>topUp()</code>;{" "}
+              <a href="/app/engine">Engine</a> has the details.
+            </p>
+          )}
           {hasProvider && !walletKnown ? (
             <p className="wwNote">Checking your wallet…</p>
           ) : !account ? (
@@ -111,7 +120,7 @@ export default function WindowWatch() {
             <>
               {q?.kind === "buy" ? (
                 <p className="wwLine">
-                  <span className="tag">{phase === "evaluating" ? "Evaluating" : "Before cover opens"}</span>{" "}
+                  <span className="tag">{phase === "evaluating" ? "Evaluating" : phase === "unscheduled" ? "If it could run" : "Before cover opens"}</span>{" "}
                   If Ballast bought now it would spend <strong>{usd(q.premium)} tUSDC</strong> of your balance for{" "}
                   <strong>{qtyOf(q.qty)}</strong> Down contracts at {(Number(q.coverPrice) / 1e6).toFixed(3)} —
                   a payout of <strong>{qtyOf(q.qty)} tUSDC</strong> if ETH closes below the strike, making you whole at{" "}
@@ -138,7 +147,8 @@ export default function WindowWatch() {
               )}
               {tr.gaveUp ? (
                 <p className="wwNote">Ballast gave up on this window after {cfg?.max ?? "its"} attempts. No cover in it.</p>
-              ) : nextAttemptAt !== null && nextAttemptAt > now ? (
+              ) : phase === "unscheduled" ? null
+              : nextAttemptAt !== null && nextAttemptAt > now ? (
                 <p className="wwNote">Next attempt at {utcTime(nextAttemptAt)} UTC, {nextAttemptAt - current.start} s into the window.</p>
               ) : null}
             </>
