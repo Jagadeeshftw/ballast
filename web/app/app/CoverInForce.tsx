@@ -2,6 +2,8 @@
 
 import { useWallet } from "./wallet";
 import { ADDR, EXPLORER } from "@/lib/chain";
+import { explainShort } from "@/lib/window";
+import { REASON, useLive } from "./live";
 
 /**
  * "What am I covered for right now" — and the honest answer depends on who is asking.
@@ -29,6 +31,7 @@ export default function CoverInForce({
   demoExpiry: string; demoOpen: number;
 }) {
   const { settled, sErr, hasProvider, account, chainOk, s, refresh, connect, connecting } = useWallet();
+  const live = useLive();
 
   /* Unknown is a third state, and two separate windows produce it. In both, the honest
      answer is "not yet known" -- never "you have none", which is an assertion about the
@@ -134,17 +137,28 @@ export default function CoverInForce({
           <a className="btn ghost" href="/app/funds">Mint test exposure</a>
         </>
       ) : (
-        /* ---- state 4: genuinely theirs ---- */
+        /* ---- state 4: genuinely theirs. Two figures, labelled apart: what the policy ASKS
+               for, and what is actually IN FORCE in the current window. They differ whenever
+               the book is thinner than the ask, and shown together unlabelled they read as a
+               contradiction. "In force" is reserved for what has actually been bought. ---- */
         <>
-          <div className="coverEyebrow">Your cover · in force</div>
+          <div className="coverEyebrow">Your cover</div>
           <div className="coverBig">
             {n2(exposure)}<span className="coverUnit">tUSDC of ETH</span>
           </div>
-          <p className="coverLede">
-            Made whole on a fall of{" "}
-            <strong>{(yourMakeWhole! * 100).toFixed(2)}%</strong>, which on this position pays{" "}
-            <strong className="text-paid">{n2(yourPays!)}</strong> tUSDC.
-          </p>
+          <dl className="coverAsk">
+            <div>
+              <dt>Your policy asks for</dt>
+              <dd>
+                made whole on a fall of <strong>{(yourMakeWhole! * 100).toFixed(2)}%</strong> — a loss of{" "}
+                <strong>{n2(yourPays!)}</strong> tUSDC on this position, paid back net of premium
+              </dd>
+            </div>
+            <div>
+              <dt>In force{live.current ? <> · window #{parseInt(live.current.marketId, 16)}</> : null}</dt>
+              <dd><InForce exposure={exposure} policy={policy!} /></dd>
+            </div>
+          </dl>
         </>
       )}
 
@@ -173,4 +187,39 @@ export default function CoverInForce({
       </details>
     </div>
   );
+}
+
+/**
+ * What is actually bought in the current window, from the live feed. Never the policy figure:
+ * a panel row headed "in force" that showed the ask would be the contradiction this fixes.
+ */
+function InForce({ exposure, policy }: { exposure: number; policy: readonly [boolean, number, number, bigint, bigint] }) {
+  const { mounted, current, trackOf, phase, cfg } = useLive();
+  if (!mounted || !current) return <>no one-minute window is open right now</>;
+  const t = trackOf(current);
+  if (t.opened) {
+    const o = t.opened;
+    const gross = Number(o.qty) / 1e6, premium = Number(o.premium) / 1e6;
+    /* The make-whole point is NET of premium: the engine's achievedBps is qty·(1−q)/exposure,
+       and qty·(1−q) is what the payout leaves after the premium it cost. Comparing the gross
+       payout with the ask's net loss figure is the wrong comparison, so both rows speak net. */
+    const net = gross - premium;
+    const short = o.achievedBps < o.requestedBps;
+    const why = explainShort(o, Number(policy[2]), policy[4]);
+    return (
+      <>
+        made whole on a fall of <strong>{(o.achievedBps / 100).toFixed(2)}%</strong> — a loss of{" "}
+        <strong className="text-paid">{n2(net)}</strong> tUSDC. {n2(gross)} tUSDC pays out if ETH closes below the
+        strike, for {n2(premium)} tUSDC of premium already spent
+        {short ? <>. <span className="coverGap">Short of the {(o.requestedBps / 100).toFixed(2)}% asked ({n2(exposure * o.requestedBps / 10_000)} tUSDC): {why ?? "the book offered less than the ask"}.</span></> : "."}
+      </>
+    );
+  }
+  if (phase === "gaveUp") return <>nothing — Ballast gave up on this window after {cfg?.max ?? "its"} attempts</>;
+  if (phase === "declined") {
+    const r = t.skips[t.skips.length - 1]?.reason ?? "";
+    return <>nothing yet — declined: <strong>{REASON[r]?.[0] ?? r}</strong>{cfg && t.attempts < cfg.max ? "; it will try again" : ""}</>;
+  }
+  if (phase === "evaluating") return <>nothing yet — Ballast is evaluating this window now</>;
+  return <>nothing yet — Ballast makes its first attempt {cfg?.first ?? 15} s into the window</>;
 }

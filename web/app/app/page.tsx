@@ -8,6 +8,7 @@ import ChainNote from "@/components/site/ChainNote";
 import { StateBanner } from "@/components/ace/lead-panel";
 import CoverInForce from "./CoverInForce";
 import WindowWatch from "./WindowWatch";
+import { LiveProvider } from "./live";
 import { client } from "@/lib/chain";
 import { currentWindow } from "@/lib/window";
 import type { PublicClient } from "viem";
@@ -40,11 +41,11 @@ export default async function Overview() {
   const madeWhole = exposure !== null && policyActive ? exposure * makeWhole : null;
 
   return (
-    <>
+    <LiveProvider initial={live.win} serverNow={live.chainNow}>
       {!chainOk && <ChainNote />}
       <h1 className="viewH1">Overview</h1>
 
-      <WindowWatch initial={live.win} serverNow={live.chainNow} />
+      <WindowWatch />
 
       {/* The one place the graduation field appears. */}
       {engine && !engine.subscribed && (
@@ -125,7 +126,7 @@ export default async function Overview() {
         )}
         <p className="why"><a href="/app/activity">All activity →</a> · block {String(tape.head)}</p>
       </section>
-    </>
+    </LiveProvider>
   );
 }
 

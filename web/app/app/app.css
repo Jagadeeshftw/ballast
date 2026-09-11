@@ -609,6 +609,14 @@
 #dir-a .coverLede { margin-top: 14px; max-width: 62ch; font-size: 15px; line-height: 1.65; color: var(--chart); }
 #dir-a .coverLede strong { color: var(--bone); font-weight: 600; }
 #dir-a .coverPanel .btn { margin-top: 18px; }
+/* The ask and the in-force figure, as two labelled rows rather than one sentence. */
+#dir-a .coverAsk { margin-top: 16px; display: grid; gap: 10px; max-width: 72ch; }
+#dir-a .coverAsk > div { display: grid; grid-template-columns: 12ch minmax(0, 1fr); gap: 4px 14px; align-items: baseline; }
+#dir-a .coverAsk dt { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--chart); padding-top: 4px; }
+#dir-a .coverAsk dd { font-size: 15px; line-height: 1.6; color: var(--chart); margin: 0; }
+#dir-a .coverAsk dd strong { color: var(--bone); font-weight: 600; }
+#dir-a .coverGap { color: var(--beacon); }
+@media (max-width: 600px) { #dir-a .coverAsk > div { grid-template-columns: 1fr; } }
 #dir-a .coverNote { margin-top: 14px; font-size: 14px; color: var(--chart); }
 #dir-a .coverDemo { margin-top: 22px; border-top: 1px solid var(--rail); padding-top: 14px; }
 #dir-a .coverDemo summary {
