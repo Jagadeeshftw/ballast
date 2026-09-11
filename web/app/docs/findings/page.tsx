@@ -37,7 +37,7 @@ export default function Findings() {
             <tr><td>Charged blocks matched to their receipts, six engines, 1–11 September</td><td className="num"><strong>255</strong></td></tr>
             <tr><td>Equal to gas used × price, to the wei</td><td className="num"><strong>255</strong></td></tr>
             <tr><td>Equal to the gas limit × price</td><td className="num"><strong>0</strong></td></tr>
-            <tr><td>Recorded run: 2,715 callbacks over 12.75 hours</td><td className="num"><strong>27.23 STT</strong> burned</td></tr>
+            <tr><td>The 1–2 September run: 2,715 callbacks over 12.75 hours</td><td className="num"><strong>27.23 STT</strong> burned</td></tr>
             <tr><td>What billing at the limit would have cost</td><td className="num">190.05 STT</td></tr>
           </tbody>
         </table>
@@ -52,7 +52,7 @@ export default function Findings() {
       <p>
         It mattered. On the strength of it we cut the limit to 4,000,000 to save money that was
         never being charged, and at that limit no purchase fits: a callback that buys cover has
-        used up to 9,064,459 gas. What stands is the <strong>32 STT</strong> an owner must hold
+        used up to 9,218,505 gas. What stands is the <strong>32 STT</strong> an owner must hold
         to open a subscription — and changing the limit means closing and reopening, so it needs
         that 32 STT again.
       </p>

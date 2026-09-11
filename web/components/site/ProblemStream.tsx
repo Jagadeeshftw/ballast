@@ -1,5 +1,5 @@
 import { InfiniteMovingCards } from "@/components/ace/infinite-moving-cards";
-import { RECORD } from "@/lib/record";
+import { RECORD, recordRange } from "@/lib/record";
 
 /**
  * The problem, embodied rather than described.
@@ -38,8 +38,8 @@ export default function ProblemStream() {
     <div className="mt-10">
       <InfiniteMovingCards items={items} direction="left" speed="slow" />
       <p className="mt-6 text-[13px] text-muted">
-        Real windows from the recorded run, {RECORD.counts.WindowEnqueued?.toLocaleString("en-GB")} of
-        them in a day. This is the thing you would have to keep up with.
+        Real windows from the recorded history, {RECORD.counts.WindowEnqueued?.toLocaleString("en-GB")} of
+        them{recordRange() ? ` across ${recordRange()}` : ""}. This is the thing you would have to keep up with.
       </p>
     </div>
   );

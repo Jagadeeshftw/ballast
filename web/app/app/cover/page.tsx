@@ -1,7 +1,7 @@
 import { ADDR, EXPLORER, KNOWN_POSITIONS, getPosition } from "@/lib/chain";
 import { positionsFor, totalsFor, cumulativeFor, type PositionRow } from "@/lib/portfolio";
 import CumChart from "../CumChart";
-import { recordRange } from "@/lib/record";
+import { RECORD, recordRange, mixPhrase, windowShort } from "@/lib/record";
 import PayoffA from "../../PayoffA";
 import { SettleButton, SettleRun } from "../cover-actions";
 import { EmptyState } from "@/components/ace/empty-state";
@@ -61,6 +61,11 @@ export default async function Cover({
             <Fig k="Windows that paid" v={`${t.paid} of ${t.settled}`}
               u={t.hitRate === null ? "too few to rate" : `${Math.round(t.hitRate * 100)}%`} />
           </div>
+          <p className="why" style={{ marginTop: 14, marginBottom: 0 }}>
+            By window length, every position:{" "}
+            {RECORD.windowMix.opened.map((b) => `${b.n.toLocaleString("en-GB")} at ${windowShort(b.seconds)}`).join(" · ")}.
+            One account, across every engine Ballast has deployed.
+          </p>
         </div>
       </section>
 
@@ -76,9 +81,9 @@ export default async function Cover({
           DO NOT TRIM THE PARAGRAPH BELOW THE CHART. It reads as padding when the page feels
           long, and it is the opposite: +770 on a 61% hit rate is exactly the kind of number a
           trading-literate reader distrusts on sight. The caveat is what makes it credible
-          rather than suspicious -- it says the sample is 44 short windows on a thin testnet
-          book (35 five-minute, 7 fifteen-minute, 2 one-hour; not one of them one-minute, whatever
-          earlier copy said), and that our own economics calls rolling at that frequency ruinous. A
+          rather than suspicious -- it says what the sample is: short windows on a thin testnet
+          book, with the mix of lengths counted from the record rather than written down, and
+          that our own economics calls rolling at that frequency ruinous. A
           judge who does that arithmetic and finds we did it first reads everything else here
           differently. Cut the chart before cutting the caveat. */}
       <section>
@@ -94,10 +99,9 @@ export default async function Cover({
                 them, so interpolating would draw a trend that did not happen. Each dot is one
                 settled position, green where the cover paid.{" "}
                 <strong>Read this as a sample, not as a result.</strong> These are{" "}
-                {t.settled} short windows on a thin testnet book — thirty-five five-minute,
-                seven fifteen-minute and two one-hour, none of them one-minute — and our own
-                economics says rolling cover that often is ruinous over any real horizon: at
-                those intervals the spread alone runs to thousands of percent a year. A favourable
+                {t.settled} short windows on a thin testnet book — {mixPhrase("settled")} — and
+                our own economics says rolling cover that often is ruinous over any real horizon:
+                at those intervals the spread alone runs to thousands of percent a year. A favourable
                 run of {t.settled} windows does not contradict that; it is what a small sample
                 looks like.
               </>
@@ -128,7 +132,8 @@ export default async function Cover({
           Where <em>got</em> is below <em>asked</em>, something bound the size. The event does
           not record which, but it is recoverable: exposure falls out of quantity, price and
           the achieved point, so a premium comfortably under the ceiling means the{" "}
-          <em>book</em> was the constraint, not the policy. On this account that is 39 of 40.
+          <em>book</em> was the constraint, not the policy. On this account that is{" "}
+          {t.bookBound} of {t.shortfalls}.
         </p>
 
         {rows.length === 0 ? (
@@ -162,7 +167,10 @@ function Row({ r }: { r: PositionRow }) {
   const edge = r.outcome === "Won" ? "won" : r.outcome === "Lost" ? "lost" : "open";
   return (
     <tr className={edge}>
-      <td><strong>{r.asset}</strong> <span className="dim">#{parseInt(r.marketId, 16)}</span></td>
+      <td>
+        <strong>{r.asset}</strong> <span className="dim">#{parseInt(r.marketId, 16)}</span>
+        {r.windowSeconds !== null && <span className="dim"> · {windowShort(r.windowSeconds)}</span>}
+      </td>
       <td className="dim">{utcShort(r.openedAt)}</td>
       <td className="num">{usd(r.premium)}</td>
       <td className="num">

@@ -147,7 +147,6 @@ export default async function Engine() {
           items={[
             { label: "Windows seen", value: n0(e.windowsEnqueued), note: "reacted to in-block" },
             { label: "Wakes billed", value: n0(e.callbackCount), note: "every event the subscription matched" },
-            { label: "Windows scanned", value: n0(RECORD.counts.CallbackRan ?? 0), note: "wakes that did cover work" },
             { label: "Covers opened", value: n0(e.coversOpened), note: "positions taken" },
             { label: "Covers settled", value: n0(e.coversSettled), note: "outcomes known" },
             { label: "Premium paid", value: usd(e.premiumPaidTotal), note: "tUSDC" },
@@ -155,20 +154,18 @@ export default async function Engine() {
           ]}
         />
         {/* ═══════════════════════════════════════════════════════════════════
-            LOAD-BEARING. Three numbers on this page disagree with three numbers in
-            the panel above it, and a reader who spots that and gets no explanation
-            stops believing the rest. Both sets are correct; they count different
-            things. Do not delete this to save space -- delete a figure instead. */}
+            LOAD-BEARING. Numbers on this page disagree with the recorded history,
+            and a reader who spots that and gets no explanation stops believing the
+            rest. Both are correct; they count different things. Do not delete this to
+            save space -- delete a figure instead. */}
         <p className="why">
-          Two of these need saying plainly, because they do not match the recorded run above
-          and a reader who notices that deserves the reason rather than the benefit of the
-          doubt. <strong>Wakes billed</strong> counts every event the subscription matched, and
-          Somnia charged for all {n0(e.callbackCount)} of them at the gas limit; only{" "}
-          {n0(RECORD.counts.CallbackRan ?? 0)} of those wakes had a window to scan. That gap is
-          the cost problem, not an accounting one. And <strong>covers opened</strong> reads{" "}
+          These do not match the recorded history, and a reader who notices that deserves the
+          reason rather than the benefit of the doubt. <strong>Covers opened</strong> reads{" "}
           {n0(opened)} here against {n0(RECORD.counts.CoverOpened ?? 0)} in the record, because
-          the record spans every engine Ballast has deployed: three of those covers were opened
-          by two earlier engines before this one existed. This page counts only this contract.
+          the record is one account&rsquo;s history across every engine Ballast has deployed,
+          and this page counts only this contract. <strong>Wakes billed</strong> counts every
+          event the subscription matched; Somnia charged each one at the gas it actually used,
+          and most of them only registered a window.
         </p>
       </section>
 
@@ -209,15 +206,21 @@ export default async function Engine() {
       </section>
 
       <section>
-        <h2 className="viewH2">The recorded run</h2>
+        <h2 className="viewH2">The recorded history</h2>
         <p className="why">
-          The engine ran continuously{range ? ` over ${range}` : ""} before the subscription
-          closed, writing {Object.values(RECORD.counts).reduce((a, b) => a + b, 0).toLocaleString("en-GB")}{" "}
-          events to the chain across blocks {RECORD.fromBlock.toLocaleString("en-GB")}–
-          {RECORD.toBlock.toLocaleString("en-GB")}. That history is on chain and independently
-          checkable; the capture committed to the repository is a convenience, not the source
-          of truth. <a href="/app/activity">Read it on Activity</a>, or{" "}
-          <a href={`${EXPLORER}/address/${ADDR.engine}`}>verify it on the explorer</a>.
+          {RECORD.engines.length} engine deployments over one vault wrote{" "}
+          {Object.values(RECORD.counts).reduce((a, b) => a + b, 0).toLocaleString("en-GB")} events
+          to the chain{range ? ` over ${range}` : ""}, across blocks{" "}
+          {RECORD.fromBlock.toLocaleString("en-GB")}–{RECORD.toBlock.toLocaleString("en-GB")}. That
+          history is on chain and independently checkable; the capture committed to the
+          repository is a convenience, not the source of truth.{" "}
+          <a href="/app/activity">Read it on Activity</a>, or verify each engine on the explorer:{" "}
+          {RECORD.engines.map((g, i) => (
+            <span key={g.address}>
+              {i > 0 && ", "}
+              <a className="mono" href={`${EXPLORER}/address/${g.address}`}>{g.address.slice(0, 10)}…</a>
+            </span>
+          ))}.
         </p>
       </section>
     </>

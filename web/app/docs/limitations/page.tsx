@@ -1,5 +1,5 @@
 import DocShell, { H2, H3, type Heading } from "../DocShell";
-import { RECORD, recordRange } from "@/lib/record";
+import { RECORD, recordRange, mixPhrase } from "@/lib/record";
 
 export const dynamic = "force-static";
 
@@ -9,6 +9,8 @@ const HEADINGS: Heading[] = [
   { id: "poke", text: "poke() is untested at scale" },
   { id: "reserved", text: "A reservation has no user-side escape" },
   { id: "engine", text: "The engine has stopped before" },
+  { id: "gas-ceiling", text: "A buying callback runs close to its gas limit" },
+  { id: "long-windows", text: "The default windows are the ones it never bought" },
   { id: "probes", text: "Two probes are pinned to expired markets" },
   { id: "sample", text: "The record is a sample" },
   { id: "open", text: "Open questions" },
@@ -76,6 +78,46 @@ export default function Limitations() {
         state is on <a href="/app/engine">the Engine view</a>.
       </p>
 
+      <H2 id="gas-ceiling">A buying callback runs close to its gas limit</H2>
+      <p>
+        Each callback is provisioned 10,000,000 gas. With one enrolled account, a callback that
+        bought a single cover used 2,391,271 – 3,591,400 gas (median 2,445,376), and the heaviest
+        so far used <strong>9,218,505 — 92% of the limit</strong>.
+      </p>
+      <p>
+        The engine does guard its batches: it stops when less than{" "}
+        <code>gasReservePerEntry</code> (400,000) remains and resumes from a cursor on the next
+        callback. But one purchase costs about six times that reserve. So as more accounts share
+        a batch, a purchase can start with too little gas to finish — it runs out inside its own
+        call, the batch records <code>PlacementFailed</code> for that account, and that account
+        goes uncovered for that window. If what is left is then too little for the batch&rsquo;s
+        own bookkeeping, the callback as a whole runs out of gas.
+      </p>
+      <div className="callout">
+        <span className="calloutTitle">Known, and not fixed</span>
+        Both levers are owner settings, not contract changes: a reserve above the cost of one
+        purchase (<code>setBatchParams</code>) would make a batch stop cleanly and resume, and
+        the limit can rise to the precompile&rsquo;s maximum of 200,000,000 — Somnia bills gas
+        used, so the limit is not itself the cost. Neither has been done, because with one
+        enrolled account the ceiling has not been reached.
+      </div>
+
+      <H2 id="long-windows">The default windows are the ones it never bought</H2>
+      <p>
+        The product defaults to four-hour and twenty-four-hour windows, because those are the
+        intervals where the spread is survivable. On testnet it has never bought one. Over the
+        recorded history the engines saw <strong>20 four-hour and 4 twenty-four-hour</strong> ETH
+        windows and refused every one: the Down book was empty, or the affordable size fell
+        below the venue&rsquo;s minimum lot. Every cover in the record is on a window of an hour
+        or less — {mixPhrase("opened")}.
+      </p>
+      <p>
+        So the economics argue for the windows the record cannot show, and the record shows the
+        windows the economics argue against. That is a property of thin testnet books rather
+        than of the engine, but it means cover at the intervals that matter is{" "}
+        <strong>untested</strong>.
+      </p>
+
       <H2 id="probes">Two probes are pinned to expired markets</H2>
       <p>
         The Phase 0 probe suite runs <strong>21 of 23</strong> green.{" "}
@@ -97,9 +139,8 @@ export default function Limitations() {
       </p>
       <div className="callout">
         <span className="calloutTitle">Read it as a sample</span>
-        Those {settled} positions are short windows on a thin testnet book — thirty-five
-        five-minute, seven fifteen-minute and two one-hour, none of them one-minute
-        {range ? `, recorded over ${range}` : ""}. Our own{" "}
+        Those {settled} positions are short windows on a thin testnet book —{" "}
+        {mixPhrase("settled")}{range ? `, recorded over ${range}` : ""}. Our own{" "}
         <a href="/docs/economics">economics</a> says rolling cover that often is ruinous over
         any real horizon — the spread alone runs to thousands of percent a year,
         which is why the product defaults to four-hour and twenty-four-hour windows. A

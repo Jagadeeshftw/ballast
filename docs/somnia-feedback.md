@@ -124,7 +124,7 @@ it uses: 0.07 STT a wake at 10,000,000 × 7 gwei, a 6.7× overpay. Checked charg
 | Settings covered | limits of 10,000,000 and 4,000,000; priority fees of 1 and 2 gwei |
 | Charges equal to `gasUsed × effectiveGasPrice` | **255**, to the wei |
 | Charges equal to `gasLimit × effectiveGasPrice` | **0** |
-| The recorded run, whole: 2,715 callbacks over 12.75 h | **27.23 STT** burned (40 → 12.77, no top-ups); the limit model says 190.05 |
+| The 1–2 September run, whole: 2,715 callbacks over 12.75 h | **27.23 STT** burned (40 → 12.77, no top-ups); the limit model says 190.05 |
 
 The 0.07 was our own engine's `costPerCallback`, which computes `callbackGasLimit ×
 (basefee + priority)` as a worst-case bound. We read that bound as the bill. The receipts
@@ -165,7 +165,7 @@ This section argued that every wake cost the same 0.07 STT whether it registered
 scanned the book, and called that the part we would most like changed. It followed from
 finding 5 and falls with it. Charges vary with the work — single callbacks in seven sampled
 minutes on 1 September cost between 0.0033 and 0.0101 STT — and the 2,715 wakes of the
-recorded run cost 27.23 STT in total, not the ~190 STT stated here before.
+1–2 September run cost 27.23 STT in total, not the ~190 STT stated here before.
 
 ## 6. dreamDEX's `MarketCreated` is unreachable in practice: nested inside a reactive callback, and emitted by an unverified contract
 

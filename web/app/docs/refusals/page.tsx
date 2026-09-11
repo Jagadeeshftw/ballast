@@ -25,7 +25,7 @@ const MEANING: [string, string][] = [
   ["Cover too expensive", "Down priced above 0.90, where the size needed to make you whole diverges. Paying it would cost more than the fall it covers."],
   ["Below minimum lot", "The affordable size rounds to zero on the venue's lot grid. Buying the next lot up would exceed your premium ceiling."],
   ["No headroom", "A ceiling you set was already committed in that window. The limit did its job."],
-  ["Placement failed", "The pool rejected the order. The rest of the batch continued — one failure does not take the others down."],
+  ["Placement failed", "The purchase reverted — the pool refused the order, or it ran out of gas partway. The rest of the batch continued; one failure does not take the others down."],
   ["Already covered", "This window already holds cover for this account. Buying twice would double the premium for the same protection."],
   ["Policy inactive or expired", "No active consent, so no action. This is the engine having no authority rather than choosing not to use it."],
   ["Would misrepresent", "The position would deliver nothing it could honestly describe as the cover requested."],
@@ -45,9 +45,9 @@ export default function Refusals() {
       <H2 id="why">A refusal is a decision</H2>
       <p>
         A system that shows you only what it did is hiding what it chose not to do. Over the
-        recorded run Ballast opened <strong>{opened}</strong> covers and refused{" "}
-        <strong>{totalSkips.toLocaleString("en-GB")}</strong> times — more than twenty refusals
-        for every purchase.
+        recorded history Ballast opened <strong>{opened}</strong> covers and refused{" "}
+        <strong>{totalSkips.toLocaleString("en-GB")}</strong> times — about {Math.round(totalSkips / Math.max(opened, 1))} refusals for
+        every purchase.
       </p>
       <p>
         Every one of those is an event on chain carrying its reason, and they are all readable

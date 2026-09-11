@@ -1,5 +1,5 @@
 import DocShell, { H2, type Heading } from "../DocShell";
-import { RECORD, recordRange } from "@/lib/record";
+import { RECORD, recordRange, mixPhrase } from "@/lib/record";
 
 export const dynamic = "force-static";
 
@@ -86,17 +86,16 @@ export default function Economics() {
 
       <H2 id="sample">The sample caveat, at full length</H2>
       <p>
-        The recorded run shows {settled} settled positions with a positive net. That figure is
+        The recorded history shows {settled} settled positions with a positive net. That figure is
         on <a href="/app">the dashboard</a> and on the landing page, and it should be read
         with this attached:
       </p>
       <div className="callout">
         <span className="calloutTitle">A sample, not a result</span>
-        Those {settled} positions are <strong>short windows on a thin testnet book</strong> —
-        thirty-five five-minute, seven fifteen-minute and two one-hour, none of them one-minute
-        {range ? `, recorded over ${range}` : ""}. The economics on this page say plainly that
+        Those {settled} positions are <strong>short windows on a thin testnet book</strong> —{" "}
+        {mixPhrase("settled")}{range ? `, recorded over ${range}` : ""}. The economics on this page say plainly that
         rolling cover that often is ruinous over any real horizon — the table above puts the
-        spread alone at thousands of percent a year for fifteen-minute and one-hour windows,
+        spread alone at thousands of percent a year for every one of those intervals,
         which is why the product defaults
         to four-hour and twenty-four-hour windows. A favourable run of {settled} does not
         contradict that. It is what a small sample looks like, and reading it as a return would

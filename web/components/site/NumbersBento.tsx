@@ -51,12 +51,10 @@ function Row({ k, v, sign, tone }: { k: string; v: string; sign?: string; tone?:
 }
 
 export default function NumbersBento({
-  points, settledPremium, paidOut, settledNet, paid, settled,
-}: {
+  points, settledPremium, paidOut, settledNet, paid, settled, mix,}: {
   points: CumPoint[];
   settledPremium: string; paidOut: string; settledNet: string;
-  paid: number; settled: number;
-}) {
+  paid: number; settled: number; mix: string;}) {
   return (
     <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-5">
       {/* Row one: the shape of the run, then the arithmetic that produced it. */}
@@ -105,11 +103,10 @@ export default function NumbersBento({
         <Key>How to read this</Key>
         <p className="text-[13px] leading-relaxed text-muted">
           <strong className="font-medium text-ink">Read this as a sample, not a result.</strong>{" "}
-          These are {settled} short windows on a thin testnet book — five-minute, fifteen-minute
-          and one-hour, none of them one-minute. Our own economics says rolling cover that often
-          is ruinous over any real horizon — at those intervals the spread alone runs to thousands
-          of percent a year, which is why the product defaults to the four-hour and
-          twenty-four-hour windows. A favourable run of {settled} does not
+          These are {settled} short windows on a thin testnet book — {mix}. Our own economics
+          says rolling cover that often is ruinous over any real horizon — at those intervals the
+          spread alone runs to thousands of percent a year, which is why the product defaults to
+          the four-hour and twenty-four-hour windows. A favourable run of {settled} does not
           contradict that. It is what a small sample looks like.
         </p>
       </Card>

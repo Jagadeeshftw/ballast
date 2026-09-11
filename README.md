@@ -221,7 +221,7 @@ not, and it never did.** Every charge we could match to its receipts — 255 cha
 six engines, 1 to 11 September, at limits of 10,000,000 and 4,000,000 and priority fees of 1
 and 2 gwei — equals `gasUsed × effectiveGasPrice` to the wei. Not one equals the limit.
 
-The recorded run settles it without sampling. From the subscription opening on 1 September to
+The 1–2 September run settles it without sampling. From the subscription opening on 1 September to
 its close on 2 September (12.75 hours), the engine went from 40 STT to 12.77 with no top-ups:
 **27.23 STT for 2,715 callbacks, about 0.010 each**. Billing at the limit would have cost
 190.05 STT, from an engine that only ever held 40.
@@ -239,8 +239,8 @@ faucet paid 0.5 a day.
 
 Acting on the wrong number, we cut the limit to 4,000,000 on 5 September — to save money that
 was never being charged — on the strength of `poke()` estimating 1,936,405 on a live window.
-`poke()` is not the worst path. A callback that buys cover has since used between 2,391,400
-and 9,064,459 gas, so at 4,000,000 the engine bought nothing, and the limit is back at
+`poke()` is not the worst path. A callback that buys cover has since used between 2,391,271
+and 9,218,505 gas, so at 4,000,000 the engine bought nothing, and the limit is back at
 10,000,000. A discard-path callback genuinely costs ~1.5M gas, because Somnia charges 200k per
 new non-zero SSTORE and the engine writes state on every wake.
 
@@ -257,10 +257,11 @@ Narrowing the subscription instead is not available: `eventTopics` is a `bytes32
 precompile does match beyond topic0, but `MarketCreated` indexes `marketId`, `market` and
 `pool` — all per-market, all created fresh each window. None of them selects a series.
 
-Because the live page reads a rolling ~1000-block tail (about 100 seconds), the whole run is
-captured and committed as data: **6,748 events, 1–2 September**, in
+Because the live page reads a rolling ~1000-block tail (about 100 seconds), the whole history is
+captured and committed as data: **80,658 events from all six engines, 1–11 September**, as one
+history, in
 [`docs/run-record.json`](docs/run-record.json). The page renders it when the live tail is
-empty, labelled as the recorded run, and live wins whenever the engine is running.
+empty, labelled as the recorded history, and live wins whenever the engine is running.
 
 ## The latch sweep
 

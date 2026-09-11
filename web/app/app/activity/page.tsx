@@ -71,8 +71,8 @@ export default async function Activity({
       <p className="why" style={{ marginTop: 8 }}>
         Every decision the engine made, in the order the chain recorded it — the windows it
         saw, the cover it bought, and every window it refused with the reason it gave.
-        Refusals are not failures and are not hidden here: they outnumber the covers by more
-        than twenty to one, which is the engine declining to buy something it could not price
+        Refusals are not failures and are not hidden here: they outnumber the covers by about{" "}
+        {Math.round((RECORD.counts.CoverSkipped ?? 0) / Math.max(RECORD.counts.CoverOpened ?? 0, 1))} to one, which is the engine declining to buy something it could not price
         honestly.
       </p>
 

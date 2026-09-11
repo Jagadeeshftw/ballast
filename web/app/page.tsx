@@ -1,7 +1,7 @@
 import { ADDR, EXPLORER } from "@/lib/chain";
 import { loadPreview, utc } from "./data";
 import { positionsFor, totalsFor, cumulativeFor } from "@/lib/portfolio";
-import { RECORD, recordRange } from "@/lib/record";
+import { RECORD, recordRange, mixPhrase } from "@/lib/record";
 import ChainNote, { Live } from "@/components/site/ChainNote";
 import SiteNav from "@/components/site/SiteNav";
 import SameBlockProof from "@/components/site/SameBlockProof";
@@ -38,13 +38,19 @@ export default async function Landing() {
   const coverNet = qty - premium;
   const at = (fall: number) => -exposure * fall + coverNet;
 
-  const declines = [
-    ["No exposure", 640, "no measured spot position in that asset — nothing to cover"],
-    ["Placement failed", 225, "the pool rejected the order; the rest of the batch continued"],
-    ["Below minimum lot", 153, "the affordable size rounds to zero on the venue's lot grid"],
-    ["No liquidity", 58, "the Down book was empty; refused rather than mispriced"],
-    ["Cover too expensive", 58, "Down priced above 0.90, where size diverges"],
-  ] as const;
+  /* Counted over the whole record, not written down: these were literals once, and a literal
+     stays true only until the next run. */
+  const DECLINE_MEANING: Record<string, string> = {
+    "No exposure": "no measured spot position in that asset — nothing to cover",
+    "Placement failed": "the purchase reverted — the pool refused it, or it ran out of gas; the rest of the batch continued",
+    "Below minimum lot": "the affordable size rounds to zero on the venue's lot grid",
+    "No liquidity": "the Down book was empty; refused rather than mispriced",
+    "Cover too expensive": "Down priced above 0.90, where size diverges",
+    "Would misrepresent": "it would deliver nothing it could honestly call the cover asked for",
+  };
+  const declines = Object.entries(RECORD.skipReasons)
+    .sort((a, b) => b[1] - a[1]).slice(0, 5)
+    .map(([k, n]) => [k, n, DECLINE_MEANING[k] ?? ""] as const);
 
   return (
     <div id="top" className="site min-h-screen bg-ground font-sans text-ink">
@@ -181,8 +187,12 @@ export default async function Landing() {
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-24">
           <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-signal">It has already done this</p>
           <h2 className="max-w-[24ch] text-balance text-[clamp(26px,3.4vw,42px)] font-bold leading-[1.1] tracking-[-0.02em]">
-            Forty-four settled positions, twenty-seven of which paid.
+            {t.settled.toLocaleString("en-GB")} settled positions, {t.paid.toLocaleString("en-GB")} of which paid.
           </h2>
+          <p className="mt-4 max-w-[72ch] text-[15px] leading-relaxed text-muted">
+            One account&rsquo;s history across every engine Ballast has deployed, on{" "}
+            {mixPhrase("settled")} windows.
+          </p>
 
           <NumbersBento
             points={cum}
@@ -191,6 +201,7 @@ export default async function Landing() {
             settledNet={n2(t.settledNet)}
             paid={t.paid}
             settled={t.settled}
+            mix={mixPhrase("settled")}
           />
 
           <p className="mt-6 max-w-[72ch] text-[14px] leading-relaxed text-muted">
@@ -259,13 +270,13 @@ export default async function Landing() {
                 <strong className="font-medium text-ink">gas limit</strong>. It does not, and it
                 never did: every charge we could check — 255 blocks on six engines, 1 to 11
                 September — is gas used × price, to the wei. The 0.07 STT a wake we quoted was our
-                own contract&rsquo;s worst-case estimate, read as a bill. The recorded run cost
-                27.23 STT for 2,715 wakes, not the 190 we claimed.
+                own contract&rsquo;s worst-case estimate, read as a bill. The 1–2 September run
+                cost 27.23 STT for 2,715 wakes, not the 190 we claimed.
               </p>
               <p className="mt-4 max-w-[54ch] leading-relaxed text-muted">
                 Acting on that number, we cut the limit to 4,000,000 to save money that was never
                 being charged, and no purchase fit: a callback that buys cover has used up to
-                9,064,459 gas, so the limit is back at 10,000,000. Restarting
+                9,218,505 gas, so the limit is back at 10,000,000. Restarting
                 took a new contract in the end, because every order the old one placed outlived a
                 sixty-second market. Opening a subscription requires the engine to hold{" "}
                 <strong className="font-medium text-ink">32 STT</strong>, a floor checked once at

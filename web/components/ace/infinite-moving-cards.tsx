@@ -23,20 +23,46 @@ export const InfiniteMovingCards = ({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
 
-  useEffect(() => {
-    addAnimation();
-  }, []);
   const [start, setStart] = useState(false);
+  // Reduced motion: no clones, no scrolling, and the cards wrap into a still grid so every
+  // one is visible once. It follows the preference if it changes mid-visit. This was the last
+  // animation on the site that ignored it.
+  const [still, setStill] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => {
+      if (mq.matches) {
+        removeClones();
+        setStart(false);
+        setStill(true);
+      } else {
+        setStill(false);
+        addAnimation();
+      }
+    };
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  function removeClones() {
+    scrollerRef.current?.querySelectorAll("[data-clone]").forEach((n) => n.remove());
+  }
+
   function addAnimation() {
     if (containerRef.current && scrollerRef.current) {
-      const scrollerContent = Array.from(scrollerRef.current.children);
-
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
-        }
-      });
+      // Clone once. The effect can run twice (a preference flip, or React's dev re-mount),
+      // and cloning again would double the row. Clones are hidden from assistive tech so
+      // each card is announced once, not twice.
+      if (!scrollerRef.current.querySelector("[data-clone]")) {
+        Array.from(scrollerRef.current.children).forEach((item) => {
+          const duplicatedItem = item.cloneNode(true) as HTMLElement;
+          duplicatedItem.setAttribute("data-clone", "");
+          duplicatedItem.setAttribute("aria-hidden", "true");
+          scrollerRef.current?.appendChild(duplicatedItem);
+        });
+      }
 
       getDirection();
       getSpeed();
@@ -73,14 +99,16 @@ export const InfiniteMovingCards = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20 max-w-7xl overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
+        "scroller relative z-20 max-w-7xl",
+        !still && "overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
         className,
       )}
     >
       <ul
         ref={scrollerRef}
         className={cn(
-          "flex w-max min-w-full shrink-0 flex-nowrap gap-4 py-4",
+          "flex min-w-full shrink-0 gap-4 py-4",
+          still ? "w-full flex-wrap" : "w-max flex-nowrap",
           start && "animate-scroll",
           pauseOnHover && "hover:[animation-play-state:paused]",
         )}

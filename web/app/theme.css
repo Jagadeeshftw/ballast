@@ -39,6 +39,13 @@
   to { transform: translate(calc(-50% - 0.5rem)); }
 }
 
+/* The marquee stops for anyone who has asked for less motion. The component also declines to
+   start it; this rule is the guard for a preference that changes after it has started.
+   Unlayered, so it outranks the animate-scroll utility in Tailwind's utilities layer. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll { animation: none; }
+}
+
 /* ── Light theme ───────────────────────────────────────────────────────────
    Not an inversion. The ground is warm paper rather than white — the same world
    in daylight — and every accent is re-derived, because burnt gold at #E0A130

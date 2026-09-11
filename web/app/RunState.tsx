@@ -66,7 +66,7 @@ export default function RunState({
           <dt><IconTool size={16} stroke={1.7} aria-hidden="true" />What fixes it</dt>
           <dd>
             Not a lower limit: Somnia charges gas used, so cutting the limit saves nothing, and at
-            4,000,000 no purchase fits — one has used 9,064,459. Reopening requires the engine to
+            4,000,000 no purchase fits — one has used 9,218,505. Reopening requires the engine to
             hold 32 STT, checked once at creation.
           </dd>
         </div>
@@ -95,8 +95,8 @@ export function RecordedBanner({ what }: { what: string }) {
   return (
     <p className="recBanner">
       <span className="recDot" aria-hidden="true" />
-      Recorded run{range ? `, ${range}` : ""} — {what}. Not live: the engine is stopped, and
-      this is the history it wrote to the chain while it ran.
+      Recorded history{range ? `, ${range}` : ""} — {what}. Not the live tail: this is what
+      Ballast&rsquo;s engines wrote to the chain, captured and committed.
     </p>
   );
 }

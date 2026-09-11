@@ -124,7 +124,7 @@ export const SKIP_MEANING: Record<string, string> = {
   "No headroom": "a ceiling was already committed this window",
   "Below minimum lot": "the affordable size rounds to zero on the venue's lot grid",
   "Attempts exhausted": "three attempts, book never became priceable",
-  "Placement failed": "the pool rejected the order; the rest of the batch continued",
+  "Placement failed": "The purchase reverted — the pool refused the order, or it ran out of gas. The rest of the batch continued.",
   "Already covered": "this window already holds cover for this user",
   "Policy inactive or expired": "no active consent, so no action",
   "Would misrepresent": "the position would deliver nothing it could honestly describe",

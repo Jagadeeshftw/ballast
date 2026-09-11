@@ -36,17 +36,55 @@ const REASON_TEXT: Record<string, string> = {
 };
 
 type RawEvent = {
-  name: string; block: number; ts: number | null; tx: string;
+  name: string; engine?: string; block: number; ts: number | null; tx: string;
   marketId: string | null; user: string | null;
   reason?: string; outcome?: string;
   args: Record<string, string | number | boolean>;
 };
 
 const rec = raw as unknown as {
-  engine: string; fromBlock: number; toBlock: number; capturedAt: string;
+  engines: { address: string; deployedAt: number }[];
+  fromBlock: number; toBlock: number; capturedAt: string;
   firstEventAt: string | null; lastEventAt: string | null;
-  counts: Record<string, number>; skipReasons: Record<string, number>; events: RawEvent[];
+  counts: Record<string, number>; skipReasons: Record<string, number>;
+  windowMix: { opened: Record<string, number>; settled: Record<string, number> };
+  events: RawEvent[];
 };
+
+/** A window length in words, as the venue's series are named. */
+export function windowWords(seconds: number): string {
+  if (seconds <= 90) return "one-minute";
+  if (seconds <= 400) return "five-minute";
+  if (seconds <= 1000) return "fifteen-minute";
+  if (seconds <= 4000) return "one-hour";
+  if (seconds <= 15000) return "four-hour";
+  return "one-day";
+}
+
+/** The same, short, for a table cell. */
+export function windowShort(seconds: number): string {
+  return windowWords(seconds).replace("one-minute", "1 min").replace("five-minute", "5 min")
+    .replace("fifteen-minute", "15 min").replace("one-hour", "1 h").replace("four-hour", "4 h").replace("one-day", "24 h");
+}
+
+/** Window lengths bucketed as the venue names them, shortest first. A 298-second window is
+    a five-minute window whose market opened two seconds late, not a sixth series. */
+function bucket(mix: Record<string, number>): { words: string; seconds: number; n: number }[] {
+  const out = new Map<string, { words: string; seconds: number; n: number }>();
+  for (const [s, n] of Object.entries(mix)) {
+    const words = windowWords(Number(s));
+    const cur = out.get(words) ?? { words, seconds: Number(s), n: 0 };
+    cur.n += n; cur.seconds = Math.min(cur.seconds, Number(s));
+    out.set(words, cur);
+  }
+  return [...out.values()].sort((a, b) => a.seconds - b.seconds);
+}
+
+/** "40 one-minute, 35 five-minute, 8 fifteen-minute and 4 one-hour". */
+export function mixPhrase(kind: "opened" | "settled"): string {
+  const parts = bucket(rec.windowMix?.[kind] ?? {}).map((b) => `${b.n.toLocaleString("en-GB")} ${b.words}`);
+  return parts.length <= 1 ? (parts[0] ?? "") : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
 
 /** Same phrasing as the live tape, so a reader cannot tell the two apart on wording alone. */
 function toItem(e: RawEvent): TapeItem | null {
@@ -113,7 +151,13 @@ function excerptAroundCover(n = 12): TapeItem[] {
 }
 
 export const RECORD = {
-  engine: rec.engine,
+  engines: rec.engines,
+  windowMix: { opened: bucket(rec.windowMix?.opened ?? {}), settled: bucket(rec.windowMix?.settled ?? {}) },
+  /** Settlement outcomes over the whole history -- every settlement is in the slice. */
+  outcomes: {
+    won: rec.events.filter((e) => e.name === "CoverSettled" && e.outcome === "Won").length,
+    lost: rec.events.filter((e) => e.name === "CoverSettled" && e.outcome === "Lost").length,
+  },
   fromBlock: rec.fromBlock,
   toBlock: rec.toBlock,
   capturedAt: rec.capturedAt,
@@ -133,7 +177,7 @@ export const RECORD = {
   settled: items.filter((i) => i.kind === "settled"),
 };
 
-/** A human range like "1–2 September 2026", or null if the capture is empty. */
+/** A human range like "1–11 September 2026", or null if the capture is empty. */
 export function recordRange(): string | null {
   if (!rec.firstEventAt || !rec.lastEventAt) return null;
   const f = new Date(rec.firstEventAt), l = new Date(rec.lastEventAt);

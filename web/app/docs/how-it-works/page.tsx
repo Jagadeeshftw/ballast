@@ -1,4 +1,5 @@
 import DocShell, { H2, type Heading } from "../DocShell";
+import { RECORD } from "@/lib/record";
 import { ADDR, EXPLORER } from "@/lib/chain";
 
 export const dynamic = "force-static";
@@ -45,7 +46,7 @@ export default function HowItWorks() {
 
       <H2 id="committed">Most of this site needs no chain read</H2>
       <p>
-        The engine&rsquo;s whole run is captured as JSON and <strong>committed to the
+        Every engine&rsquo;s history is captured as JSON and <strong>committed to the
         repository</strong>, so the history it wrote is part of the site rather than something
         the site fetches. That is not a caching trick — it is a property worth stating.
       </p>
@@ -142,7 +143,7 @@ export default function HowItWorks() {
         So creation <em>enqueues</em> the window and schedules a one-shot tick, which buys
         later. The retry ladder is bounded at <strong>three attempts</strong>; if the book has
         still not become priceable, the window is marked given up rather than left pending.
-        The recorded run gave up on 386 windows that way, and each is on chain with its reason.
+        The recorded history gave up on {(RECORD.counts.WindowGaveUp ?? 0).toLocaleString("en-GB")} windows that way, and each is on chain with its reason.
       </p>
 
       <H2 id="engine-set">The engine set</H2>

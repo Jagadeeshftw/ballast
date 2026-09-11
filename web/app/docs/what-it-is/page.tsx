@@ -1,4 +1,5 @@
 import DocShell, { H2, H3, type Heading } from "../DocShell";
+import { RECORD } from "@/lib/record";
 import { loadPreview } from "../../data";
 import { ADDR, EXPLORER } from "@/lib/chain";
 
@@ -154,9 +155,10 @@ net if won     = ${n2(coverNet)} tUSDC`}</div>
           <div className="callout">
             <span className="calloutTitle">And if the price rises</span>
             The cover pays nothing and the premium is gone. That is not a malfunction — it is
-            the cost of cover that turned out not to be needed, and on the recorded run it
-            happened seventeen times out of forty-four. Those seventeen are shown on the{" "}
-            <a href="/app/cover">dashboard</a> alongside the twenty-seven that paid.
+            the cost of cover that turned out not to be needed, and in the recorded history it
+            happened {RECORD.outcomes.lost} times out of{" "}
+            {RECORD.outcomes.won + RECORD.outcomes.lost}. Those {RECORD.outcomes.lost} are shown
+            on the <a href="/app/cover">dashboard</a> alongside the {RECORD.outcomes.won} that paid.
           </div>
         </>
       )}

@@ -1,102 +1,74 @@
 /**
- * Complete the frozen record and split it in two.
+ * Turn the raw multi-engine capture into the two committed files.
  *
- * 1. The live engine was deployed after both settled positions were opened, so the scan of
- *    its own history contains zero CoverSettled events. The outcomes -- the best evidence in
- *    the submission -- live on two retired engines. Pull those four transactions directly.
- * 2. The full capture is 3 MB. That belongs in the repository as the archive, but importing
- *    it into a page would ship 3 MB of JSON to every visitor. So the app gets a display
- *    slice, and docs/ gets the whole thing.
+ *   docs/run-record.json  -- the archive: every decoded event from every engine, one stream
+ *   web/lib/record.json   -- the display slice the site imports
+ *
+ * Both carry the same header: the engines, the block range, event counts, refusals by reason
+ * and the window mix. Everything a page states as a run-wide total must come from the header,
+ * not from the slice -- the slice keeps every cover and settlement but only a recent sample of
+ * refusals, so counting refusals from it reported "No exposure 47" for a run that refused 640
+ * times for that reason.
+ *
+ *   node scripts/freeze-record.mjs && node scripts/finalise-record.mjs
  */
-import { createPublicClient, http, decodeEventLog, parseAbi } from "viem";
 import { readFileSync, writeFileSync } from "node:fs";
 
-const client = createPublicClient({ transport: http("https://dream-rpc.somnia.network/") });
 const rec = JSON.parse(readFileSync(new URL("../lib/.record-raw.json", import.meta.url), "utf8"));
+const all = rec.events;
 
-const abi = parseAbi([
-  "event CoverOpened(address indexed user, bytes32 indexed marketId, uint256 quantity, uint256 premium, uint256 coverPrice, uint16 requestedBps, uint16 achievedBps, bool degraded)",
-  "event CoverSettled(address indexed user, bytes32 indexed marketId, uint8 outcome, uint256 quantity, uint256 premium, uint256 proceeds)",
-]);
-const OUTCOME = ["Unsettled", "Won", "Lost", "Voided"];
-
-const EXTRA = [
-  "0xa7398198a56e982b0a026a613cecfc269dd16a798a7e8522948901b10cf120cf",
-  "0xac81f1fe91f1eb8d9e21f88140bce12abe23bef698f73760f5f6796f9960c2fb",
-  "0xdf3cef7e35293f516973eea140e76565162ba85dc5608b5d9112eac1c1ebc5b7",
-  "0x5bbe1e6005513a4d88ad993d4042f55bba86e9e0547fc3033a667f53c19c305a",
-];
-
-const added = [];
-for (const tx of EXTRA) {
-  try {
-    const r = await client.getTransactionReceipt({ hash: tx });
-    const blk = await client.getBlock({ blockNumber: r.blockNumber });
-    for (const l of r.logs) {
-      try {
-        const d = decodeEventLog({ abi, data: l.data, topics: l.topics });
-        const a = d.args ?? {};
-        added.push({
-          name: d.eventName, block: Number(r.blockNumber), ts: Number(blk.timestamp),
-          tx, marketId: a.marketId ?? null, user: a.user ?? null,
-          engine: l.address,
-          outcome: d.eventName === "CoverSettled" ? (OUTCOME[Number(a.outcome)] ?? "Unknown") : undefined,
-          args: Object.fromEntries(Object.entries(a).map(([k, v]) => [k, typeof v === "bigint" ? v.toString() : v])),
-        });
-      } catch { /* not one of ours */ }
-    }
-  } catch (e) { console.error("  could not fetch", tx.slice(0, 12), String(e).slice(0, 60)); }
-}
-console.log(`recovered ${added.length} events from the retired engines`);
-for (const e of added) console.log(`  ${e.name}${e.outcome ? " · " + e.outcome : ""}  block ${e.block}`);
-
-// Dedupe defensively: a rerun must produce the same archive, not a longer one.
-const byKey = new Map();
-for (const e of [...rec.events, ...added]) {
-  byKey.set(`${e.name}|${e.tx}|${e.block}|${e.marketId ?? ""}|${e.user ?? ""}`, e);
-}
-const all = [...byKey.values()].sort((a, b) => a.block - b.block);
 const counts = {};
 for (const e of all) counts[e.name] = (counts[e.name] ?? 0) + 1;
-// Refusals by reason over the WHOLE run. The display slice keeps only the last 80 refusals,
-// so a table counted from the slice reported "No exposure 47" for a run that refused 640
-// times for that reason. Anything that states a per-reason total must read this instead.
+
 const skipReasons = {};
 for (const e of all) if (e.name === "CoverSkipped") skipReasons[e.reason] = (skipReasons[e.reason] ?? 0) + 1;
-const withTs = all.filter((e) => e.ts);
+
+// Window lengths of the account's covers, by seconds. Opened and settled are counted apart:
+// a settled count is what the sample caveat is about.
+const windowMix = { opened: {}, settled: {} };
+for (const e of all) {
+  if (!e.window) continue;
+  const k = String(e.window.seconds);
+  if (e.name === "CoverOpened") windowMix.opened[k] = (windowMix.opened[k] ?? 0) + 1;
+  if (e.name === "CoverSettled") windowMix.settled[k] = (windowMix.settled[k] ?? 0) + 1;
+}
+
+const perEngine = {};
+for (const e of all) {
+  const p = (perEngine[e.engine] ??= {});
+  p[e.name] = (p[e.name] ?? 0) + 1;
+}
+
+const header = {
+  engines: rec.engines, chainId: rec.chainId, fromBlock: rec.fromBlock, toBlock: rec.toBlock,
+  capturedAt: rec.capturedAt, firstEventAt: rec.firstEventAt, lastEventAt: rec.lastEventAt,
+  counts, skipReasons, windowMix, perEngine, totalEvents: all.length,
+};
 
 const full = {
-  ...rec, counts, events: all,
-  firstEventAt: withTs.length ? new Date(withTs[0].ts * 1000).toISOString() : null,
-  lastEventAt: withTs.length ? new Date(withTs[withTs.length - 1].ts * 1000).toISOString() : null,
-  note: "Complete on-chain record of the Ballast engine's run. Includes the two settled positions opened by retired engines, which predate the live engine's deployment.",
+  ...header,
+  events: all,
+  note: "Complete on-chain record of the account's cover, across every engine Ballast has deployed, as one history. Each event names the engine that emitted it.",
 };
-writeFileSync(new URL("../../docs/run-record.json", import.meta.url), JSON.stringify(full, null, 1));
+// Compact: the archive is tens of thousands of events, and indentation alone would add
+// megabytes to a public repository for no reader's benefit.
+writeFileSync(new URL("../../docs/run-record.json", import.meta.url), JSON.stringify(full));
 
-// Display slice. Taking "the last N events" produced 139 window-opened rows and no
-// refusals at all, because the minutes before shutdown were quiet -- which would have left
-// "And it refuses" empty, the exact failure this whole exercise exists to prevent. So the
-// slice is composed: everything that carries an outcome, a real contiguous excerpt around a
-// purchase, and a recent sample of each remaining kind so every section has genuine data.
+// Display slice. Everything that carries an outcome, a real contiguous excerpt around the most
+// recent purchase, and a recent sample of each remaining kind so every section has genuine
+// data. Taking "the last N events" instead once produced 139 window-opened rows and no
+// refusals at all.
 const lastCoverIdx = all.findLastIndex((e) => e.name === "CoverOpened");
-const contiguous = lastCoverIdx >= 0
-  ? all.slice(Math.max(0, lastCoverIdx - 20), lastCoverIdx + 20)
-  : [];
-
+const contiguous = lastCoverIdx >= 0 ? all.slice(Math.max(0, lastCoverIdx - 20), lastCoverIdx + 20) : [];
 const lastOf = (name, n) => all.filter((e) => e.name === name).slice(-n);
 
-// Every market that has a cover must bring its WindowEnqueued with it: that event carries
-// the assetKey and the opening price, which is how the portfolio names the window and
-// computes the move. Without it a position row would say "unknown asset".
+// Every covered market brings its WindowEnqueued: that event carries the asset key and the
+// opening price, which is how a position names its window and measures the move.
 const coveredMarkets = new Set(
   all.filter((e) => e.name === "CoverOpened" || e.name === "CoverSettled").map((e) => e.marketId),
 );
-const windowsForCovers = all.filter(
-  (e) => e.name === "WindowEnqueued" && coveredMarkets.has(e.marketId),
-);
-
 const picked = new Set([
-  ...windowsForCovers,
+  ...all.filter((e) => e.name === "WindowEnqueued" && coveredMarkets.has(e.marketId)),
   ...all.filter((e) => e.name === "CoverOpened" || e.name === "CoverSettled"),
   ...contiguous,
   ...lastOf("CoverSkipped", 80),
@@ -108,13 +80,11 @@ const picked = new Set([
 ]);
 const events = [...picked].sort((a, b) => a.block - b.block);
 
-const slim = {
-  engine: full.engine, chainId: full.chainId, fromBlock: full.fromBlock, toBlock: full.toBlock,
-  capturedAt: full.capturedAt, firstEventAt: full.firstEventAt, lastEventAt: full.lastEventAt,
-  counts, skipReasons, totalEvents: all.length, events,
-};
-writeFileSync(new URL("../lib/record.json", import.meta.url), JSON.stringify(slim, null, 1));
+writeFileSync(new URL("../lib/record.json", import.meta.url), JSON.stringify({ ...header, events }, null, 1));
 
-console.log(`\narchive : docs/run-record.json  ${all.length} events`);
+console.log(`archive : docs/run-record.json  ${all.length} events`);
 console.log(`display : web/lib/record.json    ${events.length} events`);
 console.log("counts  :", counts);
+console.log("skips   :", skipReasons);
+console.log("windows :", windowMix);
+console.log("engines :", Object.fromEntries(Object.entries(perEngine).map(([k, v]) => [k.slice(0, 10), `${v.CoverOpened ?? 0} opened, ${v.CoverSettled ?? 0} settled, ${v.CallbackRan ?? 0} scans`])));

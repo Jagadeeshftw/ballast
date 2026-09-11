@@ -14,8 +14,9 @@ const ASSET: Record<string, string> = {
 };
 
 type RawEvent = {
-  name: string; block: number; ts: number | null; tx: string;
+  name: string; engine?: string; block: number; ts: number | null; tx: string;
   marketId: string | null; user: string | null; outcome?: string;
+  window?: { start: number; close: number; seconds: number };
   args: Record<string, string | number | boolean>;
 };
 
@@ -27,6 +28,10 @@ export type PositionRow = {
   openedAt: number | null;
   openedBlock: number;
   openedTx: string;
+  /** The market's length in seconds, read from the module at capture. */
+  windowSeconds: number | null;
+  /** The engine that bought it. One account, one history, several engines. */
+  engine: string | null;
   premium: number;
   quantity: number;
   requestedBps: number;
@@ -53,8 +58,8 @@ const PREMIUM_CEILING_BPS = 300;
  * fires on either condition and records which one nowhere. But the cause IS recoverable from
  * the event alone: exposure = qty·(1−q)·10000/achievedBps, so the ceiling in collateral terms
  * is exposure × ceilingBps, and a premium comfortably under that means the ceiling was not
- * what bound it. Across this account's history that is 39 of 40 -- the book, not the policy,
- * which is what the landing page says too.
+ * what bound it. Counted over the account's whole history in `totalsFor` (`bookBound` of
+ * `shortfalls`) rather than written down, because the history keeps growing.
  */
 function boundBy(
   args: Record<string, string | number | boolean>,
@@ -108,6 +113,8 @@ export function positionsFor(user: string): PositionRow[] {
       marketId: e.marketId,
       asset: windows.get(e.marketId.toLowerCase())?.asset ?? "—",
       openedAt: e.ts, openedBlock: e.block, openedTx: e.tx,
+      windowSeconds: e.window?.seconds ?? null,
+      engine: e.engine ?? null,
       premium, quantity: n(e.args.quantity) / 1e6,
       requestedBps, achievedBps,
       shortfall: boundBy(e.args, requestedBps, achievedBps, premium),
@@ -130,6 +137,8 @@ export type Totals = {
   committedPremium: number;
   premiumEver: number;
   paid: number; hitRate: number | null;
+  /** Positions that got less than they asked for, and how many of those the book bound. */
+  shortfalls: number; bookBound: number;
 };
 
 export function totalsFor(rows: PositionRow[]): Totals {
@@ -137,9 +146,9 @@ export function totalsFor(rows: PositionRow[]): Totals {
   const open = rows.filter((r) => r.outcome === "Open");
   const paid = settled.filter((r) => (r.proceeds ?? 0) > 0).length;
 
-  // Net is computed against SETTLED positions only. Forty-three of these windows expired
-  // without settle() being called, and their premium is spent but their outcome is not
-  // known -- folding them into a net figure would report unknowns as losses.
+  // Net is computed against SETTLED positions only. Some windows expire without settle()
+  // being called, and their premium is spent but their outcome is not known -- folding them
+  // into a net figure would report unknowns as losses.
   const settledPremium = settled.reduce((a, r) => a + r.premium, 0);
   const paidOut = settled.reduce((a, r) => a + (r.proceeds ?? 0), 0);
 
@@ -153,6 +162,8 @@ export function totalsFor(rows: PositionRow[]): Totals {
     paid,
     // A hit rate over two settled positions is noise dressed as a statistic.
     hitRate: settled.length >= 5 ? paid / settled.length : null,
+    shortfalls: rows.filter((r) => r.shortfall !== null).length,
+    bookBound: rows.filter((r) => r.shortfall === "the book offered less than the ask").length,
   };
 }
 
