@@ -65,6 +65,8 @@ export type Live = {
   now: number;
   current: Win | null;
   previous: Win | null;
+  /** Every window the feed has seen this session, oldest first. */
+  windows: Win[];
   /** The window the server rendered, kept so the no-JS and first-paint markup agree. */
   initial: Win | null;
   tracks: Record<string, Track>;
@@ -230,7 +232,7 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
     : "waiting";
 
   return (
-    <LiveCtx.Provider value={{ mounted, now, current, previous, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, phase }}>
+    <LiveCtx.Provider value={{ mounted, now, current, previous, windows: wins, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, phase }}>
       {children}
     </LiveCtx.Provider>
   );

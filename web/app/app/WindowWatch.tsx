@@ -5,6 +5,7 @@ import { explainShort, type Quote } from "@/lib/window";
 import { useWallet } from "./wallet";
 import { REASON, useLive, type Opened } from "./live";
 import { SettleButton } from "./cover-actions";
+import PhaseTrack from "./PhaseTrack";
 
 /**
  * The live window, counting down — and what happens to the connected wallet inside it.
@@ -79,6 +80,7 @@ export default function WindowWatch() {
         {mounted && current && (
           <div className="wwBar" aria-hidden="true"><span style={{ width: `${(elapsed / current.seconds) * 100}%` }} /></div>
         )}
+        {connected && <PhaseTrack />}
         {shown && (
           <p className="wwPrice">
             Strike <strong>{px(shown.openPrice)}</strong>, the price at the open

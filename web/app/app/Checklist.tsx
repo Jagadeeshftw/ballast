@@ -150,13 +150,8 @@ export default function Checklist() {
       )}
 
       {allDone ? (
-        <div className="panel ok">
-          <p className="live"><i aria-hidden="true" />Set up and enrolled.</p>
-          <p className="why">
-            Your policy is live and Ballast is watching your windows. Nothing further is
-            required — the rest of this dashboard is for watching and for leaving.
-          </p>
-        </div>
+        <p className="setupDone"><span className="tag up">Set up and enrolled</span> Nothing further is required — the
+          live window above shows Ballast acting on this configuration.</p>
       ) : (
         <ol className="check">
           {rows.map((r) => (

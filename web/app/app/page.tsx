@@ -9,6 +9,9 @@ import { StateBanner } from "@/components/ace/lead-panel";
 import CoverInForce from "./CoverInForce";
 import WindowWatch from "./WindowWatch";
 import { LiveProvider } from "./live";
+import Summary from "./Summary";
+import Setup from "./Setup";
+import YourWindows from "./YourWindows";
 import { client } from "@/lib/chain";
 import { currentWindow } from "@/lib/window";
 import type { PublicClient } from "viem";
@@ -45,8 +48,6 @@ export default async function Overview() {
       {!chainOk && <ChainNote />}
       <h1 className="viewH1">Overview</h1>
 
-      <WindowWatch />
-
       {/* The one place the graduation field appears. */}
       {engine && !engine.subscribed && (
         <StateBanner href="/app/engine" cta="Why, and how to restart it">
@@ -55,18 +56,31 @@ export default async function Overview() {
         </StateBanner>
       )}
 
-      <CoverInForce
-        demoExposure={exposure}
-        demoMakeWhole={makeWhole}
-        demoPremiumCap={vault ? (Number(vault.policy[2]) / 100).toFixed(2) : "—"}
-        demoExpiry={vault ? utc(vault.policy[3]).slice(0, 10) : "—"}
-        demoOpen={t.open}
-      />
+      {/* Ordered by what a holder needs first: what I hold and whether it is protected; what
+          Ballast is doing this minute; what is in force and what it pays; what I told it to
+          do; what it has done. The stagger enters them in that order. */}
+      <div className="stagger">
+        <Summary />
 
-      <section>
-        <h2 className="viewH2">Your setup</h2>
-        <Checklist />
-      </section>
+        <WindowWatch />
+
+        <section>
+          <h2 className="viewH2">Cover</h2>
+          <CoverInForce
+            demoExposure={exposure}
+            demoMakeWhole={makeWhole}
+            demoPremiumCap={vault ? (Number(vault.policy[2]) / 100).toFixed(2) : "—"}
+            demoExpiry={vault ? utc(vault.policy[3]).slice(0, 10) : "—"}
+            demoOpen={t.open}
+          />
+        </section>
+
+        <section>
+          <h2 className="viewH2">Your setup</h2>
+          <Setup />
+          <Checklist />
+        </section>
+      </div>
 
       <section>
         {/* The attribution is load-bearing. Sitting under "Your setup", an unqualified
@@ -106,7 +120,9 @@ export default async function Overview() {
       </section>
 
       <section>
-        <h2 className="viewH2">Recent activity</h2>
+        <h2 className="viewH2">Recent window activity</h2>
+        <YourWindows />
+        <h3 className="feedH">The demonstration account&rsquo;s history</h3>
         {notes.length === 0 ? (
           <div className="panel"><p className="why">Nothing yet. Cover opening, settling and being declined all appear here.</p></div>
         ) : (

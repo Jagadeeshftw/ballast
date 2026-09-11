@@ -4,6 +4,7 @@ import { useWallet } from "./wallet";
 import { ADDR, EXPLORER } from "@/lib/chain";
 import { explainShort } from "@/lib/window";
 import { REASON, useLive } from "./live";
+import Num from "./Num";
 
 /**
  * "What am I covered for right now" — and the honest answer depends on who is asking.
@@ -123,6 +124,18 @@ export default function CoverInForce({
           </p>
           <a className="btn" href="/app/policy">Set a load line</a>
         </>
+      ) : s && s.weth > 0n && !s.priceable ? (
+        /* ---- state 3a: holds ETH, but the book cannot price it right now. Not "nothing to
+               cover" -- the position exists; its value is what cannot be read. ---- */
+        <>
+          <div className="coverEyebrow">Your cover</div>
+          <div className="coverBig">Can&rsquo;t price your ETH</div>
+          <p className="coverLede">
+            This wallet holds <strong>{(Number(s.weth) / 1e18).toFixed(4)} WETH</strong>, but the spot book is
+            one-sided right now, so its tUSDC value — and the size of any cover — cannot be read. Ballast
+            waits for a price rather than inventing one.
+          </p>
+        </>
       ) : exposure === null || exposure === 0 ? (
         /* ---- state 3: consent exists, but there is nothing measurable to cover ---- */
         <>
@@ -137,29 +150,11 @@ export default function CoverInForce({
           <a className="btn ghost" href="/app/funds">Mint test exposure</a>
         </>
       ) : (
-        /* ---- state 4: genuinely theirs. Two figures, labelled apart: what the policy ASKS
-               for, and what is actually IN FORCE in the current window. They differ whenever
-               the book is thinner than the ask, and shown together unlabelled they read as a
-               contradiction. "In force" is reserved for what has actually been bought. ---- */
-        <>
-          <div className="coverEyebrow">Your cover</div>
-          <div className="coverBig">
-            {n2(exposure)}<span className="coverUnit">tUSDC of ETH</span>
-          </div>
-          <dl className="coverAsk">
-            <div>
-              <dt>Your policy asks for</dt>
-              <dd>
-                made whole on a fall of <strong>{(yourMakeWhole! * 100).toFixed(2)}%</strong> — a loss of{" "}
-                <strong>{n2(yourPays!)}</strong> tUSDC on this position, paid back net of premium
-              </dd>
-            </div>
-            <div>
-              <dt>In force{live.current ? <> · window #{parseInt(live.current.marketId, 16)}</> : null}</dt>
-              <dd><InForce exposure={exposure} policy={policy!} /></dd>
-            </div>
-          </dl>
-        </>
+        /* ---- state 4: genuinely theirs. The hierarchy: how much of the position is protected
+               right now (in force), then the ask beside it, then the money, then the detail. The
+               ask and the in-force figure stay labelled apart -- shown together unlabelled they
+               read as a contradiction -- and "in force" only ever carries what was bought. ---- */
+        <Cover exposure={exposure} weth={Number(s!.weth) / 1e18} policy={policy!} enrolled={s!.enrolled} />
       )}
 
       {/* The demonstration account survives as a worked example, framed as one. */}
@@ -189,37 +184,92 @@ export default function CoverInForce({
   );
 }
 
-/**
- * What is actually bought in the current window, from the live feed. Never the policy figure:
- * a panel row headed "in force" that showed the ask would be the contradiction this fixes.
- */
-function InForce({ exposure, policy }: { exposure: number; policy: readonly [boolean, number, number, bigint, bigint] }) {
-  const { mounted, current, trackOf, phase, cfg } = useLive();
-  if (!mounted || !current) return <>no one-minute window is open right now</>;
+const pct = (bps: number) => `${(bps / 100).toFixed(2)}%`;
+
+/** State 4, laid out by weight. Every figure is the wallet's own, read from the chain. */
+function Cover({ exposure, weth, policy, enrolled }: {
+  exposure: number; weth: number; policy: readonly [boolean, number, number, bigint, bigint]; enrolled: boolean;
+}) {
+  const { mounted, current, trackOf, quote, phase, cfg } = useLive();
+  const askBps = Number(policy[1]);
+  const askLoss = exposure * askBps / 10_000;
   const t = trackOf(current);
-  if (t.opened) {
-    const o = t.opened;
-    const gross = Number(o.qty) / 1e6, premium = Number(o.premium) / 1e6;
-    /* The make-whole point is NET of premium: the engine's achievedBps is qty·(1−q)/exposure,
-       and qty·(1−q) is what the payout leaves after the premium it cost. Comparing the gross
-       payout with the ask's net loss figure is the wrong comparison, so both rows speak net. */
-    const net = gross - premium;
-    const short = o.achievedBps < o.requestedBps;
-    const why = explainShort(o, Number(policy[2]), policy[4]);
-    return (
-      <>
-        made whole on a fall of <strong>{(o.achievedBps / 100).toFixed(2)}%</strong> — a loss of{" "}
-        <strong className="text-paid">{n2(net)}</strong> tUSDC. {n2(gross)} tUSDC pays out if ETH closes below the
-        strike, for {n2(premium)} tUSDC of premium already spent
-        {short ? <>. <span className="coverGap">Short of the {(o.requestedBps / 100).toFixed(2)}% asked ({n2(exposure * o.requestedBps / 10_000)} tUSDC): {why ?? "the book offered less than the ask"}.</span></> : "."}
-      </>
-    );
-  }
-  if (phase === "gaveUp") return <>nothing — Ballast gave up on this window after {cfg?.max ?? "its"} attempts</>;
-  if (phase === "declined") {
-    const r = t.skips[t.skips.length - 1]?.reason ?? "";
-    return <>nothing yet — declined: <strong>{REASON[r]?.[0] ?? r}</strong>{cfg && t.attempts < cfg.max ? "; it will try again" : ""}</>;
-  }
-  if (phase === "evaluating") return <>nothing yet — Ballast is evaluating this window now</>;
-  return <>nothing yet — Ballast makes its first attempt {cfg?.first ?? 15} s into the window</>;
+  const o = t.opened;
+  const gross = o ? Number(o.qty) / 1e6 : null, premium = o ? Number(o.premium) / 1e6 : null;
+  /* Net of premium: the engine's achieved figure is qty·(1−q)/exposure, the payout after the
+     premium it cost. Both the ask and the in-force figure are stated the same way. */
+  const net = gross !== null && premium !== null ? gross - premium : null;
+  const short = !!o && o.achievedBps < o.requestedBps;
+  const why = o ? explainShort(o, Number(policy[2]), policy[4]) : null;
+  const downNow = o ? Number(o.coverPrice) / 1e6
+    : quote?.kind === "buy" ? Number(quote.coverPrice) / 1e6
+    : quote?.kind === "decline" && quote.coverPrice !== null ? Number(quote.coverPrice) / 1e6 : null;
+  const inForce = o ? o.achievedBps : 0;
+  const win = current ? `#${parseInt(current.marketId, 16)}` : null;
+
+  const status: [string, string] = !enrolled ? ["Not enrolled", "dim"]
+    : !mounted || !current ? ["Watching", ""]
+    : o ? ["Protected", "up"]
+    : phase === "gaveUp" ? ["Gave up", "down"]
+    : phase === "declined" ? ["Declined", "down"]
+    : phase === "evaluating" ? ["Evaluating", ""]
+    : ["Waiting", ""];
+
+  return (
+    <>
+      <div className="coverEyebrow">Your cover{win ? <> · in force this window {win}</> : null}</div>
+      <div className="coverHero">
+        <div className="coverBig">
+          <Num value={inForce / 100} /><span className="coverUnit">% of a fall, made whole right now</span>
+        </div>
+        <span className={`tag ${status[1]}`}>{status[0]}</span>
+      </div>
+      <p className="coverLede coverAnswer">
+        {o ? (
+          <>If ETH closes below the strike this window, <strong>{n2(gross!)}</strong> tUSDC pays out —{" "}
+            <strong className="text-paid">{n2(net!)}</strong> net of the {n2(premium!)} premium, which is what a{" "}
+            {pct(o.achievedBps)} fall costs on your {n2(exposure)} tUSDC of ETH.</>
+        ) : !enrolled ? (
+          <>Nothing is in force: this wallet is not enrolled, so the engine does not act for it. Your policy is set — enrolling is one transaction.</>
+        ) : !mounted || !current ? (
+          <>No one-minute window is open right now; the next opens within a minute.</>
+        ) : phase === "gaveUp" ? (
+          <>Nothing is in force this window: Ballast gave up after {cfg?.max ?? "its"} attempts — the book never became priceable.</>
+        ) : phase === "declined" ? (
+          <>Nothing is in force this window yet: declined — <strong>{REASON[t.skips[t.skips.length - 1]?.reason]?.[0] ?? "see the live window"}</strong>
+            {cfg && t.attempts < cfg.max ? <>; it will try again</> : null}.</>
+        ) : phase === "evaluating" ? (
+          <>Nothing is in force yet: Ballast is evaluating this window now.</>
+        ) : (
+          <>Nothing is in force yet: Ballast makes its first attempt {cfg?.first ?? 15} s into the window.</>
+        )}
+      </p>
+
+      <dl className="coverAsk">
+        <div>
+          <dt>Your policy asks for</dt>
+          <dd>made whole on a fall of <strong>{pct(askBps)}</strong> — a loss of <strong>{n2(askLoss)}</strong> tUSDC on this position</dd>
+        </div>
+        <div>
+          <dt>In force{win ? <> · {win}</> : null}</dt>
+          <dd>
+            {o ? <>made whole on a fall of <strong>{pct(o.achievedBps)}</strong> — a loss of <strong>{n2(net!)}</strong> tUSDC
+              {short ? <>. <span className="coverGap">Short of the {pct(o.requestedBps)} asked: {why ?? "the book offered less than the ask"}.</span></> : "."}</>
+              : <>nothing yet</>}
+          </dd>
+        </div>
+      </dl>
+
+      <dl className="coverGrid">
+        <div><dt>ETH exposure</dt><dd><Num value={weth} decimals={4} /> WETH<small>≈ <Num value={exposure} /> tUSDC</small></dd></div>
+        <div><dt>Load line</dt><dd>{pct(askBps)}<small>the depth of fall you asked to be made whole at</small></dd></div>
+        <div><dt>Down price now</dt><dd>{downNow !== null ? downNow.toFixed(3) : "—"}<small>{downNow !== null ? "per contract, at the touch" : "the book cannot be priced"}</small></dd></div>
+        <div><dt>Contracts held</dt><dd>{o ? <Num value={gross!} decimals={3} /> : "0"}<small>Down contracts this window</small></dd></div>
+        <div><dt>Premium paid</dt><dd>{o ? <Num value={premium!} /> : "0.00"}<small>tUSDC, this window</small></dd></div>
+        <div><dt>Maximum payout</dt><dd>{o ? <Num value={gross!} /> : "0.00"}<small>tUSDC if ETH closes below the strike</small></dd></div>
+        <div><dt>Ceiling per window</dt><dd>{(Number(policy[2]) / 100).toFixed(2)}%<small>the most you will pay, of exposure</small></dd></div>
+        <div><dt>Status</dt><dd className={status[1]}>{status[0]}<small>{o ? "the fill is on chain" : "for this window"}</small></dd></div>
+      </dl>
+    </>
+  );
 }

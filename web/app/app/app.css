@@ -734,3 +734,89 @@ html[data-wpend="1"] #dir-a [data-own]::after {
 #dir-a .wwLast { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rail); display: grid; gap: 4px; }
 #dir-a .wwLastK { font-size: 12px; color: var(--chart); font-variant-numeric: tabular-nums; }
 #dir-a .wwLine .tag { vertical-align: 1px; }
+
+/* ── Overview redesign ─────────────────────────────────────────────────────
+   Five surfaces in reading order: the summary strip, the live window, cover, the setup
+   sheet, activity. Live execution and configuration are different KINDS of thing and get
+   different surfaces: the live panels sit raised on the hull; the setup sheet is inset,
+   with a left rule, like a settings page. */
+
+/* -- summary strip */
+#dir-a .summary {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0;
+  border: 1px solid var(--rail); border-radius: 12px; background: var(--hull); overflow: hidden; margin: 4px 0 18px;
+}
+#dir-a .sumCell { padding: 16px 20px; display: grid; align-content: start; gap: 5px; border-top: 1px solid var(--rail); }
+#dir-a .sumCell:first-child { border-top: 0; }
+@media (min-width: 700px) { #dir-a .sumCell { border-top: 0; border-left: 1px solid var(--rail); } #dir-a .sumCell:first-child { border-left: 0; } }
+#dir-a .sumK { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .16em; color: var(--chart); }
+#dir-a .sumV { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; letter-spacing: -.02em; color: var(--bone); font-variant-numeric: tabular-nums; line-height: 1.1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#dir-a .sumV small { font-size: 13px; color: var(--chart); font-weight: 400; letter-spacing: 0; }
+#dir-a .sumS { font-size: 13px; color: var(--chart); line-height: 1.45; }
+#dir-a .sumStatus .sumV { font-family: inherit; font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+#dir-a .sumStatus.up .sumV { color: var(--covered); } #dir-a .sumStatus.down .sumV { color: var(--exposed); } #dir-a .sumStatus.dim .sumV { color: var(--chart); }
+#dir-a .sumDot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; transition: background-color .4s; }
+#dir-a .sumStatus:not(.up):not(.down):not(.dim) .sumDot { box-shadow: 0 0 0 0 currentColor; animation: sumPulse 1.6s ease-out infinite; }
+@keyframes sumPulse { from { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); } to { box-shadow: 0 0 0 9px transparent; } }
+#dir-a .tag .sumDot { width: 7px; height: 7px; margin-right: 6px; vertical-align: 1px; }
+
+/* -- cover hierarchy */
+#dir-a .coverHero { display: flex; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; }
+#dir-a .coverAnswer { color: var(--bone); max-width: 70ch; }
+#dir-a .coverGrid { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rail); display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px 22px; }
+#dir-a .coverGrid dt { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--chart); }
+#dir-a .coverGrid dd { margin: 5px 0 0; font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 18px; color: var(--bone); font-variant-numeric: tabular-nums; }
+#dir-a .coverGrid dd.up { color: var(--covered); } #dir-a .coverGrid dd.down { color: var(--exposed); } #dir-a .coverGrid dd.dim { color: var(--chart); }
+#dir-a .coverGrid dd small { display: block; font-family: var(--font-schibsted), ui-sans-serif, sans-serif; font-size: 12px; color: var(--chart); margin-top: 3px; line-height: 1.4; }
+
+/* -- the window's state track, in the live panel */
+#dir-a .phase { list-style: none; padding: 0; margin: 12px 0 0; display: flex; gap: 0; align-items: center; flex-wrap: wrap; }
+#dir-a .phase li { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--chart); position: relative; padding-right: 22px; }
+#dir-a .phase li::after { content: ""; position: absolute; right: 6px; top: 50%; width: 10px; height: 1px; background: var(--rail); }
+#dir-a .phase li:last-child { padding-right: 0; } #dir-a .phase li:last-child::after { content: none; }
+#dir-a .phaseDot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--rail); background: transparent; transition: background-color .4s, border-color .4s, box-shadow .4s; }
+#dir-a .phase li.past .phaseDot { background: var(--rail); border-color: var(--rail); }
+#dir-a .phase li.now { color: var(--bone); font-weight: 600; }
+#dir-a .phase li.now .phaseDot { background: var(--beacon); border-color: var(--beacon); box-shadow: 0 0 0 3px color-mix(in srgb, var(--beacon) 22%, transparent); }
+#dir-a .phase[data-tone="up"] li.now { color: var(--covered); } #dir-a .phase[data-tone="up"] li.now .phaseDot { background: var(--covered); border-color: var(--covered); box-shadow: 0 0 0 3px color-mix(in srgb, var(--covered) 22%, transparent); }
+#dir-a .phase[data-tone="down"] li.now { color: var(--exposed); } #dir-a .phase[data-tone="down"] li.now .phaseDot { background: var(--exposed); border-color: var(--exposed); box-shadow: 0 0 0 3px color-mix(in srgb, var(--exposed) 22%, transparent); }
+
+/* -- the setup sheet: configuration, on an inset surface */
+#dir-a .setupPanel {
+  background: color-mix(in srgb, var(--hull) 55%, var(--ground)); border: 1px solid var(--rail); border-left: 3px solid var(--rail);
+  border-radius: 10px; padding: 16px 20px 6px; margin-bottom: 12px;
+}
+#dir-a .setupHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 8px; }
+#dir-a .setupEyebrow { font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: .16em; color: var(--chart); }
+#dir-a .setupNote { font-size: 13px; color: var(--chart); }
+#dir-a .setupRows { display: grid; }
+#dir-a .setupRows > div { display: grid; grid-template-columns: 15ch minmax(0, 1fr); gap: 2px 18px; padding: 9px 0; border-top: 1px solid var(--rail); align-items: baseline; }
+#dir-a .setupRows dt { font-size: 13px; color: var(--chart); }
+#dir-a .setupRows dd { margin: 0; font-size: 15px; color: var(--bone); font-variant-numeric: tabular-nums; }
+#dir-a .setupRows dd small { font-size: 13px; color: var(--chart); }
+#dir-a .setupWhy { display: block; font-size: 12.5px; color: var(--chart); margin-top: 1px; }
+#dir-a .setupDone { font-size: 14px; color: var(--chart); margin: 12px 0 0; }
+@media (max-width: 600px) { #dir-a .setupRows > div { grid-template-columns: 1fr; } }
+
+/* -- activity */
+#dir-a .feedH { font-size: 13px; color: var(--chart); font-weight: 600; margin: 14px 0 8px; }
+#dir-a .feedH:first-child { margin-top: 0; }
+#dir-a .feedDot.engine { background: var(--chart); }
+
+/* -- motion. Every animation starts from a VISIBLE state and only runs where scripting is
+   on and motion is not reduced, so the no-JS render and the reduced-motion render are the
+   finished page. The stagger enters the five surfaces in reading order; a new window's
+   body enters rather than overwriting; state changes are colour transitions. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  #dir-a .stagger > * { animation: rise .55s cubic-bezier(.2, .7, .2, 1) both; }
+  #dir-a .stagger > :nth-child(1) { animation-delay: .02s; }
+  #dir-a .stagger > :nth-child(2) { animation-delay: .12s; }
+  #dir-a .stagger > :nth-child(3) { animation-delay: .22s; }
+  #dir-a .stagger > :nth-child(4) { animation-delay: .32s; }
+  #dir-a .wwBody, #dir-a .wwLast { animation: wwEnter .6s cubic-bezier(.2, .7, .2, 1) both; }
+  #dir-a .winWatch { transition: border-color .6s; }
+  #dir-a .winWatch:has(.wwBody) { animation: wwRing 1.2s ease-out; }
+}
+@keyframes rise { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes wwEnter { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes wwRing { 0% { border-color: var(--rail); } 25% { border-color: color-mix(in srgb, var(--beacon) 70%, var(--rail)); } 100% { border-color: var(--rail); } }
