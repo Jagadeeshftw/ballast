@@ -18,7 +18,7 @@ import { useLive } from "./live";
 const STEPS = ["Open", "Evaluating", "Protected", "Closed", "Resolved", "Settled"] as const;
 
 export default function PhaseTrack() {
-  const { mounted, current, previous, trackOf, phase, now } = useLive();
+  const { mounted, current, previous, trackOf, phase, now, canSchedule, vaultEmpty } = useLive();
   if (!mounted || (!current && !previous)) return null;
 
   // The window this track describes: the open one, or -- for the moment after it closes,
@@ -28,9 +28,15 @@ export default function PhaseTrack() {
   const closed = !!w && now >= w.close;
   let at = 0; let label = STEPS[0] as string; let tone: "" | "up" | "down" = "";
   if (!closed) {
+    // Facts first (bought, gave up); then the structural gates -- true or false whether or
+    // not this window happens to be open, so checked ahead of the neutral "Evaluating"
+    // reading rather than folded into it, the same order Summary and the cover panel use.
     if (t.opened) { at = 2; label = "Protected"; tone = "up"; }
-    else if (phase === "declined" || phase === "gaveUp") { at = 2; label = phase === "gaveUp" ? "Gave up" : "Declined"; tone = "down"; }
-    else if (phase === "unscheduled") { at = 1; label = "Cannot schedule"; tone = "down"; }
+    else if (phase === "gaveUp") { at = 2; label = "Gave up"; tone = "down"; }
+    else if (canSchedule === false) { at = 1; label = "Cannot schedule"; tone = "down"; }
+    else if (vaultEmpty) { at = 1; label = "Vault empty"; tone = "down"; }
+    else if (phase === "declined") { at = 2; label = "Declined"; tone = "down"; }
+    else if (phase === "vaultLow") { at = 1; label = "Vault low"; tone = "down"; }
     else if (phase === "evaluating") { at = 1; label = "Evaluating"; }
     else { at = 0; label = "Open"; }
   } else if (t.settled) { at = 5; label = "Settled"; tone = t.settled.proceeds > 0n ? "up" : ""; }

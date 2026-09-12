@@ -14,7 +14,7 @@ import Num from "./Num";
  */
 export default function Summary() {
   const { settled, sErr, hasProvider, account, chainOk, s, connect, connecting } = useWallet();
-  const { mounted, current, trackOf, phase } = useLive();
+  const { mounted, current, trackOf, phase, canSchedule, vaultEmpty } = useLive();
   const pending = (hasProvider && !settled) || (settled && !!account && chainOk && !s && !sErr);
   const connected = settled && !!account && chainOk;
 
@@ -25,15 +25,26 @@ export default function Summary() {
   const hasPolicy = !!policy?.[0] && Number(policy[3]) * 1000 > Date.now();
   const t = trackOf(current);
 
+  /* Ordered facts before gates before idle timing before per-window narrative, so a
+     structural blocker (the engine cannot schedule at all; this wallet's vault is empty)
+     can never be masked by a neutral "Watching"/"Evaluating" reading -- which is exactly what
+     was happening: a wallet with zero free tUSDC showed "Watching, waiting for the next
+     window" for nine consecutive windows, true of the clock and false of the reason nothing
+     was bought. `t.opened` and `phase === "gaveUp"` are facts about what already happened
+     this window and always come first; `canSchedule`/`vaultEmpty` are true or false whether
+     or not a window happens to be open right now, so they are checked before the "no current
+     window" idle state, not folded into it. */
   let status: { tone: "" | "up" | "down" | "dim"; text: string; sub: string };
   if (!connected) status = { tone: "dim", text: "Not connected", sub: "connect a wallet to see your own figures" };
   else if (!hasPolicy) status = { tone: "dim", text: "Not protected", sub: "no active policy — set a load line" };
   else if (!s!.enrolled) status = { tone: "dim", text: "Not protected", sub: "policy set, not yet enrolled" };
   else if (!weth) status = { tone: "dim", text: "Nothing to protect", sub: "this wallet holds no WETH" };
-  else if (!mounted || !current) status = { tone: "", text: "Watching", sub: "waiting for the next window" };
   else if (t.opened) status = { tone: "up", text: "Protected this window", sub: `made whole at ${(t.opened.achievedBps / 100).toFixed(2)}% of a fall` };
   else if (phase === "declined" || phase === "gaveUp") status = { tone: "down", text: "Not protected this window", sub: "declined — the reason is in the live window" };
-  else if (phase === "unscheduled") status = { tone: "down", text: "Not protected this window", sub: "the engine cannot schedule an attempt — below the 32 STT floor" };
+  else if (canSchedule === false) status = { tone: "down", text: "Not protected", sub: "the engine cannot schedule an attempt — below the 32 STT floor" };
+  else if (vaultEmpty) status = { tone: "down", text: "Vault is empty", sub: "no free tUSDC — nothing will be bought until it is funded" };
+  else if (!mounted || !current) status = { tone: "", text: "Watching", sub: "waiting for the next window" };
+  else if (phase === "vaultLow") status = { tone: "down", text: "Vault low", sub: "less than this window's ask would cost — the reason is in the live window" };
   else status = { tone: "", text: "Evaluating", sub: "Ballast is sizing cover for this window" };
 
   return (

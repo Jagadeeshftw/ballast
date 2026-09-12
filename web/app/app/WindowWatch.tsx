@@ -120,7 +120,7 @@ export default function WindowWatch() {
             <>
               {q?.kind === "buy" ? (
                 <p className="wwLine">
-                  <span className="tag">{phase === "evaluating" ? "Evaluating" : phase === "unscheduled" ? "If it could run" : "Before cover opens"}</span>{" "}
+                  <span className="tag">{phase === "evaluating" ? "Evaluating" : canSchedule === false ? "If it could run" : "Before cover opens"}</span>{" "}
                   If Ballast bought now it would spend <strong>{usd(q.premium)} tUSDC</strong> of your balance for{" "}
                   <strong>{qtyOf(q.qty)}</strong> Down contracts at {(Number(q.coverPrice) / 1e6).toFixed(3)} —
                   a payout of <strong>{qtyOf(q.qty)} tUSDC</strong> if ETH closes below the strike, making you whole at{" "}
@@ -130,7 +130,16 @@ export default function WindowWatch() {
               ) : q?.kind === "decline" ? (
                 <p className="wwLine">
                   <span className="tag down">Would decline</span>{" "}
-                  <strong>{REASON[q.reason]?.[0] ?? q.reason}</strong> — {REASON[q.reason]?.[1] ?? ""}.
+                  <strong>{REASON[q.reason]?.[0] ?? q.reason}</strong> — {REASON[q.reason]?.[1] ?? ""}
+                  {/* The same situation as an empty vault, arriving one window earlier: nonzero
+                      free balance, but less than this window's ask would cost at the current
+                      book. Named directly with the real figures rather than left inside the
+                      generic reason text above. */}
+                  {phase === "vaultLow" && q.desiredPremium !== null && s ? (
+                    <> Your vault holds <strong>{usd(s.free)} tUSDC</strong> free; this window&rsquo;s ask would need{" "}
+                      <strong>{usd(q.desiredPremium)} tUSDC</strong> at the current book — not enough, however many
+                      windows pass until it is funded. <a href="/app/funds">Deposit tUSDC</a>.</>
+                  ) : "."}
                 </p>
               ) : (
                 <p className="wwNote">Pricing this window against the live book…</p>
@@ -147,7 +156,7 @@ export default function WindowWatch() {
               )}
               {tr.gaveUp ? (
                 <p className="wwNote">Ballast gave up on this window after {cfg?.max ?? "its"} attempts. No cover in it.</p>
-              ) : phase === "unscheduled" ? null
+              ) : canSchedule === false ? null
               : nextAttemptAt !== null && nextAttemptAt > now ? (
                 <p className="wwNote">Next attempt at {utcTime(nextAttemptAt)} UTC, {nextAttemptAt - current.start} s into the window.</p>
               ) : null}
@@ -208,17 +217,37 @@ function Bought({ o, policy }: { o: Opened; policy: readonly [boolean, number, n
 function NotReady({ s, hasPolicy, q }: {
   s: NonNullable<ReturnType<typeof useWallet>["s"]>; hasPolicy: boolean; q: Quote | null;
 }) {
-  const missing = !hasPolicy ? "set a load line" : !s.enrolled ? "enrol" : "deposit collateral";
   const price = q && q.kind === "decline" ? q.coverPrice : q?.kind === "buy" ? q.coverPrice : null;
   const noExposure = q?.kind === "decline" && q.reason === "NoExposure";
+
+  if (!hasPolicy) {
+    return (
+      <p className="wwLine">
+        <span className="tag">Not covered</span>{" "}
+        Ballast will not buy for this wallet in this window — it has yet to set a load line.{" "}
+        <a href="/app/policy">Set one on Policy</a>.
+      </p>
+    );
+  }
+  if (!s.enrolled) {
+    return (
+      <p className="wwLine">
+        <span className="tag">Not covered</span>{" "}
+        Ballast will not buy for this wallet in this window — it has yet to enrol.
+      </p>
+    );
+  }
+  // A policy exists and enrolment is done, so the only remaining reason `ready` can be false
+  // here is `s.free === 0n`: named directly, rather than as a generic "deposit collateral".
   return (
     <p className="wwLine">
-      <span className="tag">Not covered</span>{" "}
-      Ballast will not buy for this wallet in this window — it has yet to {missing}. Once it has, the
-      engine sizes cover against your WETH at its first attempt, 15 s into each window
-      {noExposure ? <>; right now it would decline, because <strong>this wallet holds no WETH</strong></>
-        : price !== null ? <>; the book prices a Down contract at <strong>{(Number(price) / 1e6).toFixed(3)}</strong> right now</>
-        : null}.
+      <span className="tag down">Vault is empty</span>{" "}
+      This wallet&rsquo;s vault holds no free tUSDC — premium is paid from that balance, so
+      Ballast will buy nothing this window, or any window, until it is funded.{" "}
+      <a href="/app/funds">Deposit tUSDC</a>.
+      {noExposure ? <> Right now it would also decline for a second reason: <strong>this wallet holds no WETH</strong>.</>
+        : price !== null ? <> The book prices a Down contract at <strong>{(Number(price) / 1e6).toFixed(3)}</strong> right now, for reference.</>
+        : null}
     </p>
   );
 }

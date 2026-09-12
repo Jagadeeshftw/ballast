@@ -149,6 +149,25 @@ export default function CoverInForce({
           </p>
           <a className="btn ghost" href="/app/funds">Mint test exposure</a>
         </>
+      ) : s!.free === 0n ? (
+        /* ---- state 3b: exposure and consent both exist, but the vault holds no free tUSDC.
+               This used to fall through to state 4, whose status logic never checked the
+               balance -- so a wallet with zero free collateral watched "Watching" and
+               "nothing yet" cycle for nine straight windows with no purchase and no free
+               tUSDC, and nothing on screen said why. Premium is paid from this balance, so
+               the reason is structural and does not change window to window: it is its own
+               state, ahead of anything that reads as a timing question. ---- */
+        <>
+          <div className="coverEyebrow">Your cover</div>
+          <div className="coverBig">Vault is empty</div>
+          <p className="coverLede">
+            This wallet holds <strong>{n2(exposure)}</strong> tUSDC of ETH and an active policy,
+            but its vault balance is <strong>0.00 tUSDC</strong> free. Premium is paid from that
+            balance, so Ballast will buy nothing this window — or any window — until it is
+            funded, however many pass.
+          </p>
+          <a className="btn ghost" href="/app/funds">Deposit tUSDC</a>
+        </>
       ) : (
         /* ---- state 4: genuinely theirs. The hierarchy: how much of the position is protected
                right now (in force), then the ask beside it, then the money, then the detail. The
@@ -190,7 +209,7 @@ const pct = (bps: number) => `${(bps / 100).toFixed(2)}%`;
 function Cover({ exposure, weth, policy, enrolled }: {
   exposure: number; weth: number; policy: readonly [boolean, number, number, bigint, bigint]; enrolled: boolean;
 }) {
-  const { mounted, current, trackOf, quote, phase, cfg } = useLive();
+  const { mounted, current, trackOf, quote, phase, cfg, canSchedule } = useLive();
   const askBps = Number(policy[1]);
   const askLoss = exposure * askBps / 10_000;
   const t = trackOf(current);
@@ -207,12 +226,19 @@ function Cover({ exposure, weth, policy, enrolled }: {
   const inForce = o ? o.achievedBps : 0;
   const win = current ? `#${parseInt(current.marketId, 16)}` : null;
 
+  /* Facts (bought, gave up) come first; then the structural gate (the engine cannot
+     schedule at all -- checked whether or not `current` exists, since it is true or false
+     regardless); then the idle "no window open" reading; then this window's narrative. This
+     is the same order Summary.tsx uses, so the two panels cannot disagree. Vault-empty is
+     not checked here: the outer component (CoverInForce) never renders this component in
+     that state at all. */
   const status: [string, string] = !enrolled ? ["Not enrolled", "dim"]
-    : !mounted || !current ? ["Watching", ""]
     : o ? ["Protected", "up"]
     : phase === "gaveUp" ? ["Gave up", "down"]
+    : canSchedule === false ? ["Engine cannot schedule", "down"]
+    : !mounted || !current ? ["Watching", ""]
     : phase === "declined" ? ["Declined", "down"]
-    : phase === "unscheduled" ? ["Engine cannot schedule", "down"]
+    : phase === "vaultLow" ? ["Vault low", "down"]
     : phase === "evaluating" ? ["Evaluating", ""]
     : ["Waiting", ""];
 
@@ -232,15 +258,18 @@ function Cover({ exposure, weth, policy, enrolled }: {
             {pct(o.achievedBps)} fall costs on your {n2(exposure)} tUSDC of ETH.</>
         ) : !enrolled ? (
           <>Nothing is in force: this wallet is not enrolled, so the engine does not act for it. Your policy is set — enrolling is one transaction.</>
-        ) : !mounted || !current ? (
-          <>No one-minute window is open right now; the next opens within a minute.</>
         ) : phase === "gaveUp" ? (
           <>Nothing is in force this window: Ballast gave up after {cfg?.max ?? "its"} attempts — the book never became priceable.</>
+        ) : canSchedule === false ? (
+          <>Nothing is in force: the engine is below the 32 STT scheduling floor, so no attempt can be booked in this window — for any wallet, not only yours.</>
+        ) : !mounted || !current ? (
+          <>No one-minute window is open right now; the next opens within a minute.</>
         ) : phase === "declined" ? (
           <>Nothing is in force this window yet: declined — <strong>{REASON[t.skips[t.skips.length - 1]?.reason]?.[0] ?? "see the live window"}</strong>
             {cfg && t.attempts < cfg.max ? <>; it will try again</> : null}.</>
-        ) : phase === "unscheduled" ? (
-          <>Nothing is in force: the engine is below the 32 STT scheduling floor, so no attempt can be booked in this window — for any wallet, not only yours.</>
+        ) : phase === "vaultLow" ? (
+          <>Nothing is in force this window: your vault holds too little free tUSDC for what this window&rsquo;s ask would
+            cost at the current book. <a href="/app/funds">Deposit more</a> before the next one.</>
         ) : phase === "evaluating" ? (
           <>Nothing is in force yet: Ballast is evaluating this window now.</>
         ) : (

@@ -112,10 +112,21 @@ export type Quote =
       kind: "buy";
       qty: bigint; premium: bigint; coverPrice: bigint;
       requestedBps: number; achievedBps: number;
+      /** The ask-sized premium before any binding limit clamps it -- what one window would
+          cost to fully meet the policy's ask at the current book. Equal to `premium` when
+          nothing bound the purchase. */
+      desiredPremium: bigint;
       /** Why it would deliver less than asked, or null when it would not. */
       shortBy: string | null;
     }
-  | { kind: "decline"; reason: string; coverPrice: bigint | null; exposure: bigint | null };
+  | {
+      kind: "decline"; reason: string; coverPrice: bigint | null; exposure: bigint | null;
+      /** The ask-sized premium this window would need, when the decline happened AFTER that
+          value was computed (NoHeadroom, BelowMinimumLot) -- so a wallet's free balance can be
+          compared against it. Null for every earlier decline (NoExposure, NoOpenPrice,
+          NoLiquidity, CoverTooExpensive, Unreadable), where no such figure exists yet. */
+      desiredPremium: bigint | null;
+    };
 
 const BINDING = ["", "your free balance", "your per-window cap", "your premium ceiling"];
 
@@ -142,8 +153,10 @@ export async function quoteFor(
     read(client.readContract({ address: w.pool, abi: poolAbi, functionName: "getBookLevels", args: [true, 1n], blockNumber })),
     read(client.readContract({ address: w.pool, abi: poolAbi, functionName: "getOrderBookParameters", blockNumber })),
   ]);
-  const decline = (reason: string, coverPrice: bigint | null = null, exposure: bigint | null = null): Quote =>
-    ({ kind: "decline", reason, coverPrice, exposure });
+  const decline = (
+    reason: string, coverPrice: bigint | null = null, exposure: bigint | null = null,
+    desiredPremium: bigint | null = null,
+  ): Quote => ({ kind: "decline", reason, coverPrice, exposure, desiredPremium });
 
   if (exposureNow === null || openPrice === null || assetKey === null || maxCoverPriceBps === null || bids === null || params === null) {
     return decline("Unreadable");
@@ -174,7 +187,7 @@ export async function quoteFor(
   const bl = await read(client.readContract({ address: ADDR.vault as Address, abi: vaultAbi, functionName: "bindingLimit", args: [user, m, exposure], blockNumber }));
   if (bl === null) return decline("Unreadable", coverPrice, exposure);
   const [limit, binding] = bl;
-  if (limit === 0n) return decline("NoHeadroom", coverPrice, exposure);
+  if (limit === 0n) return decline("NoHeadroom", coverPrice, exposure, desiredPremium);
 
   let premium = desiredPremium > limit ? limit : desiredPremium;
   let qty = (premium * ONE) / coverPrice;
@@ -183,10 +196,10 @@ export async function quoteFor(
     qty = (qty / params.lotSize) * params.lotSize;
     if (qty > top.quantity) { qty = (top.quantity / params.lotSize) * params.lotSize; bookBound = true; }
   } else if (qty > top.quantity) { qty = top.quantity; bookBound = true; }
-  if (qty === 0n || qty < params.minQuantity) return decline("BelowMinimumLot", coverPrice, exposure);
+  if (qty === 0n || qty < params.minQuantity) return decline("BelowMinimumLot", coverPrice, exposure, desiredPremium);
 
   premium = (qty * coverPrice) / ONE;
-  if (premium === 0n || premium > limit) return decline("BelowMinimumLot", coverPrice, exposure);
+  if (premium === 0n || premium > limit) return decline("BelowMinimumLot", coverPrice, exposure, desiredPremium);
 
   const denom = exposure * ONE;
   const achieved = (qty * upBid * BPS + denom / 2n) / denom;
@@ -199,7 +212,7 @@ export async function quoteFor(
       : desiredPremium > limit ? `${BINDING[binding] || "one of your limits"} binds first`
       : "rounding to the venue's lot size";
   }
-  return { kind: "buy", qty, premium, coverPrice, requestedBps, achievedBps, shortBy };
+  return { kind: "buy", qty, premium, coverPrice, requestedBps, achievedBps, desiredPremium, shortBy };
 }
 
 /** Why an OPENED cover delivered less than asked. Same classification the positions table

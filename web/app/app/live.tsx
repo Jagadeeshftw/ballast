@@ -81,8 +81,23 @@ export type Live = {
       inferred from time-in-window alone while nothing could be scheduled. */
   canSchedule: boolean | null;
   engineBalance: bigint | null;
-  /** How the engine's decision for the connected wallet stands in the current window. */
-  phase: "none" | "waiting" | "evaluating" | "bought" | "declined" | "gaveUp" | "unscheduled";
+  /** True once the connected wallet's vault is known to hold no free tUSDC. Checked
+      independent of whether a window happens to be open right now -- it is true or false
+      regardless -- because the on-chain consequence is not window-shaped either: with zero
+      free balance, `isCoverable()` fails and the engine's batch loop skips this wallet before
+      it even reaches `_quote()`, emitting `CoverSkipped(PolicyInactiveOrExpired)` -- which
+      reads as "no active policy" even when the policy is fine. Every consumer checks this
+      (and `canSchedule`) BEFORE consulting `phase`, so neither can be masked by an idle
+      "waiting"/"evaluating" reading, which is the mistake this replaces. Null while the
+      wallet's own state (`s`) has not loaded. */
+  vaultEmpty: boolean | null;
+  /** How the engine's decision for the connected wallet stands in the current window, once
+      the structural gates above (`canSchedule`, `vaultEmpty`) are known to be clear.
+      "vaultLow" means the wallet's free balance, though nonzero, is below what this window's
+      ask would cost at the current book (`quote.desiredPremium`) -- the same situation as
+      `vaultEmpty`, arriving one window earlier -- and only fires when the live quote is
+      itself a decline, never when a smaller purchase would still go through. */
+  phase: "none" | "waiting" | "evaluating" | "bought" | "declined" | "gaveUp" | "vaultLow";
 };
 
 const LiveCtx = createContext<Live | null>(null);
@@ -202,7 +217,7 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
   const refreshQuote = useCallback(async (cur: Win | null) => {
     if (!cur || !connected || !s) { setQuote(null); return; }
     const reqBps = hasPolicy ? Number(s.policy[1]) : 0;
-    const q = await quoteFor(client, account as Address, cur, reqBps).catch(() => ({ kind: "decline", reason: "Unreadable", coverPrice: null, exposure: null }) as Quote);
+    const q = await quoteFor(client, account as Address, cur, reqBps).catch(() => ({ kind: "decline", reason: "Unreadable", coverPrice: null, exposure: null, desiredPremium: null }) as Quote);
     setQuote({ marketId: cur.marketId.toLowerCase(), q });
   }, [connected, account, s, hasPolicy]);
 
@@ -234,16 +249,27 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
   const trackOf = (w: Win | null) => (w ? tracks[w.marketId.toLowerCase()] ?? blank() : blank());
   const q = quote && current && quote.marketId === current.marketId.toLowerCase() ? quote.q : null;
   const tr = trackOf(current);
+
+  // Structural gates: true or false regardless of whether a window is open. A wallet with
+  // zero free balance never gets a meaningful decline reason on chain (isCoverable() gates
+  // before _quote() runs), so this is read directly from the wallet's own state rather than
+  // inferred from a skip event.
+  const vaultEmpty = s ? s.free === 0n : null;
+  // The same situation one window earlier: nonzero balance, but less than this window's ask
+  // would cost at the current book -- and only when the live quote is itself a decline, so a
+  // smaller-but-real purchase is never relabelled as "insufficient".
+  const vaultLow = !!s && s.free > 0n && q?.kind === "decline" && q.desiredPremium !== null && s.free < q.desiredPremium;
+
   const phase: Live["phase"] = !current || !connected ? "none"
     : tr.opened ? "bought"
     : tr.gaveUp ? "gaveUp"
     : tr.skips.length > 0 ? "declined"
-    : canSchedule === false && tr.attempts === 0 ? "unscheduled"
+    : vaultLow ? "vaultLow"
     : cfg && now >= current.start + cfg.first ? "evaluating"
     : "waiting";
 
   return (
-    <LiveCtx.Provider value={{ mounted, now, current, previous, windows: wins, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, canSchedule, engineBalance, phase }}>
+    <LiveCtx.Provider value={{ mounted, now, current, previous, windows: wins, initial, tracks, trackOf, quote: q, spot, cfg, readFailed, canSchedule, engineBalance, vaultEmpty, phase }}>
       {children}
     </LiveCtx.Provider>
   );
