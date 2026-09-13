@@ -27,6 +27,8 @@ const qtyOf = (u: bigint) => (Number(u) / 1e6).toLocaleString("en-GB", { maximum
 const pct = (bps: number) => `${(bps / 100).toFixed(2)}%`;
 const px = (v: number) => v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const clock = (secs: number) => `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
+const interval = (seconds: number) => seconds % 3600 === 0 ? `${seconds / 3600}-hour`
+  : seconds % 60 === 0 ? `${seconds / 60}-minute` : `${seconds}-second`;
 
 export default function WindowWatch() {
   const { settled: walletKnown, hasProvider, account, chainOk, s } = useWallet();
@@ -49,7 +51,7 @@ export default function WindowWatch() {
     <section className="winWatch" aria-labelledby="ww-h" data-phase={phase}>
       <div className="wwHead">
         <h2 id="ww-h" className="wwEyebrow">Live window</h2>
-        <span className="wwSeries">ETH · one-minute{shown ? <> · <span className="mono">#{parseInt(shown.marketId, 16)}</span></> : null}</span>
+        <span className="wwSeries">ETH{shown ? <> · {interval(shown.seconds)} · <span className="mono">#{parseInt(shown.marketId, 16)}</span></> : null}</span>
       </div>
 
       {/* Keyed on the window: a new one enters, it does not overwrite. */}
@@ -73,7 +75,7 @@ export default function WindowWatch() {
             <span className="wwClose">
               {readFailed
                 ? "The chain did not answer, so the current window cannot be shown. Retrying."
-                : "No one-minute ETH window was registered by Ballast in the last ~100 seconds. If the engine has stopped, the Engine view says so."}
+                : "No ETH window is open right now. If the engine has stopped, the Engine view says so."}
             </span>
           )}
         </div>

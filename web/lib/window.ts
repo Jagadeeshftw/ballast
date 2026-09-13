@@ -13,16 +13,18 @@
  * connected wallet, so "what Ballast would do" is what the engine would do if it ran now. If
  * any input cannot be read, it returns a refusal with that reason rather than a number.
  */
-import { parseAbi, keccak256, stringToBytes, type Address, type PublicClient } from "viem";
+import { decodeEventLog, parseAbi, keccak256, stringToBytes, type Address, type PublicClient } from "viem";
 import { ADDR } from "./chain";
 
 export const ETH_KEY = keccak256(stringToBytes("ETH")).toLowerCase();
 const ONE = 1_000_000n;
 const BPS = 10_000n;
 
-/** The longest window this series can have and still be "one-minute". A market that opens a
-    second or two late is still the one-minute series, not another. */
-const SERIES_MAX_SECONDS = 90;
+/* The RPC limits a log request to roughly 1,000 blocks. At the observed block cadence this
+   covers twenty minutes, enough to find the currently open 5-, 15-, or 60-minute ETH series
+   at page load. Subsequent short scans keep that selected window current. */
+const WINDOW_LOOKBACK_BLOCKS = 12_000n;
+const LOG_BATCH_BLOCKS = 990n;
 
 export const engineEvents = parseAbi([
   "event WindowEnqueued(bytes32 indexed marketId, bytes32 assetKey, uint256 openPrice, uint64 firstAttemptAt)",
@@ -73,8 +75,8 @@ export type Win = {
 
 type EnqueueLog = { args: { marketId?: `0x${string}`; assetKey?: `0x${string}`; openPrice?: bigint } };
 
-/** Turns the engine's WindowEnqueued logs into one-minute ETH windows, reading each market's
-    open and close from the module rather than assuming the series cadence. */
+/** Turns the engine's WindowEnqueued logs into ETH windows, reading each market's open and
+    close from the module rather than assuming a venue cadence. */
 export async function toWindows(client: PublicClient, logs: EnqueueLog[]): Promise<Win[]> {
   const eth = logs.filter((l) => l.args.marketId && String(l.args.assetKey).toLowerCase() === ETH_KEY);
   const rows = await Promise.all(eth.map((l) =>
@@ -84,7 +86,7 @@ export async function toWindows(client: PublicClient, logs: EnqueueLog[]): Promi
   for (const x of rows) {
     if (!x) continue;
     const seconds = Number(x.r.expiry - x.r.tradingStart);
-    if (seconds <= 0 || seconds > SERIES_MAX_SECONDS) continue;
+    if (seconds <= 0) continue;
     out.push({
       marketId: x.l.args.marketId!, asset: "ETH",
       start: Number(x.r.tradingStart), close: Number(x.r.expiry), seconds,
@@ -94,16 +96,31 @@ export async function toWindows(client: PublicClient, logs: EnqueueLog[]): Promi
   return out;
 }
 
-/** The window open now, by CHAIN time, from the last ~100 seconds of engine logs. */
+/** The most recently opened ETH window that is live by CHAIN time. The venue can roll several
+    ETH intervals concurrently; choosing the newest one means the panel follows the shortest
+    active series without encoding a particular duration. */
 export async function currentWindow(client: PublicClient): Promise<{ win: Win | null; chainNow: number }> {
   const head = await client.getBlockNumber();
-  const [blk, logs] = await Promise.all([
+  const from = head > WINDOW_LOOKBACK_BLOCKS ? head - WINDOW_LOOKBACK_BLOCKS : 0n;
+  const ranges: { fromBlock: bigint; toBlock: bigint }[] = [];
+  for (let start = from; start <= head; start += LOG_BATCH_BLOCKS) {
+    ranges.push({ fromBlock: start, toBlock: start + LOG_BATCH_BLOCKS - 1n < head ? start + LOG_BATCH_BLOCKS - 1n : head });
+  }
+  const [blk, raw] = await Promise.all([
     client.getBlock({ blockNumber: head }),
-    client.getLogs({ address: ADDR.engine as Address, event: engineEvents[0], fromBlock: head - 989n, toBlock: head }),
+    Promise.all(ranges.map((range) => client.getLogs({ address: ADDR.engine as Address, ...range }))),
   ]);
+  const logs: EnqueueLog[] = [];
+  for (const log of raw.flat()) {
+    try {
+      const decoded = decodeEventLog({ abi: engineEvents, data: log.data, topics: log.topics });
+      if (decoded.eventName === "WindowEnqueued") logs.push({ args: decoded.args });
+    } catch { /* The engine emits several other events in the same range. */ }
+  }
   const now = Number(blk.timestamp);
-  const wins = await toWindows(client, logs as unknown as EnqueueLog[]);
-  const win = wins.filter((w) => w.start <= now && now < w.close).sort((a, b) => b.start - a.start)[0] ?? null;
+  const wins = await toWindows(client, logs);
+  const win = wins.filter((w) => w.start <= now && now < w.close)
+    .sort((a, b) => b.start - a.start || a.seconds - b.seconds)[0] ?? null;
   return { win, chainNow: now };
 }
 
