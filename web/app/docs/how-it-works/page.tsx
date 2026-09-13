@@ -22,7 +22,7 @@ export default function HowItWorks() {
     <DocShell
       slug="how-it-works"
       title="How it works"
-      lede="Three contracts, a reactive subscription, and a handler that runs inside the block that triggered it. No keeper, no cron, and nothing of ours polling."
+      lede="Three contracts, a reactive subscription, and a handler that runs inside the block that triggered it. No keeper in the money path."
       headings={HEADINGS}
     >
       <H2 id="contracts">Three contracts</H2>
@@ -107,8 +107,7 @@ export default function HowItWorks() {
         </table>
       </div>
       <p>
-        Same block. <strong>Zero blocks of latency</strong>, and no operator anywhere in the
-        loop. This is the part of the design that only works on this chain.
+        Same block. <strong>Zero blocks of latency</strong>, with no keeper in the money path. This is the part of the design that only works on this chain.
       </p>
       <p>
         The two are tied together by the subscription rather than by sharing a block number: the

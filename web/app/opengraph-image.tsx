@@ -55,7 +55,7 @@ export default async function Image() {
           </div>
 
           <div style={{ fontSize: 24, color: muted, lineHeight: 1.4, maxWidth: 900 }}>
-            Parametric cover on dreamDEX Event Contracts. No keeper, no cron — Somnia&rsquo;s
+            Parametric cover on dreamDEX Event Contracts. No keeper in the money path — Somnia&rsquo;s
             reactivity precompile runs the handler inside the block that triggered it.
           </div>
         </div>

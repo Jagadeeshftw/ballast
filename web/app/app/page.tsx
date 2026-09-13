@@ -7,6 +7,7 @@ import { StatGrid } from "@/components/ace/stat-grid";
 import ChainNote from "@/components/site/ChainNote";
 import { StateBanner } from "@/components/ace/lead-panel";
 import CoverInForce from "./CoverInForce";
+import VaultLowBanner from "./VaultLowBanner";
 import WindowWatch from "./WindowWatch";
 import { LiveProvider } from "./live";
 import Summary from "./Summary";
@@ -62,6 +63,7 @@ export default async function Overview() {
       <div className="stagger">
         <Summary />
 
+        <VaultLowBanner />
         <WindowWatch />
 
         <section>

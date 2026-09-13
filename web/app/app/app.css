@@ -820,3 +820,35 @@ html[data-wpend="1"] #dir-a [data-own]::after {
 @keyframes rise { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes wwEnter { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes wwRing { 0% { border-color: var(--rail); } 25% { border-color: color-mix(in srgb, var(--beacon) 70%, var(--rail)); } 100% { border-color: var(--rail); } }
+
+/* Wallet-owned convenience layer; every selector stays inside the dashboard. */
+#dir-a .notificationBox { position: relative; flex: none; }
+#dir-a .notificationToggle { cursor: pointer; min-width: 64px; justify-content: center; }
+#dir-a .notificationBadge { display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; }
+#dir-a .notificationPanel { position: fixed; z-index: 60; top: 64px; right: 26px; width: min(420px, calc(100vw - 28px)); max-height: min(620px, calc(100dvh - 100px)); overflow-y: auto; overscroll-behavior: contain; background: var(--hull); border: 1px solid var(--rail); border-radius: 12px; box-shadow: 0 12px 40px #0004; color: var(--bone); }
+#dir-a .notificationHeading { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 0; }
+#dir-a .notificationHeading h2 { font-size: 18px; margin: 0; }
+#dir-a .notificationIcon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: none; border: 0; background: transparent; color: var(--bone); cursor: pointer; }
+#dir-a .notificationOwner { padding: 0 16px; margin: 4px 0 12px; font-size: 13px; color: var(--chart); }
+#dir-a .notificationText { padding: 12px 16px; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+#dir-a .notificationText p { margin: 0 0 12px; }
+#dir-a .notificationActions { display: flex; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--rail); }
+#dir-a .notificationActions button { background: transparent; border: 0; color: var(--bone); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 6px 0; }
+#dir-a .notificationActions button:disabled { color: var(--chart); cursor: default; text-decoration: none; }
+#dir-a .notificationList { list-style: none; margin: 0; padding: 0; }
+#dir-a .notificationList li { display: flex; align-items: flex-start; gap: 10px; padding: 14px; border-top: 1px solid var(--rail); }
+#dir-a .notificationList li > div { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+#dir-a .notificationList a { color: var(--bone); font-size: 14px; }
+#dir-a .notificationList p { color: var(--chart); font-size: 13px; line-height: 1.6; margin: 5px 0; }
+#dir-a .notificationList time { color: var(--chart); font-size: 12px; }
+#dir-a .notificationKind { margin-top: 2px; flex: none; color: var(--beacon); }
+#dir-a .notificationError { color: var(--exposed); border-top: 1px solid var(--rail); }
+#dir-a .vaultReminder { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; border: 1px solid var(--beacon); border-radius: 10px; background: var(--hull); padding: 18px; margin: 16px 0; overflow-wrap: anywhere; }
+#dir-a .vaultReminder > div:first-child { flex: 1 1 260px; min-width: 0; }
+#dir-a .vaultReminder p { margin: 6px 0 0; }
+#dir-a .vaultReminderActions { display: flex; flex-wrap: wrap; gap: 10px; }
+#dir-a .topupField { outline: 2px solid var(--beacon); outline-offset: 6px; border-radius: 4px; }
+@media (max-width: 768px) {
+ #dir-a .notificationPanel { position: fixed; top: 62px; right: 14px; }
+ #dir-a .notificationToggle { min-width: 54px; padding-inline: 7px; }
+}

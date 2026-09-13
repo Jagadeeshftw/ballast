@@ -25,7 +25,7 @@ export default function DocsIndex() {
           fixed payout on a yes/no question about a price at a moment. They expire and are
           replaced constantly — as often as every sixty seconds — so cover bought against one
           window is worthless a minute later. In practice nobody sits up all night re-buying
-          it. Ballast does, and nothing of ours is running when it happens: Somnia&rsquo;s
+          it. Ballast does, with no keeper in the money path: Somnia&rsquo;s
           reactivity precompile invokes the handler as a synthetic transaction inside the
           block that triggered it.
         </p>

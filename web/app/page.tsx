@@ -88,7 +88,7 @@ export default async function Landing() {
                 You hold ETH. It can fall while you sleep, and the instruments that would cover
                 that fall expire every sixty seconds — so in practice nobody rolls them.{" "}
                 <strong className="font-medium text-ink">
-                  Ballast does, and nothing of ours is running when it happens.
+                  Ballast does, with no keeper in the money path.
                 </strong>
               </p>
               <div className="mt-7 flex flex-wrap items-center gap-3">

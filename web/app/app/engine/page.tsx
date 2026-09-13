@@ -88,8 +88,8 @@ export default async function Engine() {
         The reactive contract that does the buying.{" "}
         <a className="mono" href={`${EXPLORER}/address/${ADDR.engine}`}>{ADDR.engine}</a>{" "}
         — subscribed to dreamDEX&rsquo;s window events, woken by Somnia&rsquo;s reactivity
-        precompile inside the block that triggered it. Nothing of ours polls, and there is no
-        keeper to trust.
+        precompile inside the block that triggered it, with no keeper in the money path.
+        A separate watcher reads the chain for notifications and balance alerts.
       </p>
 
       <StatGrid

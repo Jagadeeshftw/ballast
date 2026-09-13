@@ -26,7 +26,7 @@ Offset. Check npm and GitHub before committing to it.
 
 A user holds a spot position on dreamDEX. Each Event Contract window, Ballast automatically
 buys the offsetting Down contract, sized to their exposure, so their net position stays flat
-through the window. No keeper bot, no backend cron: the trigger is Somnia's on-chain
+through the window. No keeper in the money path: the trigger is Somnia's on-chain
 Reactivity precompile.
 
 The pitch in one line: **Event Contracts are not only a speculation product, they are a

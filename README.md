@@ -6,8 +6,7 @@
 
 **Ballast buys downside cover for your crypto automatically — a small, fixed payout that
 lands if the price falls, bought fresh every trading window.** You deposit collateral once
-and say how deep a fall you want covered; the chain does the rest, with no keeper, no cron
-and nothing of ours running.
+and say how deep a fall you want covered; the chain does the rest, with no keeper in the money path.
 
 Live on Somnia Shannon testnet: **<https://ballast.0xo.in>** ·
 Documentation: **<https://ballast.0xo.in/docs>** (the markdown in [`docs/`](docs/) is its source) ·
@@ -38,7 +37,7 @@ market that serves speculators also serves someone trying to sleep through a dra
 That is the argument: a prediction market is more valuable if things that are not gambling
 can be built on it, and this is one. The second half of the argument is Somnia-specific —
 the venue's own event is the trigger. `MarketCreated` fires, and Ballast's handler runs **in
-the same block**, so the product needs no operator at all. Those two things together are why
+the same block**, with no keeper in the money path. Those two things together are why
 it belongs here rather than on a generic EVM chain with a keeper bot.
 
 ## It sells parametric cover, not a hedge
@@ -323,6 +322,26 @@ forge test            # 173 tests
 cd probes && forge test   # 23 Phase 0 probes against live testnet state (see note)
 cd web && npm i && npm run dev
 ```
+
+## Convenience watcher
+
+The dashboard's notification and low-balance layer is separate from the reactive money path.
+It has no key, wallet client, approval, or transaction-writing code: it only reads chain state
+and writes Postgres notification records. Its design and API contract are in
+[`docs/backend-spec.md`](docs/backend-spec.md).
+
+Set `DATABASE_URL` in `web/.env.local`, then run the schema once and start the watcher:
+
+```bash
+cd web
+npm run db:migrate
+npm run watcher
+```
+
+On this workstation, `scripts/com.ballast.watcher.plist` runs that watcher as the
+`com.ballast.watcher` LaunchAgent. It polls every 30 seconds and resumes from a block-hash
+checkpoint after a restart. The Vercel app uses the same `DATABASE_URL` as a sensitive
+production environment variable.
 
 **Note on the probes.** 21 of 23 pass. Two — `test_ContractCanPlaceRestingBid` and
 `test_ContractCanMintCompleteSet` — are pinned to a specific BTC 24 h market that expired at

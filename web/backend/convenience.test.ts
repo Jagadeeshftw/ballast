@@ -1,0 +1,88 @@
+import { test,after } from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { NextRequest } from "next/server";
+import { privateKeyToAccount } from "viem/accounts";
+import { db,closeDb } from "./db";
+import { hash } from "./auth";
+import { POST as challenge } from "../app/api/auth/challenge/route";
+import { POST as verify } from "../app/api/auth/verify/route";
+import { GET as notifications } from "../app/api/notifications/route";
+import { POST as read } from "../app/api/notifications/read/route";
+import { GET as health } from "../app/api/engine/health/route";
+import { estimatedPremium,type Books,type ChainLog,type WalletRead } from "./chain-reader";
+import { eventNote,vaultNote } from "./notification-copy";
+import { runway } from "./watcher";
+import { ADDR } from "../lib/chain";
+// Throwaway local PostgreSQL only; refuse to mutate a remote or production database.
+process.env.DATABASE_URL="postgres://ballast_test@127.0.0.1:55441/postgres";
+const origin="http://localhost:3000";
+const request=(path:string,body?:unknown,cookie?:string,site=origin)=>new NextRequest(origin+path,{method:body===undefined?"GET":"POST",headers:{origin:site,"content-type":"application/json",...(cookie?{cookie}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});
+after(closeDb);
+test("authentication and notification ownership on real PostgreSQL",async()=>{
+ const sql=db();await sql.unsafe(await readFile(new URL("./migrations/001.sql",import.meta.url),"utf8"));
+ await sql`TRUNCATE wallets,notifications,sessions,auth_challenges,engine_snapshots,watcher_state CASCADE`;
+ // A public test key, used only in this test client to produce message signatures.
+ const account=privateKeyToAccount(`0x${"1".repeat(64)}`),other="0x2222222222222222222222222222222222222222";
+ const start=await challenge(request("/api/auth/challenge",{address:account.address}));assert.equal(start.status,200);
+ const message=(await start.json()).message;
+ const challengeCookie=start.headers.get("set-cookie")!.split(";")[0];
+ const signature=await account.signMessage({message});
+ const logged=await verify(request("/api/auth/verify",{address:account.address,signature},challengeCookie));assert.equal(logged.status,200);
+ const cookie=logged.headers.get("set-cookie")!.split(";")[0];
+ const replay=await verify(request("/api/auth/verify",{address:account.address,signature},challengeCookie));assert.equal(replay.status,401);
+ assert.equal((await challenge(request("/api/auth/challenge",{address:account.address},undefined,"https://evil.example"))).status,403);
+ assert.equal((await challenge(request("/api/auth/challenge",{address:"wrong"}))).status,400);
+ assert.equal((await notifications(request(`/api/notifications?address=${account.address}`))).status,401);
+ await sql`INSERT INTO wallets(address) VALUES(${other})`;
+ const owner=account.address.toLowerCase();
+ const a=await sql`INSERT INTO notifications(address,kind,title,body,dedupe_key) VALUES(${owner},'vault_low','Own alert','Low','test-own') RETURNING id`;
+ const b=await sql`INSERT INTO notifications(address,kind,title,body,dedupe_key) VALUES(${other},'vault_low','Other alert','Low','test-other') RETURNING id`;
+ const list=await notifications(request(`/api/notifications?address=${account.address}`,undefined,cookie));assert.equal(list.status,200);assert.equal((await list.json()).items.length,1);
+ assert.equal((await notifications(request(`/api/notifications?address=${other}`,undefined,cookie))).status,403);
+ assert.equal((await read(request("/api/notifications/read",{ids:[b[0].id]},cookie))).status,200);
+ assert.equal((await sql`SELECT read FROM notifications WHERE id=${b[0].id}`)[0].read,false);
+ assert.equal((await read(request("/api/notifications/read",{ids:[a[0].id]},cookie))).status,200);
+ assert.equal((await sql`SELECT read FROM notifications WHERE id=${a[0].id}`)[0].read,true);
+ assert.equal((await read(request("/api/notifications/read",{ids:["not-uuid"]},cookie))).status,400);
+ await read(request("/api/notifications/read",{all:true},cookie));assert.equal((await sql`SELECT read FROM notifications WHERE id=${b[0].id}`)[0].read,false);
+ const token=cookie.split("=")[1];await sql`UPDATE sessions SET expires_at=now()-interval '1 second' WHERE token_hash=${hash(token)}`;
+ assert.equal((await notifications(request(`/api/notifications?address=${account.address}`,undefined,cookie))).status,401);
+ // Durable unique identity holds even on retries. Failed transactions roll back the cursor.
+ await sql`INSERT INTO notifications(address,kind,title,body,dedupe_key) VALUES(${owner},'vault_low','Own alert','Low','test-own') ON CONFLICT(address,dedupe_key) DO NOTHING`;
+ assert.equal((await sql`SELECT count(*)::int AS n FROM notifications WHERE address=${owner}`)[0].n,1);
+ await assert.rejects(sql.begin(async tx=>{await tx`INSERT INTO watcher_state VALUES('test',1,'hash','{}',now())`;throw new Error("failure");}));
+ assert.equal((await sql`SELECT count(*)::int AS n FROM watcher_state`)[0].n,0);
+ assert.equal((await health(request("/api/engine/health"))).status,503);
+ const data={observedAt:new Date().toISOString()};
+ await sql`INSERT INTO engine_snapshots(engine_address,balance_stt,data) VALUES(${ADDR.engine.toLowerCase()},64,${sql.json(data)})`;
+ assert.equal((await health(request("/api/engine/health"))).status,200);
+ await sql`UPDATE engine_snapshots SET snapshot_at=now()-interval '2 minutes'`;
+ assert.equal((await health(request("/api/engine/health"))).status,503);
+});
+test("premium estimate respects policy, books and lot size, excludes free balance",()=>{
+ const book={marketId:`0x${"0".repeat(64)}`,key:`0x${"0".repeat(64)}`,open:2000n*10n**18n,upBid:500000n,quantity:1000000000n,lot:1000n,min:1000n} as Books[number];
+ assert.equal(estimatedPremium(2000_000000n,book.open,[true,250,300,0n,2000_000000n],book,9000n),50_000000n);
+ assert.equal(estimatedPremium(2000_000000n,book.open,[true,250,100,0n,2000_000000n],book,9000n),20_000000n);
+ assert.equal(estimatedPremium(0n,book.open,[true,250,300,0n,2000_000000n],book,9000n),null);
+ assert.equal(estimatedPremium(2000_000000n,book.open,[true,250,300,0n,2000_000000n],{...book,upBid:1000n},9000n),null);
+});
+test("runway uses measured burn, holds the scheduling floor, refuses insufficient samples",()=>{
+ assert.equal(runway(64n*10n**18n,[]).hoursRemaining,null);
+ assert.equal(runway(64n*10n**18n,[{from:0,to:3600,wei:String(4n*10n**18n),callbacks:100,valid:true}]).hoursRemaining,8);
+ assert.equal(runway(31n*10n**18n,[{from:0,to:3600,wei:String(4n*10n**18n),callbacks:100,valid:true}]).hoursRemaining,0);
+ assert.equal(runway(64n*10n**18n,[{from:0,to:3600,wei:String(4n*10n**18n),callbacks:100,valid:false}]).hoursRemaining,null);
+});
+test("notifications require confirmed event and distinguish degradation, void and flat close",()=>{
+ const base={address:ADDR.engine,transactionHash:`0x${"a".repeat(64)}`,logIndex:1,blockNumber:1n,args:{user:ADDR.demoUser,marketId:`0x${"b".repeat(64)}`,premium:10_000000n,quantity:20_000000n,proceeds:0n,requestedBps:250,achievedBps:120,outcome:2}};
+ const opened=eventNote({...base,eventName:"CoverOpened"} as unknown as ChainLog,new Date().toISOString(),"BTC");assert.match(opened!.body,/1.20%/);assert.match(opened!.body,/Requested 2.50%/);assert.match(opened!.body,/does not identify/);
+ const lost=eventNote({...base,eventName:"CoverSettled"} as unknown as ChainLog,new Date().toISOString(),"BTC");assert.equal(lost!.kind,"cover_settled_lost");assert.match(lost!.body,/BTC/);
+ const voided=eventNote({...base,eventName:"CoverSettled",args:{...base.args,outcome:3}} as unknown as ChainLog,new Date().toISOString(),"ETH");assert.equal(voided!.kind,"cover_settled_voided");
+ assert.equal(eventNote({...base,eventName:"CallbackRan",args:{}} as unknown as ChainLog,new Date().toISOString(),"ETH"),null);
+});
+test("low alerts fire on transition, including empty and refill then depletion",()=>{
+ const low={address:ADDR.demoUser.toLowerCase(),vaultLow:true,vaultEmpty:false,free:"100",windowsRemaining:1,blockNumber:"1",observedAt:new Date().toISOString()} as WalletRead;
+ assert.equal(vaultNote(low,undefined)?.kind,"vault_low");assert.equal(vaultNote(low,low),null);
+ assert.equal(vaultNote({...low,vaultEmpty:true},low)?.kind,"vault_empty");
+ assert.equal(vaultNote(low,{...low,vaultLow:false})?.kind,"vault_low");
+});

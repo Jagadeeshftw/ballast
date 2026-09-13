@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import { WalletProvider } from "./wallet";
 import { getEngineState } from "@/lib/chain";
-import { notificationsFor } from "./notifications";
+import { ConvenienceProvider } from "./Convenience";
 import { ADDR } from "@/lib/chain";
 import { utc } from "../data";
 
@@ -26,7 +26,6 @@ export const dynamic = "force-dynamic";
  */
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const engine = await getEngineState().catch(() => null);
-  const unread = notificationsFor(ADDR.demoUser).filter((n) => n.important).length;
 
   return (
     <div id="dir-a" className="app">
@@ -52,6 +51,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         }}
       />
       <WalletProvider>
+      <ConvenienceProvider>
         <Sidebar />
         <div className="appMain">
           {/* `subscribed` alone is not "live". It stayed true for three days in September
@@ -71,10 +71,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                     ? `Subscribed, but no callback has arrived since ${utc(engine.lastCallbackAt)} — the engine is not being woken. See Engine.`
                     : "Subscribed and watching every window"
             }
-            unread={unread}
           />
           <main className="appBody">{children}</main>
         </div>
+      </ConvenienceProvider>
       </WalletProvider>
     </div>
   );

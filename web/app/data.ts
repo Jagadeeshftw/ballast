@@ -88,7 +88,7 @@ export const STEPS = [
   {
     n: "03",
     head: "The chain does the rest",
-    body: "Every window, in the same block it opens, Ballast buys cover — or declines it and tells you which reason. No keeper, no cron, nothing of ours running.",
+    body: "Every window, in the same block it opens, Ballast buys cover — or declines it and tells you which reason. No keeper in the money path.",
     foot: "0 blocks latency",
   },
 ] as const;

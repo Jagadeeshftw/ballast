@@ -203,7 +203,7 @@ cast call $ENGINE "lastCallbackAt()(uint64)" --rpc-url $SOMNIA_RPC
 ```
 
 **Expect `callbackCount` to increase.** That alone proves the reactive leg works end to
-end on chain — no keeper, no cron, nothing of ours running.
+end on chain — no keeper in the money path.
 
 Then confirm the asset decoding landed:
 

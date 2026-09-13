@@ -208,6 +208,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   /** Local only: EIP-1193 has no disconnect, so the intent is recorded here and honoured by
    *  the silent-reconnect path above. Returns the page to its public view. */
   const disconnect = useCallback(() => {
+    void fetch("/api/auth/session", { method: "DELETE" }).catch(() => {});
     markDisconnected();
     setAccount(null); setS(null); setErr(null); setTx(null);
   }, []);

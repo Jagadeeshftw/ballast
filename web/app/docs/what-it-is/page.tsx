@@ -66,7 +66,7 @@ export default async function WhatItIs() {
           a contract state rather than a setting in a database of ours.</li>
         <li><strong>The chain does the rest.</strong> When dreamDEX opens a window, Somnia&rsquo;s
           reactivity precompile invokes Ballast&rsquo;s handler inside that same block. There is
-          no keeper, no cron, and nothing of ours running.</li>
+          no keeper in the money path.</li>
       </ul>
 
       <H2 id="load-line">The load line is a break-even, not a kink</H2>

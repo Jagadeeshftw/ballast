@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { EXPLORER } from "@/lib/chain";
 import { useWallet } from "./wallet";
 import { FAUCETS } from "./onchain";
+import NotificationBell from "./NotificationBell";
 import ThemeToggle from "@/components/site/ThemeToggle";
 
 /**
@@ -14,8 +15,8 @@ import ThemeToggle from "@/components/site/ThemeToggle";
  * refused, which is the worst possible place to learn it.
  */
 export default function TopBar({
-  engineLive, engineStale = false, engineNote, unread,
-}: { engineLive: boolean | null; engineStale?: boolean; engineNote: string; unread: number }) {
+  engineLive, engineStale = false, engineNote,
+}: { engineLive: boolean | null; engineStale?: boolean; engineNote: string }) {
   const { settled, hasProvider, account, chainOk, connecting, s, connect, disconnect } = useWallet();
   const [menu, setMenu] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -56,18 +57,7 @@ export default function TopBar({
 
       <ThemeToggle className="chip themeBtn" />
 
-      {/* Was a bell badged "44 notifications". Nothing tracks read state, so none of them was
-          ever unread, and all 44 are settlements from a run that finished -- a counter that
-          can never decrement is theatre, and it linked to a view about something else. It is
-          now what it actually is: a labelled count of settlements, pointing at them. */}
-      {/* Sat beside the connected address with no owner named, so a reader took it for their
-          own history. It is the demonstration account's, and it says so. */}
-      <a className="chip bell" href="/app/activity?show=cover"
-        title="Settled cover on the demonstration account — not on any wallet you connect">
-        <i aria-hidden="true">◔</i>
-        <b>{unread}</b>
-        <span className="bellWord">settled · demo</span>
-      </a>
+      <NotificationBell />
 
       {/* `settled`, not `ready`: `ready` only means the provider has been looked for, and it
           is set before eth_accounts answers -- so a returning connected reader saw "Connect

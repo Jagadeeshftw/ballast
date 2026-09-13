@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Address } from "viem";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { somniaTestnet } from "viem/chains";
 import { ADDR } from "@/lib/chain";
 import { useWallet } from "./wallet";
@@ -17,6 +17,16 @@ const usd = (v: bigint) => (Number(v) / 1e6).toLocaleString("en-GB", { minimumFr
 export default function FundsActions() {
   const { settled, hasProvider, account, chainOk, s, busy, err, tx, connect, send } = useWallet();
   const [amount, setAmount] = useState("1000");
+  const [suggested, setSuggested] = useState(false);
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const value = query.get("topup");
+    if (account && query.get("wallet") === account.toLowerCase() && value && /^\d{1,18}(\.\d{1,6})?$/.test(value) && Number(value) > 0) {
+      setAmount(value); setSuggested(true);
+    } else { setSuggested(false); setAmount("1000"); }
+  }, [account]);
+  useEffect(() => { if (suggested && s) input.current?.focus(); }, [suggested, !!s]);
 
   /* Held while the provider is still being asked who is connected. Gated on `hasProvider`
      and not on `settled` alone: the server has no injected provider, so it never enters
@@ -80,8 +90,8 @@ export default function FundsActions() {
   if (!chainOk) return <div className="panel warn"><h3>Wrong network</h3><p className="why">Switch to Somnia Shannon testnet from the top bar.</p></div>;
   if (!s) return <div className="panel"><p className="why">Reading your balances…</p></div>;
 
-  const approved = s.allowance >= 1_000_000_000n;
-  const amt = (() => { const n = Number(amount); return Number.isFinite(n) && n > 0 ? BigInt(Math.round(n * 1e6)) : 0n; })();
+  const amt = (() => { try { return /^\d{1,18}(\.\d{1,6})?$/.test(amount) ? parseUnits(amount, 6) : 0n; } catch { return 0n; } })();
+  const approved = s.allowance >= amt;
   const overWallet = amt > s.tusdc;
   const overFree = amt > s.free;
 
@@ -101,9 +111,10 @@ export default function FundsActions() {
             <dt>WETH held</dt><dd>{formatUnits(s.weth, 18).slice(0, 8)}</dd>
           </dl>
 
-          <label className="field" style={{ marginTop: 18 }}>
+          {suggested && <p className="why">Suggested top-up: ten windows at the observed premium. Review this amount before approving or depositing.</p>}
+          <label className={`field ${suggested ? "topupField" : ""}`} style={{ marginTop: 18 }}>
             <span>Amount, tUSDC</span>
-            <input type="number" min={0} step={100} value={amount}
+            <input ref={input} type="number" min={0} step="0.000001" value={amount}
               onChange={(e) => setAmount(e.target.value)} />
             <small>
               {overWallet && amt > 0 ? "more than this wallet holds — the deposit would revert" : ""}
@@ -118,7 +129,7 @@ export default function FundsActions() {
             <button type="button" className="btn" disabled={!!busy}
               onClick={() => send("Approve", (w) => (w as never as { writeContract: Function }).writeContract({
                 address: ADDR.tusdc as Address, abi: erc20, functionName: "approve",
-                args: [ADDR.vault as Address, 1_000_000_000_000n], gas: GAS.approve,
+                args: [ADDR.vault as Address, amt], gas: GAS.approve,
                 chain: somniaTestnet, account: account!,
               }))}>
               {busy === "Approve" ? "Confirming…" : "1 of 2 · Approve tUSDC"}

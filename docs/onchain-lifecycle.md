@@ -100,7 +100,7 @@ precisely the emitter and topic of log 75.
 - trigger: [`0x0434d364…`](https://shannon-explorer.somnia.network/tx/0x0434d3649993a20112717df342ffd97952c2257bd4133bb5666da0d075d5fcd4)
 - callback: [`0x79bf978b…`](https://shannon-explorer.somnia.network/tx/0x79bf978b79eed28229298dd5d293d99e77c2e647610d14e3f1bce061eaab74f1)
 
-**Zero blocks of latency.** No keeper, no cron, no process of ours running. Measured across
+**Zero blocks of latency.** No keeper in the money path. Measured across
 four consecutive windows, identical every time.
 
 > Phase 0 originally reported ~90 ms. That figure is right for *scheduled one-shot*
