@@ -5,7 +5,7 @@ import { reader,head,engineAt,booksAt,walletAt,logsBetween,at,keyFor,type Wallet
 import { eventNote,vaultNote,engineNote,type PendingNote } from "./notification-copy";
 
 type Sample={from:number;to:number;wei:string;callbacks:number;valid:boolean};
-type State={wallets:Record<string,WalletRead>;samples:Sample[];engineAlert:string|null;observedAt:number;balance:string;callbackCount:string;lastEvents:Record<string,PendingNote[]>;vaultAlerts?:Record<string,string|null>};
+type State={wallets:Record<string,WalletRead>;samples:Sample[];engineAlert:string|null;observedAt:number;balance:string;callbackCount:string;lastEvents:Record<string,PendingNote[]>;vaultAlerts?:Record<string,string|null>;declineAlerts?:Record<string,number>};
 let stage="starting";
 const engineAddress=ADDR.engine.toLowerCase();
 export function runway(balance:bigint,samples:Sample[]){
@@ -61,6 +61,9 @@ export async function pollOnce(){
    const blockTimes=new Map<string,string>();
    const assetNames=new Map<string,string>();
    const lastEvents={...previous?.lastEvents};
+   // Declines can recur once per one-minute window. Keep only one useful alert for the same
+   // wallet, asset and reason in any rolling hour, across worker restarts.
+   const declineAlerts=Object.fromEntries(Object.entries(previous?.declineAlerts??{}).filter(([,at])=>now-at<3_600));
    stage="event-details";
    for(const log of logs){
     if(!("user" in log.args))continue;
@@ -71,8 +74,17 @@ export async function pollOnce(){
      const assetKey=await at(through)(log.address,"assetKeyOf",[log.args.marketId]);
      assetNames.set(key,assetKey===keyFor("ETH")?"ETH":assetKey===keyFor("BTC")?"BTC":"the underlying asset");
     }
-    const note=eventNote(log,blockTimes.get(b)!,assetNames.get(key)!);
-    if(note){notes.push(note);lastEvents[note.address]=[...(lastEvents[note.address]??[]),note].slice(-10);}
+    const address=String(log.args.user).toLowerCase();
+    const note=eventNote(log,blockTimes.get(b)!,assetNames.get(key)!,wallets[address]?.policy);
+    if(note){
+     if(note.kind==="cover_declined"){
+      const declineKey=`${note.address}:${assetNames.get(key)}:${String(note.data.reason)}`;
+      const occurredAt=Date.parse(note.createdAt)/1000;
+      if((declineAlerts[declineKey]??-Infinity)>occurredAt-3_600)continue;
+      declineAlerts[declineKey]=occurredAt;
+     }
+     notes.push(note);lastEvents[note.address]=[...(lastEvents[note.address]??[]),note].slice(-10);
+    }
    }
    // Balance deltas capture every charge (including failed callbacks). Any top-up or withdrawal
    // makes that interval unusable. Compare with successful receipt costs to detect masked funding.
@@ -93,7 +105,7 @@ export async function pollOnce(){
    const alert=BigInt(engine.balance)<32n*10n**18n?"engine_stopped":measured.hoursRemaining!==null&&measured.hoursRemaining<8?"engine_low":null;
    for(const address of addresses)if(alert&&(alert!==previous?.engineAlert||!previous?.wallets[address]))notes.push(engineNote(address,alert,String(through),observedAt,measured.hoursRemaining));
    const finalHeader=await reader.getBlock({blockNumber:through});if(finalHeader.hash!==scanBlock.hash)throw new Error("BLOCK_CHANGED");
-   const data={wallets,samples,engineAlert:alert,observedAt:now,balance:engine.balance,callbackCount:engine.callbackCount,lastEvents,vaultAlerts};
+   const data={wallets,samples,engineAlert:alert,observedAt:now,balance:engine.balance,callbackCount:engine.callbackCount,lastEvents,vaultAlerts,declineAlerts};
    stage="database-commit";
    await sql.begin(async tx=>{
     for(const address of addresses)await tx`INSERT INTO wallets(address) VALUES(${address}) ON CONFLICT DO NOTHING`;

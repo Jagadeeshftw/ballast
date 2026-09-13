@@ -74,8 +74,11 @@ test("runway uses measured burn, holds the scheduling floor, refuses insufficien
  assert.equal(runway(64n*10n**18n,[{from:0,to:3600,wei:String(4n*10n**18n),callbacks:100,valid:false}]).hoursRemaining,null);
 });
 test("notifications require confirmed event and distinguish degradation, void and flat close",()=>{
- const base={address:ADDR.engine,transactionHash:`0x${"a".repeat(64)}`,logIndex:1,blockNumber:1n,args:{user:ADDR.demoUser,marketId:`0x${"b".repeat(64)}`,premium:10_000000n,quantity:20_000000n,proceeds:0n,requestedBps:250,achievedBps:120,outcome:2}};
- const opened=eventNote({...base,eventName:"CoverOpened"} as unknown as ChainLog,new Date().toISOString(),"BTC");assert.match(opened!.body,/1.20%/);assert.match(opened!.body,/Requested 2.50%/);assert.match(opened!.body,/does not identify/);
+ const base={address:ADDR.engine,transactionHash:`0x${"a".repeat(64)}`,logIndex:1,blockNumber:1n,args:{user:ADDR.demoUser,marketId:`0x${"b".repeat(64)}`,premium:10_000000n,quantity:20_000000n,coverPrice:500_000n,proceeds:0n,requestedBps:250,achievedBps:120,outcome:2}};
+ const policy={active:true,makeWholeBps:250,maxPremiumBpsPerWindow:500,maxNotionalPerWindow:"10",expiry:"0"};
+ const opened=eventNote({...base,eventName:"CoverOpened"} as unknown as ChainLog,new Date().toISOString(),"BTC",policy);assert.match(opened!.body,/1.20%/);assert.match(opened!.body,/Requested 2.50%/);assert.match(opened!.body,/notional cap bound/);assert.doesNotMatch(opened!.body,/does not identify/);
+ assert.equal(eventNote({...base,eventName:"CoverSkipped",args:{...base.args,reason:3}} as unknown as ChainLog,new Date().toISOString(),"BTC"),null);
+ const declined=eventNote({...base,eventName:"CoverSkipped",args:{...base.args,reason:4}} as unknown as ChainLog,new Date().toISOString(),"ETH");assert.equal(declined!.kind,"cover_declined");
  const lost=eventNote({...base,eventName:"CoverSettled"} as unknown as ChainLog,new Date().toISOString(),"BTC");assert.equal(lost!.kind,"cover_settled_lost");assert.match(lost!.body,/BTC/);
  const voided=eventNote({...base,eventName:"CoverSettled",args:{...base.args,outcome:3}} as unknown as ChainLog,new Date().toISOString(),"ETH");assert.equal(voided!.kind,"cover_settled_voided");
  assert.equal(eventNote({...base,eventName:"CallbackRan",args:{}} as unknown as ChainLog,new Date().toISOString(),"ETH"),null);

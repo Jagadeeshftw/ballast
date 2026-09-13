@@ -221,6 +221,34 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
     setQuote({ marketId: cur.marketId.toLowerCase(), q });
   }, [connected, account, s, hasPolicy]);
 
+  /* A fill happens at one of the engine's scheduled retry marks. The broad log scan above
+     keeps the session history complete, but this narrow, indexed query is the confirmation
+     path for the panel someone is watching: after 15, 30, or 45 seconds it asks the chain
+     specifically whether this wallet received CoverOpened for this window. */
+  const refreshOpened = useCallback(async (cur: Win | null) => {
+    if (!cur || !connected || !account || !cfg || nowRef.current < cur.start + cfg.first) return;
+    const head = await client.getBlockNumber();
+    const logs = await client.getLogs({
+      address: ADDR.engine as Address,
+      event: engineEvents[3],
+      args: { user: account as Address, marketId: cur.marketId },
+      fromBlock: head > 989n ? head - 989n : 0n,
+      toBlock: head,
+    });
+    const log = logs[logs.length - 1];
+    if (!log) return;
+    const a = log.args;
+    const key = cur.marketId.toLowerCase();
+    setTracks((ts) => {
+      const t = ts[key] ?? blank();
+      if (t.opened) return ts;
+      return { ...ts, [key]: { ...t, opened: {
+        qty: a.quantity!, premium: a.premium!, coverPrice: a.coverPrice!,
+        requestedBps: Number(a.requestedBps), achievedBps: Number(a.achievedBps), tx: log.transactionHash,
+      } } };
+    });
+  }, [connected, account, cfg]);
+
   useEffect(() => {
     Promise.all([
       client.readContract({ address: ADDR.engine as Address, abi: engineViews, functionName: "initialDelaySeconds" }),
@@ -238,13 +266,14 @@ export function LiveProvider({ initial, serverNow, children }: { initial: Win | 
       if (typeof document === "undefined" || !document.hidden) {
         await poll();
         await refreshViews(curRef.current, prevRef.current);
+        await refreshOpened(curRef.current).catch(() => {});
         if (n++ % 2 === 0) await refreshQuote(curRef.current);
       }
       if (alive) t = setTimeout(loop, curRef.current ? 2000 : 1000);
     };
     loop();
     return () => { alive = false; clearTimeout(t); };
-  }, [poll, refreshViews, refreshQuote]);
+  }, [poll, refreshViews, refreshOpened, refreshQuote]);
 
   const trackOf = (w: Win | null) => (w ? tracks[w.marketId.toLowerCase()] ?? blank() : blank());
   const q = quote && current && quote.marketId === current.marketId.toLowerCase() ? quote.q : null;
