@@ -95,9 +95,7 @@ export async function pollOnce(){
    const finalHeader=await reader.getBlock({blockNumber:through});if(finalHeader.hash!==scanBlock.hash)throw new Error("BLOCK_CHANGED");
    const data={wallets,samples,engineAlert:alert,observedAt:now,balance:engine.balance,callbackCount:engine.callbackCount,lastEvents,vaultAlerts};
    stage="database-commit";
-   await lease`BEGIN`;
-   try {
-    const tx=lease;
+   await sql.begin(async tx=>{
     for(const address of addresses)await tx`INSERT INTO wallets(address) VALUES(${address}) ON CONFLICT DO NOTHING`;
     for(const n of notes)await tx`INSERT INTO notifications(address,kind,title,body,data,dedupe_key,created_at) VALUES(${n.address},${n.kind},${n.title},${n.body},${tx.json(n.data as never)},${n.dedupeKey},${n.createdAt}) ON CONFLICT(address,dedupe_key) DO NOTHING`;
     await tx`INSERT INTO engine_snapshots(engine_address,balance_stt,callbacks_per_hour,hours_remaining,data) VALUES(${engineAddress},${formatEther(BigInt(engine.balance))},${measured.callbacksPerHour},${measured.hoursRemaining},${tx.json({...engine,...measured,observedAt,blockNumber:String(through),runwayBasis:"Observed callback receipt charges matched exactly to balance decreases, excluding unmatched intervals; hours until the 32 STT scheduling floor. Future callback load can differ."} as never)})`;
@@ -105,8 +103,7 @@ export async function pollOnce(){
     await tx`DELETE FROM sessions WHERE expires_at<now()`;
     await tx`DELETE FROM auth_challenges WHERE expires_at<now()-interval '1 hour'`;
     await tx`DELETE FROM engine_snapshots WHERE snapshot_at<now()-interval '7 days'`;
-    await lease`COMMIT`;
-   } catch(error) { await lease`ROLLBACK`; throw error; }
+   });
    console.log(JSON.stringify({at:new Date().toISOString(),block:String(through),wallets:addresses.length,events:logs.length,notifications:notes.length,catchingUp:through<block.number}));
   }finally{
    if(holdsLock) await lease`SELECT pg_advisory_unlock(50312,7241)`;
