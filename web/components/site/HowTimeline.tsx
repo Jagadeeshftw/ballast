@@ -40,8 +40,8 @@ const STEPS = [
         <h3 className="text-xl font-bold tracking-tight text-ink">Then nothing, for as long as you like</h3>
         <p className="mt-3 max-w-[52ch] leading-relaxed text-muted">
           Every window, in the block it opens, Ballast buys cover — or declines it and records
-          which reason. Your collateral stays in your name and unreserved balance is withdrawable
-          unconditionally, throughout.
+          which reason. No keeper in the money path. Your collateral stays in your name and unreserved
+          balance is withdrawable unconditionally, throughout.
         </p>
       </div>
     ),

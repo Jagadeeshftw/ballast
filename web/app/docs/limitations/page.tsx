@@ -12,6 +12,7 @@ const HEADINGS: Heading[] = [
   { id: "gas-ceiling", text: "A buying callback runs close to its gas limit" },
   { id: "long-windows", text: "The default windows are the ones it never bought" },
   { id: "probes", text: "Two probes are pinned to expired markets" },
+  { id: "watcher", text: "The notification watcher is local" },
   { id: "sample", text: "The record is a sample" },
   { id: "open", text: "Open questions" },
 ];
@@ -133,6 +134,13 @@ export default function Limitations() {
         again, and that has not been done.
       </p>
 
+      <H2 id="watcher">The notification watcher is local</H2>
+      <p>
+        The notification watcher runs as a local process. Notifications are only generated
+        while that process is running. A judge or user who connects when the watcher is offline
+        will not receive vault-low or engine alerts until it restarts.
+      </p>
+
       <H2 id="sample">The record is a sample, not a result</H2>
       <p>
         {settled} settled positions with a positive net looks like a return. It is not one.
@@ -188,10 +196,11 @@ export default function Limitations() {
         therefore consumed steadily by a working policy.
       </p>
       <p>
-        There is <strong>no low-balance alert and no automatic refill</strong>. A holder who
-        stops watching will eventually find cover being skipped for want of collateral, and the
-        first they learn of it is a refusal in the activity log. What the right answer is — a
-        notification, a reserve floor, an allowance the vault may pull on — has not been decided.
+        The dashboard can notify a signed-in holder and prompt a manual top-up, but it never
+        refills automatically. Those alerts depend on the local notification watcher described
+        above; while it is offline, a holder can still find cover being skipped for want of
+        collateral only in the activity log. An allowance the vault may pull on has not been
+        designed, because it would change the custody model.
       </p>
 
     </DocShell>
